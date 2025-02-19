@@ -2,13 +2,21 @@ package com.hav.imobiliaria.controller.mapper;
 
 import com.hav.imobiliaria.controller.dto.ImovelDTO;
 import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.service.ProprietarioService;
+import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ImovelMapper {
+@AllArgsConstructor
+public abstract class ImovelMapper {
 
-    Imovel toEntity(ImovelDTO imovel);
+    private ProprietarioService service;
 
-    ImovelDTO toDto(Imovel imovel);
+
+    @Mapping(target = "proprietario", expression = "java(service.findById(dto.idProprietario()).orElse(null))")
+    public  abstract Imovel toEntity(ImovelDTO imovel);
+
+    public  abstract ImovelDTO toDto(Imovel imovel);
 
 }

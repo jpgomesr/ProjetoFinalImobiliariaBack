@@ -38,7 +38,7 @@ public class Imovel {
     private Integer qtdPiscina;
 
     @Column(nullable = false)
-    private Boolean finalidade;
+    private TipoFinalidadeEnum finalidade;
 
     private Boolean academia;
 
@@ -87,7 +87,7 @@ public class Imovel {
     private Double valorCondominio;
 
     @ManyToOne
-    @JoinColumn(name = "idproprietario", nullable = false)
+    @JoinColumn(name = "id", nullable = false)
     private Proprietario proprietario;
 
 }
