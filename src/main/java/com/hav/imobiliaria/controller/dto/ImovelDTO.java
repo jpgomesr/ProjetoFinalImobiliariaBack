@@ -2,6 +2,7 @@ package com.hav.imobiliaria.controller.dto;
 
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
+import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 
 public record ImovelDTO(
         Integer id,
@@ -14,7 +15,7 @@ public record ImovelDTO(
         Integer qtdGaragens,
         String qtdChurrasqueira,
         Integer qtdPiscina,
-        Boolean finalidade,
+        TipoFinalidadeEnum finalidade,
         Boolean academia,
         Double preco,
         Double precoPromocional,
@@ -32,6 +33,6 @@ public record ImovelDTO(
         String galeriaImagens,
         Double iptu,
         Double valorCondominio,
-        Proprietario proprietario
+        Long idProprietario
 ) {}
 
