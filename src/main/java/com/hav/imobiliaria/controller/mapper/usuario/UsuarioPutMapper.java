@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface UsuarioPutMapper {
 
-
     Usuario toEntity(UsuarioPutDTO usuarioPutDTO);
 
     UsuarioPutDTO toDto(Usuario usuario);
