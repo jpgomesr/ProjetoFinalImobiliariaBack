@@ -1,6 +1,6 @@
-package com.hav.imobiliaria.controller.mapper;
+package com.hav.imobiliaria.controller.mapper.proprietario;
 
-import com.hav.imobiliaria.controller.dto.ProprietarioDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioDTO;
 import com.hav.imobiliaria.model.Proprietario;
 import org.mapstruct.Mapper;
 
