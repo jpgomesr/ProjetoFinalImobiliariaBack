@@ -1,6 +1,5 @@
-package com.hav.imobiliaria.controller.dto;
+package com.hav.imobiliaria.controller.dto.imovel;
 
-import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 

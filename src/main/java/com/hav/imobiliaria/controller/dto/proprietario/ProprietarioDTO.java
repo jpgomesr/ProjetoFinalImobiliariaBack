@@ -1,4 +1,4 @@
-package com.hav.imobiliaria.controller.dto;
+package com.hav.imobiliaria.controller.dto.proprietario;
 
 public record ProprietarioDTO(
         Long id,
