@@ -1,6 +1,9 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
-public record ProprietarioDTO(
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+
+public record ProprietarioGetDTO (
         Long id,
         String nome,
         String telefone,
@@ -13,5 +16,5 @@ public record ProprietarioDTO(
         String bairro,
         String cidade,
         String estado
-) {
+){
 }
