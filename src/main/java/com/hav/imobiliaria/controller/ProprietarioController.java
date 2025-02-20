@@ -1,7 +1,7 @@
 package com.hav.imobiliaria.controller;
 
-import com.hav.imobiliaria.controller.dto.ProprietarioDTO;
-import com.hav.imobiliaria.controller.mapper.ProprietarioMapper;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioDTO;
+import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioMapper;
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.service.ProprietarioService;
 import lombok.AllArgsConstructor;

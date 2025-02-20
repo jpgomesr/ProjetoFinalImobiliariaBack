@@ -87,7 +87,7 @@ public class Imovel {
     private Double valorCondominio;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "id_proprietario", nullable = false)
     private Proprietario proprietario;
 
 }
