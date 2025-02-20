@@ -9,7 +9,8 @@ CREATE TABLE usuario (
                       nome VARCHAR(45) NOT NULL,
                       telefone CHAR(13),
                       email VARCHAR(45) NOT NULL,
-                      descricao VARCHAR(45),
+                      senha VARCHAR(45) NOT NULL,
+                      descricao VARCHAR(30),
                       foto VARCHAR(100)
 ) ENGINE = InnoDB;
 
@@ -34,14 +35,14 @@ CREATE TABLE imovel (
                         id INT NOT NULL PRIMARY KEY,
                         titulo VARCHAR(45) NOT NULL,
                         imagem_capa VARCHAR(100) NOT NULL,
-                        descricao VARCHAR(45) NOT NULL,
+                        descricao VARCHAR(500) NOT NULL,
                         tamanho INT NOT NULL,
                         qtd_quartos INT NOT NULL,
                         qtd_banheiros INT NOT NULL,
                         qtd_garagens INT,
-                        qtd_churrasqueira VARCHAR(45),
+                        qtd_churrasqueira INT,
                         qtd_piscina INT,
-                        finalidade ENUM("ALUGUEL", "COMPRA"), NOT NULL,
+                        finalidade ENUM("VENDA", "ALUGUEL"), NOT NULL,
                         academia TINYINT(1),
                         preco DOUBLE NOT NULL,
                         preco_promocional DOUBLE,

@@ -3,7 +3,7 @@ package com.hav.imobiliaria.controller.dto.imovel;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 
-public record ImovelDTO(
+public record ImovelPutDTO(
         Integer id,
         String titulo,
         String imagemCapa,
@@ -33,5 +33,5 @@ public record ImovelDTO(
         Double iptu,
         Double valorCondominio,
         Long idProprietario
-) {}
-
+) {
+}

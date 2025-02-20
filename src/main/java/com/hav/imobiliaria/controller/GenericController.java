@@ -7,7 +7,7 @@ import java.net.URI;
 
 public interface GenericController {
 
-    default URI gerarHeaderLocation(Long id){
+    default URI gerarHeaderLocation(Long id) {
         return ServletUriComponentsBuilder.fromCurrentRequest().
                 path("/{id}").
                 buildAndExpand(id).
