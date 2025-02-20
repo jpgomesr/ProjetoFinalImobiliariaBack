@@ -29,7 +29,6 @@ public record ImovelPostDTO(
         String qtdChurrasqueira,
         @Pattern(regexp = "^[0-9]+$", message = "A quantidade de piscinas deve conter apenas números")
         Integer qtdPiscina,
-        @NotNull(message = "A finalidade não deve ser nula")
         TipoFinalidadeEnum finalidade,
         Boolean academia,
         @Pattern(regexp = "^[0-9]+$", message = "O preço do imóvel deve conter apenas números")
@@ -39,20 +38,42 @@ public record ImovelPostDTO(
         Double precoPromocional,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean permitirDestaque,
-        
+        @NotNull(message = "Você deve habilitar ou não a visibilidade")
         Boolean habilitarVisibilidade,
+        @NotNull(message = "O CEP é obrigatório")
+        @Size(max = 8, min = 8)
         String cep,
+        @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O tipo da residência deve conter apenas letras e acentos")
+        @NotBlank(message = "A inserção tipo de residência é obrigatório")
         String tipoResidencia,
+        @Positive(message = "O número deve ser positivo")
+        @NotNull(message = "O número é obrigatório")
         Integer numeroCasaPredio,
+        @Positive(message = "O número do apartamento deve ser positivo")
         Integer numeroApartamento,
+        @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
+        @Size(max = 45, message = "O bairro deve conter até 45 caracteres")
+        @NotBlank(message = "O bairro é obrigatório")
         String bairro,
+        @Size(max = 45, message = "A cidade deve conter até 45 caracteres")
+        @NotBlank(message = "A cidade é obrigatória")
+        @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "A cidade deve conter apenas letras e espaços")
         String cidade,
+        @Size(max = 45, message = "O estado deve conter até 45 caracteres")
+        @NotBlank(message = "O estado é obrigatório")
+        @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O estado deve conter apenas letras e espaços")
         String estado,
+        @Size(max = 100, message = "Os links devem conter até 255 caracteres")
+        @NotBlank(message = "A galeria de imagens é obrigatória")
         String galeriaImagens,
+        @Pattern(regexp = "^[0-9]+$", message = "o IPTU deve conter apenas números")
         Double iptu,
+        @Pattern(regexp = "^[0-9]+$", message = "o valor do condomínio deve conter apenas números")
         Double valorCondominio,
+        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
+        @NotNull(message = "O id é obrigatório")
         Long idProprietario
 ) {
 }
