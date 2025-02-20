@@ -1,14 +1,13 @@
 package com.hav.imobiliaria.controller;
 
-import com.hav.imobiliaria.controller.dto.ImovelDTO;
-import com.hav.imobiliaria.controller.mapper.ImovelMapper;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelDTO;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelMapper;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.service.ImovelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
