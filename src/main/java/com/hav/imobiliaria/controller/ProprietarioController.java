@@ -8,6 +8,7 @@ import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.service.ProprietarioService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class ProprietarioController implements GenericController {
     }
 
     @PostMapping
-    public ResponseEntity<ProprietarioGetDTO> cadastrar(@RequestBody ProprietarioPostDTO proprietarioPostDTO) {
+    public ResponseEntity<ProprietarioGetDTO> cadastrar(@RequestBody @Valid ProprietarioPostDTO proprietarioPostDTO) {
         return ResponseEntity.ok(service.salvar(proprietarioPostDTO));
     }
 
