@@ -5,15 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UsuarioPutDTO(
-        Long id,
-        String role,
-        String nome,
-        String telefone,
-        String email,
-        String descricao,
-        String foto
-) {
-}
         @Size(max = 45, message = "O nome deve conter até 45 caracteres")
         @NotBlank(message = "O nome é obrigatório")
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O nome deve conter apenas letras e espaços")
