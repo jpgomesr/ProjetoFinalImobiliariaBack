@@ -22,4 +22,5 @@ public record UsuarioPutDTO(
         @NotBlank(message = "A role é obrigatória")
         String role,
         String foto
-) {}
+) {
+}
