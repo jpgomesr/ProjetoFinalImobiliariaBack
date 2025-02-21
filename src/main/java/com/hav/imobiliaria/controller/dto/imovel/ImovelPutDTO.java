@@ -3,15 +3,18 @@ package com.hav.imobiliaria.controller.dto.imovel;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
-
-public record ImovelPostDTO(
-        @Size(max = 45,message = "O título deve conter até 45 caracteres")
+//a
+public record ImovelPutDTO(
+        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
+        @NotNull(message = "O id é obrigatório")
+        Integer id,
+        @Size(max = 45, message = "O título deve conter até 45 caracteres")
         @NotBlank(message = "O título é obrigatório")
         String titulo,
         @Size(max = 100, message = "O link deve conter até 100 caracteres")
         @NotBlank(message = "A imagem de capa é obrigatória")
         String imagemCapa,
-        @Size(max = 45,message = "A descrição deve conter até 500 caracteres")
+        @Size(max = 45, message = "A descrição deve conter até 500 caracteres")
         @NotBlank(message = "A descrição é obrigatória")
         String descricao,
         @Pattern(regexp = "^[0-9]+$", message = "O tamanho deve conter apenas números")

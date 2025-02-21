@@ -1,10 +1,17 @@
 package com.hav.imobiliaria.controller;
 
-import com.hav.imobiliaria.controller.dto.imovel.ImovelDTO;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelMapper;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.service.ImovelService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,24 +21,28 @@ import java.util.List;
 @RequestMapping("imoveis")
 @AllArgsConstructor
 public class ImovelController implements GenericController {
-
-    private final ImovelService imovelService;
-    private final ImovelMapper imovelMapper;
-
+    private final ImovelService service;
 
     @GetMapping
-    public ResponseEntity<List<Imovel>> listarImoveis(){
+    public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
+        return ResponseEntity.ok(service.buscarTodos(pageable));
+    }
 
-
-        return ResponseEntity.ok(imovelService.listarImoveis());
+    @GetMapping("{id}")
+    public ResponseEntity<ImovelGetDTO> buscarPorId(@PathVariable Long id){
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
     @PostMapping
-    public ResponseEntity<Imovel> inserirImovel(@RequestBody ImovelDTO imovelDTO){
-
-        System.out.println(imovelDTO);
-        Imovel imovel = imovelMapper.toEntity(imovelDTO);
-
-        return ResponseEntity.ok(imovel);
-
+    public ResponseEntity<ImovelGetDTO> cadastrar(@RequestBody ImovelPostDTO imovelPostDTO) {
+        return ResponseEntity.ok(service.salvar(imovelPostDTO));
+    }
+    @PutMapping("{id}")
+    public ResponseEntity<ImovelGetDTO> atualizar(@RequestBody ImovelPutDTO imovelPutDTO, @PathVariable Long id){
+        return ResponseEntity.ok(service.atualizar(imovelPutDTO,id));
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> removerPorId(@PathVariable Long id){
+        service.removerPorId(id);
+        return ResponseEntity.noContent().build();
     }
 }
