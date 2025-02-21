@@ -3,7 +3,7 @@ package com.hav.imobiliaria.controller.dto.imovel;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
-
+//a
 public record ImovelPutDTO(
         @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
         @NotNull(message = "O id é obrigatório")
