@@ -11,13 +11,12 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // Remova ou comente essa linha para desabilitar o CORS global
-        registry.addMapping("/**").
-                allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-
+        // Configura o CORS para permitir acessos de origens específicas
+        registry.addMapping("/**") // Aplica a configuração para todas as rotas da API
+                .allowedOrigins("http://localhost:3000") // Permite apenas a origem do frontend local (React)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permite os métodos HTTP especificados
+                .allowedHeaders("*") // Permite todos os cabeçalhos
+                .allowCredentials(true); // Permite o envio de cookies de autenticação
     }
 
 }

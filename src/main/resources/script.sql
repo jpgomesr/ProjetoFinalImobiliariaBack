@@ -10,6 +10,7 @@ CREATE TABLE usuario (
                       telefone CHAR(13),
                       email VARCHAR(45) NOT NULL,
                       descricao VARCHAR(500),
+                      ativo TINYINT(1) DEFAULT true,
                       foto VARCHAR(100)
 ) ENGINE = InnoDB;
 

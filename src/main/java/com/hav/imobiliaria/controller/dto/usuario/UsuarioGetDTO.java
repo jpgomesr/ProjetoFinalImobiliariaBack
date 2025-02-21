@@ -7,6 +7,7 @@ public record UsuarioGetDTO (
         String telefone,
         String email,
         String descricao,
+        Boolean ativo,
         String foto
 ){
 }
