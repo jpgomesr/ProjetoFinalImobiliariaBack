@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ImovelService {
 
-
-
     private final ImovelRepository imovelRepository;
     private final ImovelValidator imovelValidator;
 
@@ -21,10 +19,11 @@ public class ImovelService {
     public Imovel salvar(Imovel imovel) {
         return imovelRepository.save(imovel);
     }
-
-    public ImovelGetDTO buscarPorId(Long id) {
-        ImovelGetDTO dto = imovelGetMapper.toDto(repository.findById(id).get());
-        return dto;
+    public Imovel buscarImovelPorId(Long id) {
+        return imovelRepository.findById(id).get();
+    }
+    public List<Imovel> listarImoveis() {
+        return imovelRepository.findAll();
     }
     public void excluirImovel(Long id) {
         imovelRepository.deleteById(id);
