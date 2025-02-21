@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 public record ProprietarioPostDTO (
         @Size(max = 45, message = "O nome deve conter até 45 caracteres")
@@ -10,8 +11,7 @@ public record ProprietarioPostDTO (
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
         @NotBlank(message = "O telefone é obrigatório")
         String telefone,
-        @Pattern(regexp = "^[0-9]{11}$", message = "O CPF deve conter exatamente 11 dígitos numéricos")
-        @NotBlank(message = "O CPF é obrigatório")
+        @CPF
         String cpf,
         @Pattern(regexp = "^[0-9]{8}$", message = "O CEP deve conter exatamente 8 dígitos numéricos")
         @NotBlank(message = "O CEP é obrigatório")
@@ -19,7 +19,7 @@ public record ProprietarioPostDTO (
         @Size(max = 45, message = "A rua deve conter até 45 caracteres")
         @NotBlank(message = "A rua é obrigatória")
         String rua,
-        @Max(value = 45, message = "O tipo da residência deve conter até 45 caracteres")
+        @Size(max = 45, message = "O tipo da residência deve conter até 45 caracteres")
         @NotBlank(message = "O tipo da residência é obrigatório")
         String tipoResidencia,
         @NotNull(message = "O número é obrigatório")
