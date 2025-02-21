@@ -27,6 +27,7 @@ public class UsuarioController implements GenericController{
     }
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestBody UsuarioPostDTO usuarioPostDTO) {
+        System.out.println(usuarioPostDTO);
         return ResponseEntity.ok(service.salvar(usuarioPostDTO));
     }
     @PutMapping("{id}")
