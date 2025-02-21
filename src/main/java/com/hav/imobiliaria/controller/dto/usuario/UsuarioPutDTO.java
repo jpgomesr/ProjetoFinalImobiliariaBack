@@ -24,5 +24,3 @@ public record UsuarioPutDTO(
         String foto
 ) {
 }
-
-
