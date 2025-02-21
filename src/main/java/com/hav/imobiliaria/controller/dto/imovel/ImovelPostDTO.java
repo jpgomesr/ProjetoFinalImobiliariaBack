@@ -68,11 +68,10 @@ public record ImovelPostDTO(
         @Size(max = 100, message = "Os links devem conter até 255 caracteres")
         @NotBlank(message = "A galeria de imagens é obrigatória")
         String galeriaImagens,
-        @Pattern(regexp = "^[0-9]+$", message = "o IPTU deve conter apenas números")
+        @PositiveOrZero(message = "O valor do iptu deve ser positivo ou zero")
         Double iptu,
-        @Pattern(regexp = "^[0-9]+$", message = "o valor do condomínio deve conter apenas números")
+        @PositiveOrZero(message = "O valor do condominio deve ser positivo ou zero")
         Double valorCondominio,
-        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
         @NotNull(message = "O id é obrigatório")
         Long idProprietario
 ) {
