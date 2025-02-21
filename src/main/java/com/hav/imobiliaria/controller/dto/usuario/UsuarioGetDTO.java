@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
-public record UsuarioGetDTO(
+public record UsuarioGetDTO (
         Long id,
         String role,
         String nome,
@@ -8,5 +8,5 @@ public record UsuarioGetDTO(
         String email,
         String descricao,
         String foto
-) {
+){
 }
