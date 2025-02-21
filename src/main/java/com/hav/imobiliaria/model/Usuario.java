@@ -12,7 +12,7 @@ public class Usuario {
     private Long id;
 
     @Column(nullable = false, length = 45)
-    private String tipo;
+    private String role;
 
     @Column(nullable = false, length = 45)
     private String nome;
