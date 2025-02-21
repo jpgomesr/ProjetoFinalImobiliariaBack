@@ -23,6 +23,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ImovelService {
 
+
+
     private final ImovelRepository repository;
     private final ImovelValidator imovelValidator;
     private final ImovelGetMapper imovelGetMapper;
@@ -31,10 +33,6 @@ public class ImovelService {
 
     public Page<ImovelGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(imovelGetMapper::toDto);
-    }
-
-    public Page<ImovelGetDTO> buscarPorNome(String nome, Pageable pageable) {
-        return repository.findByNomeContaining(nome, pageable);
     }
 
     public ImovelGetDTO buscarPorId(Long id) {

@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ImovelRepository extends JpaRepository<Imovel, Long> {
-    Page<ImovelGetDTO> findByNomeContaining(String nome, Pageable pageable);
 }
