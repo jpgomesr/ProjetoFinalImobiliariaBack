@@ -26,25 +26,29 @@ public class UsuarioService {
         return repository.findAll(pageable).map(usuarioGetMapper::toDto);
 
     }
+
     public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
         return repository.findByNomeContaining(nome, pageable);
     }
+
     public UsuarioGetDTO buscarPorId(Long id) {
         UsuarioGetDTO dto = usuarioGetMapper.toDto(repository.findById(id).get());
-
         return dto;
     }
+
     public UsuarioGetDTO salvar(UsuarioPostDTO dto) {
         Usuario entity = usuarioPostMapper.toEntity(dto);
         entity = repository.save(entity);
         return usuarioGetMapper.toDto(entity);
     }
+
     public UsuarioGetDTO atualizar(UsuarioPutDTO dto, Long id) {
         Usuario entity = usuarioPutMapper.toEntity(dto);
         entity.setId(id);
         entity = repository.save(entity);
         return usuarioGetMapper.toDto(entity);
     }
+
     public void removerPorId(Long id) {
         repository.deleteById(id);
     }
