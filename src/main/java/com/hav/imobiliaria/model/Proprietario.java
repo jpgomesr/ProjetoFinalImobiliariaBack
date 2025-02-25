@@ -42,4 +42,8 @@ public class Proprietario {
 
     @Column(nullable = false, length = 45)
     private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "id_endereco", nullable = false)
+    private Endereco endereco;
 }
