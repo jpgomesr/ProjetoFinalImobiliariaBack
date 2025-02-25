@@ -39,7 +39,11 @@ public class UsuarioService {
         return dto;
     }
     public UsuarioGetDTO salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
-        String url = s3Service.uploadFile(foto);
+        String url = null;
+        if(foto != null) {
+            url = s3Service.uploadFile(foto);
+        }
+
         Usuario entity = usuarioPostMapper.toEntity(dto);
         entity.setFoto(url);
         entity = repository.save(entity);
