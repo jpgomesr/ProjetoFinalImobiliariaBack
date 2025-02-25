@@ -28,4 +28,14 @@ public class Usuario {
 
     @Column(length = 100)
     private String foto;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    private Boolean ativo;
+
+    @PrePersist
+    public void prePersist(){
+        if(ativo == null){
+            ativo = true;
+        }
+    }
 }
