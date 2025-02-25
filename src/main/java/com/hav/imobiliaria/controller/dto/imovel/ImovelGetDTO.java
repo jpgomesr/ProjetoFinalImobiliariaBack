@@ -20,18 +20,15 @@ public record ImovelGetDTO(
         Double precoPromocional,
         Boolean permitirDestaque,
         Boolean habilitarVisibilidade,
-        String cep,
         String tipoResidencia,
         Integer numeroCasaPredio,
         Integer numeroApartamento,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
-        String bairro,
-        String cidade,
-        String estado,
         String galeriaImagens,
         Double iptu,
         Double valorCondominio,
-        Long idProprietario
+        Long idProprietario,
+        Long idEndereco
 ) {
 }
