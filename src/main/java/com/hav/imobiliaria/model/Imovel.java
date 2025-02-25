@@ -32,8 +32,8 @@ public class Imovel {
 
     private Integer qtdGaragens;
 
-    @Column(length = 45)
-    private String qtdChurrasqueira;
+    @Column
+    private Integer qtdChurrasqueira;
 
     private Integer qtdPiscina;
 
@@ -90,4 +90,7 @@ public class Imovel {
     @JoinColumn(name = "id_proprietario", nullable = false)
     private Proprietario proprietario;
 
+    @ManyToOne
+    @JoinColumn(name = "id_endereco", nullable = false)
+    private Endereco endereco;
 }
