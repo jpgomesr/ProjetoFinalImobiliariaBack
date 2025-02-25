@@ -15,6 +15,7 @@ public record ProprietarioGetDTO (
         Integer numeroApartamento,
         String bairro,
         String cidade,
-        String estado
+        String estado,
+        Long idEndereco
 ){
 }

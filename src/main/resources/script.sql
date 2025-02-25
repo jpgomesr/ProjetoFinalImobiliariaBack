@@ -20,14 +20,15 @@ CREATE TABLE proprietario (
                               nome VARCHAR(45) NOT NULL,
                               telefone CHAR(11) NOT NULL UNIQUE,
                               CPF CHAR(11) NOT NULL UNIQUE,
-                              CEP CHAR(8) NOT NULL,
-                              rua VARCHAR(45) NOT NULL,
                               tipo_residencia VARCHAR(45) NOT NULL,
                               numero_casa_predio INT NOT NULL,
                               numero_apartamento INT,
-                              bairro VARCHAR(45) NOT NULL,
-                              cidade VARCHAR(45) NOT NULL,
-                              estado VARCHAR(45) NOT NULL
+                              id_endereco INT NOT NULL,
+                              CONSTRAINT fk_proprietario_endereco
+                                  FOREIGN KEY (id_endereco)
+                                      REFERENCES endereco (id)
+                                      ON DELETE NO ACTION
+                                      ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 -- Tabela Imóvel
@@ -40,7 +41,7 @@ CREATE TABLE imovel (
                         qtd_quartos INT NOT NULL,
                         qtd_banheiros INT NOT NULL,
                         qtd_garagens INT,
-                        qtd_churrasqueira VARCHAR(45),
+                        qtd_churrasqueira INT,
                         qtd_piscina INT,
                         finalidade ENUM("ALUGUEL", "COMPRA"), NOT NULL,
                         academia TINYINT(1),
@@ -48,22 +49,34 @@ CREATE TABLE imovel (
                         preco_promocional DOUBLE,
                         permitir_destaque TINYINT(1) NOT NULL,
                         habilitar_visibilidade TINYINT(1) NOT NULL,
-                        CEP CHAR(8) NOT NULL,
                         tipo_residencia VARCHAR(45) NOT NULL,
                         numero_casa_predio INT NOT NULL,
                         numero_apartamento INT,
                         banner TINYINT(1) NOT NULL,
                         tipo_banner ENUM("DESCONTO", "MELHOR PREÇO", "PROMOÇÃO", "ADQUIRIDO", "ALUGADO"),
-                        bairro VARCHAR(45) NOT NULL,
-                        cidade VARCHAR(45) NOT NULL,
-                        estado VARCHAR(45) NOT NULL,
                         galeria_imagens VARCHAR(255) NOT NULL,
                         IPTU DOUBLE,
                         valor_condominio DOUBLE,
-                        idproprietario INT NOT NULL,
+                        id_proprietario INT NOT NULL,
+                        id_endereco INT NOT NULL,
                         CONSTRAINT fk_imovel_proprietario
-                            FOREIGN KEY (idproprietario)
-                                REFERENCES proprietario (idproprietario)
+                            FOREIGN KEY (id_proprietario)
+                                REFERENCES proprietario (id)
+                                ON DELETE NO ACTION
+                                ON UPDATE NO ACTION
+                        CONSTRAINT fk_imovel_endereco
+                            FOREIGN KEY (id_endereco)
+                                REFERENCES endereco (id)
                                 ON DELETE NO ACTION
                                 ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
+
+--Tabela endereço
+CREATE TABLE endereco(
+                        id INT NOT NULL PRIMARY KEY,
+                        bairro VARCHAR(45) NOT NULL,
+                        cidade VARCHAR(45) NOT NULL,
+                        estado VARCHAR(45) NOT NULL,
+                        CEP CHAR(8) NOT NULL UNIQUE,
+                        rua VARCHAR(45) NOT NULL
+)
