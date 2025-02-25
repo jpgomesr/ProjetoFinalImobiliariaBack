@@ -12,12 +12,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @AllArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final S3Service s3Service;
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
@@ -34,8 +38,10 @@ public class UsuarioService {
 
         return dto;
     }
-    public UsuarioGetDTO salvar(UsuarioPostDTO dto) {
+    public UsuarioGetDTO salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
+        String url = s3Service.uploadFile(foto);
         Usuario entity = usuarioPostMapper.toEntity(dto);
+        entity.setFoto(url);
         entity = repository.save(entity);
         return usuarioGetMapper.toDto(entity);
     }

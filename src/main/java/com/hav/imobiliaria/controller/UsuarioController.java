@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
@@ -9,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -26,9 +30,12 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(service.buscarPorId(id));
     }
     @PostMapping
-    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestBody UsuarioPostDTO usuarioPostDTO) {
-        System.out.println(usuarioPostDTO);
-        return ResponseEntity.ok(service.salvar(usuarioPostDTO));
+    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") String usuarioJson,
+                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        UsuarioPostDTO usuarioPostDTO = mapper.readValue(usuarioJson, UsuarioPostDTO.class);
+        return ResponseEntity.ok(service.salvar(usuarioPostDTO,file));
     }
     @PutMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> atualizar(@RequestBody UsuarioPutDTO usuarioPutDTO, @PathVariable Long id) {
