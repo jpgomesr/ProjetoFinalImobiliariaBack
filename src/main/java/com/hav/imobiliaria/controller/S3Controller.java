@@ -20,11 +20,13 @@ public class S3Controller {
     @PostMapping()
     public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile file) {
         try {
-            String fileUrl = s3Service.uploadFile(file);
+            String fileUrl = s3Service.uploadArquivo(file);
             return ResponseEntity.ok(fileUrl);
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("Erro ao fazer upload");
         }
-    }
+   }
+
+
 
 }
