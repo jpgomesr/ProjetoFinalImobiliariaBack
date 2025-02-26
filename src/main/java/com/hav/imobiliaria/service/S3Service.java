@@ -25,8 +25,6 @@ import java.util.UUID;
 public class S3Service {
 
     private final S3Client s3Client;
-    private final S3Presigner s3Presigner;
-
 
     @Value("${aws.bucket-name}")
     private String bucketName;
@@ -46,10 +44,6 @@ public class S3Service {
                 .credentialsProvider(credentialsProvider)
                 .build();
 
-        this.s3Presigner = S3Presigner.builder()
-                .region(Region.of(region))
-                .credentialsProvider(credentialsProvider)
-                .build();
 
     }
 
@@ -79,14 +73,6 @@ public class S3Service {
                 .build()).toString();
     }
 
-    public byte[] baixarArquivo(String fileName) {
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
-
-        return s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
-    }
     public void excluirObjeto(String url){
 
         String key = url.replace("https://hav-bucket-c.s3.amazonaws.com/", "");
