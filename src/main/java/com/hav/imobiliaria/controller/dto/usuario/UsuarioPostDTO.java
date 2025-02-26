@@ -1,8 +1,10 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record UsuarioPostDTO(
         @Size(max = 45, message = "O nome deve conter até 45 caracteres")
@@ -11,6 +13,7 @@ public record UsuarioPostDTO(
         String nome,
         @Size(max = 45, message = "O email deve conter até 45 caracteres")
         @NotBlank(message = "O email é obrigatório")
+        @Email
         String email,
         @Size(max = 30, message = "A senha deve conter até 30 caracteres")
         @NotBlank(message = "A senha é obrigatória")
@@ -20,7 +23,6 @@ public record UsuarioPostDTO(
         @Size(max = 500, message = "A mensagem deve conter até 500 caracteres")
         String descricao,
         @NotBlank(message = "A role é obrigatória")
-        String role,
-        String foto
+        String role
 ) {
 }
