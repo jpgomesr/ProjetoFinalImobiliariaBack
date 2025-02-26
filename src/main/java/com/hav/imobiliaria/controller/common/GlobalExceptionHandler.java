@@ -2,9 +2,7 @@ package com.hav.imobiliaria.controller.common;
 
 import com.hav.imobiliaria.controller.dto.exception.ErroCampo;
 import com.hav.imobiliaria.controller.dto.exception.ErroResposta;
-import com.hav.imobiliaria.exceptions.CampoInvalidoException;
-import com.hav.imobiliaria.exceptions.ImovelNaoEncontradoException;
-import com.hav.imobiliaria.exceptions.ProprietarioNaoEncontradoException;
+import com.hav.imobiliaria.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,7 +42,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ImovelNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErroResposta handleProprietarioNaoEncontradoException(ProprietarioNaoEncontradoException e){
-        return new ErroResposta()
+    public ErroResposta handleImovelNaoEncontradoExcpetion(ProprietarioNaoEncontradoException e){
+        return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResposta handleNoSuchElementException(NoSuchElementException e){
+        return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResposta handleUsuarioNaoEncontradoException(UsuarioNaoEncontradoException e){
+        return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
     }
 }
