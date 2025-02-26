@@ -20,11 +20,6 @@ public class Proprietario {
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
-    @Column(nullable = false, length = 8)
-    private String cep;
-
-    @Column(nullable = false, length = 45)
-    private String rua;
 
     @Column(nullable = false, length = 45)
     private String tipoResidencia;
@@ -34,14 +29,6 @@ public class Proprietario {
 
     private Integer numeroApartamento;
 
-    @Column(nullable = false, length = 45)
-    private String bairro;
-
-    @Column(nullable = false, length = 45)
-    private String cidade;
-
-    @Column(nullable = false, length = 45)
-    private String estado;
 
     @ManyToOne
     @JoinColumn(name = "id_endereco", nullable = false)

@@ -8,17 +8,20 @@ import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPostMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.repository.EnderecoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class EnderecoService {
 
     private EnderecoRepository repository;
     private EnderecoGetMapper enderecoGetMapper;
     private EnderecoPostMapper enderecoPostMapper;
     private EnderecoPutMapper enderecoPutMapper;
+
 
     public Page<EnderecoGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(enderecoGetMapper::toDto);
