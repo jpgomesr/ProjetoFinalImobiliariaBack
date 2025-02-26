@@ -26,7 +26,7 @@ public class Usuario {
     @Column(length = 500)
     private String descricao;
 
-    @Column(length = 100)
+    @Column(length = 300)
     private String foto;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT true")
