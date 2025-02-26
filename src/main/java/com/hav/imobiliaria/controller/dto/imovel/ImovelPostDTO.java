@@ -58,10 +58,8 @@ public record ImovelPostDTO(
         Double iptu,
         @Pattern(regexp = "^[0-9]+$", message = "o valor do condomínio deve conter apenas números")
         Double valorCondominio,
-        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
-        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
         @NotNull(message = "O id é obrigatório")
         Long idEndereco
 
