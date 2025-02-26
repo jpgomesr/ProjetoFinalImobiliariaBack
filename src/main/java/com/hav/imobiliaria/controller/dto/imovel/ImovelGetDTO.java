@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 
@@ -29,6 +30,6 @@ public record ImovelGetDTO(
         Double iptu,
         Double valorCondominio,
         Long idProprietario,
-        Long idEndereco
+        EnderecoGetDTO enderecoGetDTO
 ) {
 }
