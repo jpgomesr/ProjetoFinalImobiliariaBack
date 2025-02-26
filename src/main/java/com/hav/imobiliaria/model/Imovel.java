@@ -18,7 +18,7 @@ public class Imovel {
     @Column(nullable = false, length = 100)
     private String imagemCapa;
 
-    @Column(nullable = false, length = 45)
+    @Column(nullable = false, length = 500)
     private String descricao;
 
     @Column(nullable = false)
@@ -53,8 +53,6 @@ public class Imovel {
     @Column(nullable = false)
     private Boolean habilitarVisibilidade;
 
-    @Column(nullable = false, length = 8)
-    private String cep;
 
     @Column(nullable = false, length = 45)
     private String tipoResidencia;
@@ -70,14 +68,6 @@ public class Imovel {
     @Enumerated(EnumType.STRING)
     private TipoBunnerEnum tipoBanner;
 
-    @Column(nullable = false, length = 45)
-    private String bairro;
-
-    @Column(nullable = false, length = 45)
-    private String cidade;
-
-    @Column(nullable = false, length = 45)
-    private String estado;
 
     @Column(nullable = false, length = 255)
     private String galeriaImagens;
