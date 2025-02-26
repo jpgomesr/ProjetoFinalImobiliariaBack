@@ -80,7 +80,7 @@ public class Imovel {
     @JoinColumn(name = "id_proprietario", nullable = false)
     private Proprietario proprietario;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
 }
