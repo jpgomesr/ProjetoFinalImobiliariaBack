@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class UsuarioService {
     public UsuarioGetDTO salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
         String url = null;
         if(foto != null) {
-            url = s3Service.uploadFile(foto);
+            url = s3Service.uploadArquivo(foto);
         }
 
         Usuario entity = usuarioPostMapper.toEntity(dto);
@@ -56,7 +57,15 @@ public class UsuarioService {
         return usuarioGetMapper.toDto(entity);
     }
     public void removerPorId(Long id) {
-        repository.deleteById(id);
+        Optional<Usuario> usuarioOptional = repository.findById(id);
+        if(usuarioOptional.isPresent()){
+            Usuario usuario = usuarioOptional.get();
+            if(usuario.getFoto() != null){
+                this.s3Service.excluirObjeto(usuario.getFoto());
+            }
+            repository.deleteById(id);
+
+        }
     }
 
 }
