@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
 import jakarta.validation.constraints.*;
 
 public record ProprietarioPutDTO (
@@ -40,6 +41,7 @@ public record ProprietarioPutDTO (
         String estado,
         @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
         @NotNull(message = "O id é obrigatório")
-        Long idEndereco
+        Long idEndereco,
+        EnderecoPutDTO enderecoPutDTO
 ){
 }

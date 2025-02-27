@@ -30,7 +30,7 @@ public class Proprietario {
     private Integer numeroApartamento;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
 }

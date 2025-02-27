@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -21,7 +22,7 @@ public record ProprietarioPostDTO (
         Integer numeroCasaPredio,
         @Positive(message = "O numero do apartamento deve ser positivo")
         Integer numeroApartamento,
-        @NotNull(message = "O id é obrigatório")
-        Long idEndereco
+        @NotNull(message = "O endereço é obrigatório")
+        EnderecoPostDTO enderecoPostDTO
 ){
 }

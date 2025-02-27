@@ -32,17 +32,18 @@ public class EnderecoService {
         return dto;
     }
 
-    public EnderecoGetDTO salvar(EnderecoPostDTO dto) {
+    public Endereco salvar(EnderecoPostDTO dto) {
         Endereco entity = enderecoPostMapper.toEntity(dto);
+
         entity = repository.save(entity);
-        return enderecoGetMapper.toDto(entity);
+        return entity;
     }
 
-    public EnderecoGetDTO atualizar(EnderecoPutDTO dto, Long id) {
+    public Endereco atualizar(EnderecoPutDTO dto, Long id) {
         Endereco entity = enderecoPutMapper.toEntity(dto);
         entity.setId(id);
         entity = repository.save(entity);
-        return enderecoGetMapper.toDto(entity);
+        return entity;
     }
 
     public void removerPorId(Long id) {
