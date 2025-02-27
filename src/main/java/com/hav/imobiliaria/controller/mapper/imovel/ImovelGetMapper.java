@@ -20,9 +20,11 @@ public abstract class ImovelGetMapper {
 
     @Autowired
     ProprietarioGetMapper proprietarioGetMapper;
+
     public  abstract Endereco toEntity(EnderecoGetDTO enderecoGetDTO);
 
     @Mapping(target = "enderecoGetDTO", expression = "java(enderecoGetMapper.toDto(imovel.getEndereco()))")
-    @Mapping(target = "proprietarioGetDTO", expression = "java(proprietarioGetMapper.toDto(imovel.getId()))")
+    @Mapping(target = "proprietarioGetDTO", expression = "java(proprietarioGetMapper.toDto(imovel.getProprietario()))" +
+            "")
     public  abstract ImovelGetDTO toDto(Imovel imovel);
 }
