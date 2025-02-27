@@ -9,9 +9,6 @@ public record ImovelPostDTO(
         @Size(max = 45,message = "O título deve conter até 45 caracteres")
         @NotBlank(message = "O título é obrigatório")
         String titulo,
-        @Size(max = 100, message = "O link deve conter até 100 caracteres")
-        @NotBlank(message = "A imagem de capa é obrigatória")
-        String imagemCapa,
         @Size(max = 45,message = "A descrição deve conter até 500 caracteres")
         @NotBlank(message = "A descrição é obrigatória")
         String descricao,
@@ -52,9 +49,6 @@ public record ImovelPostDTO(
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
-        @Size(max = 100, message = "Os links devem conter até 255 caracteres")
-        @NotBlank(message = "A galeria de imagens é obrigatória")
-        String galeriaImagens,
         @Pattern(regexp = "^[0-9]+$", message = "o IPTU deve conter apenas números")
         Double iptu,
         @Pattern(regexp = "^[0-9]+$", message = "o valor do condomínio deve conter apenas números")
