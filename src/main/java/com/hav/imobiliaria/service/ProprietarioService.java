@@ -1,17 +1,23 @@
 package com.hav.imobiliaria.service;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPutMapper;
+import com.hav.imobiliaria.model.Endereco;
+import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.ProprietarioRepository;
+import com.hav.imobiliaria.validator.ImovelValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +30,11 @@ import java.util.List;
 public class ProprietarioService {
 
     private final ProprietarioRepository repository;
+    private final EnderecoService enderecoService;
     private final ProprietarioPutMapper proprietarioPutMapper;
     private final ProprietarioPostMapper proprietarioPostMapper;
     private final ProprietarioGetMapper proprietarioGetMapper;
+    private final EnderecoGetMapper enderecoGetMapper;
 
     public Page<ProprietarioGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(proprietarioGetMapper::toDto);
@@ -36,8 +44,12 @@ public class ProprietarioService {
     }
 
     public ProprietarioGetDTO salvar(ProprietarioPostDTO dto) {
+
+        Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
         Proprietario entity = proprietarioPostMapper.toEntity(dto);
+        entity.setEndereco(enderecoSalvo);
         entity = repository.save(entity);
+
         return proprietarioGetMapper.toDto(entity);
     }
 
@@ -48,8 +60,11 @@ public class ProprietarioService {
     }
 
     public ProprietarioGetDTO atualizar(ProprietarioPutDTO dto, Long id) {
+        Proprietario proprietarioExistente = repository.findById(id).get();
+        Endereco enderecoAtualizado = enderecoService.atualizar(dto.enderecoPutDTO(), proprietarioExistente.getEndereco().getId());
         Proprietario entity = proprietarioPutMapper.toEntity(dto);
         entity.setId(id);
+        entity.setEndereco(enderecoAtualizado);
         entity = repository.save(entity);
         return proprietarioGetMapper.toDto(entity);
     }

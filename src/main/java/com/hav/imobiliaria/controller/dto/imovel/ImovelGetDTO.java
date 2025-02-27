@@ -1,5 +1,7 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 
@@ -20,18 +22,15 @@ public record ImovelGetDTO(
         Double precoPromocional,
         Boolean permitirDestaque,
         Boolean habilitarVisibilidade,
-        String cep,
         String tipoResidencia,
         Integer numeroCasaPredio,
         Integer numeroApartamento,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
-        String bairro,
-        String cidade,
-        String estado,
         String galeriaImagens,
         Double iptu,
         Double valorCondominio,
-        Long idProprietario
+        ProprietarioGetDTO proprietarioGetDTO,
+        EnderecoGetDTO enderecoGetDTO
 ) {
 }

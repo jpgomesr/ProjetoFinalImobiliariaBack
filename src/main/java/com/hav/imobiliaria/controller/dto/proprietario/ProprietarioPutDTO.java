@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
 import jakarta.validation.constraints.*;
 
 public record ProprietarioPutDTO (
@@ -37,6 +38,10 @@ public record ProprietarioPutDTO (
         @Size(max = 45, message = "O estado deve conter até 45 caracteres")
         @NotBlank(message = "O estado é obrigatório")
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O estado deve conter apenas letras e espaços")
-        String estado
+        String estado,
+        @Pattern(regexp = "^[0-9]+$", message = "o id deve conter apenas números")
+        @NotNull(message = "O id é obrigatório")
+        Long idEndereco,
+        EnderecoPutDTO enderecoPutDTO
 ){
 }
