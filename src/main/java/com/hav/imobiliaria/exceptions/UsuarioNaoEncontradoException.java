@@ -1,7 +1,7 @@
 package com.hav.imobiliaria.exceptions;
 
 public class UsuarioNaoEncontradoException extends RuntimeException {
-    public UsuarioNaoEncontradoException(String message) {
+    public UsuarioNaoEncontradoException() {
         super("Usuário não encontrado");
     }
 }

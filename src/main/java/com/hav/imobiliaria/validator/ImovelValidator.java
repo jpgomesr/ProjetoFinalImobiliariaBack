@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.validator;
 
-import com.hav.imobiliaria.exceptions.ImovelJaCadastrado;
+import com.hav.imobiliaria.exceptions.ImovelJaCadastradoException;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.repository.ImovelRepository;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ public class ImovelValidator {
 
     public void validar(Imovel imovel){
         if (existeImovelCadastrado(imovel)){
-            throw new ImovelJaCadastrado();
+            throw new ImovelJaCadastradoException();
         }
     }
 

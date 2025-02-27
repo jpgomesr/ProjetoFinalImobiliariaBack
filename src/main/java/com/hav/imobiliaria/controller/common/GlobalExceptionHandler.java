@@ -66,15 +66,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CPFJaCadastradoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErroResposta handleCPFJaCadastrado(CPFJaCadastradoException e){
+    public ErroResposta handleCPFJaCadastradoException(CPFJaCadastradoException e){
         return new ErroResposta(HttpStatus.CONTINUE.value(), e.getMessage(), List.of());
     }
 
     @ExceptionHandler(TelefoneJaCadastradoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErroResposta handleTelefoneJaCadastrado(TelefoneJaCadastradoException e){
+    public ErroResposta handleTelefoneJaCadastradoException(TelefoneJaCadastradoException e){
         return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(), List.of());
     }
+
+    @ExceptionHandler(UsuarioJaCadastradoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroResposta handleUsuarioJaCadastradoException(UsuarioJaCadastradoException e){
+        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),List.of());
+    }
+
 
 
 }

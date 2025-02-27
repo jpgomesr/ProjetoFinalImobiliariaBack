@@ -1,7 +1,7 @@
 package com.hav.imobiliaria.exceptions;
 
 public class CPFJaCadastradoException extends RuntimeException {
-  public CPFJaCadastradoException(String message) {
+  public CPFJaCadastradoException() {
     super("CPF já cadastrado");
   }
 }
