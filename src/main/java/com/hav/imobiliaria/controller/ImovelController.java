@@ -10,21 +10,28 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.service.ImovelService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("imoveis")
 @AllArgsConstructor
 public class ImovelController implements GenericController {
     private final ImovelService service;
+    private final Validator validator;
 
     @GetMapping
     public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
@@ -38,10 +45,21 @@ public class ImovelController implements GenericController {
     public ResponseEntity<ImovelGetDTO> cadastrar(@RequestPart("imovelPostDtoJSON") String imovelPostDtoJSON,
                                                   @RequestPart("imagens") List<MultipartFile> imagens,
                                                   @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal
-    ) throws IOException {
+    ) throws IOException, MethodArgumentNotValidException {
+
+
 
         ObjectMapper mapper = new ObjectMapper();
         ImovelPostDTO imovelPostDTO = mapper.readValue(imovelPostDtoJSON, ImovelPostDTO.class);
+
+        Set<ConstraintViolation<ImovelPostDTO>> violations = validator.validate(imovelPostDTO);
+        if (!violations.isEmpty()) {
+            BindingResult bindingResult = new BeanPropertyBindingResult(imovelPostDTO, "imovelPostDTO");
+            for (ConstraintViolation<ImovelPostDTO> violation : violations) {
+                bindingResult.rejectValue(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            throw new MethodArgumentNotValidException(null, bindingResult);
+        }
 
         return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
 
