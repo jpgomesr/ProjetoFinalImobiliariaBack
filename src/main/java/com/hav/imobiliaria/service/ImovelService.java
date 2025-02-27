@@ -16,7 +16,9 @@ import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.repository.ImagemImovelRepository;
 import com.hav.imobiliaria.repository.ImovelRepository;
 import com.hav.imobiliaria.validator.ImovelValidator;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +47,7 @@ public class ImovelService {
 
 
 
-    public ImovelGetDTO salvar(ImovelPostDTO dto,MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
+    public ImovelGetDTO salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
         Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
 
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
