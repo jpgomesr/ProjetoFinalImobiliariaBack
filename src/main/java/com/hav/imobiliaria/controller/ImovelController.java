@@ -27,7 +27,6 @@ public class ImovelController implements GenericController {
     public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
         return ResponseEntity.ok(service.buscarTodos(pageable));
     }
-
     @GetMapping("{id}")
     public ResponseEntity<ImovelGetDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(service.buscarPorId(id));
