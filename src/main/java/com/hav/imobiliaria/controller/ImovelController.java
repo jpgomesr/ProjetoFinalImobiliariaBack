@@ -55,4 +55,10 @@ public class ImovelController implements GenericController {
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @DeleteMapping("/imagem/{referencia}")
+    public ResponseEntity<Void> removerImagemPorReferencia(@PathVariable String referencia){
+
+        this.service.removerImagemPorReferencia(referencia);
+        return ResponseEntity.noContent().build();
+    }
 }
