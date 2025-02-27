@@ -22,7 +22,7 @@ public record ProprietarioPostDTO (
         Integer numeroCasaPredio,
         @Positive(message = "O numero do apartamento deve ser positivo")
         Integer numeroApartamento,
-        @NotBlank(message = "O id é obrigatório")
+        @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO enderecoPostDTO
 ){
 }

@@ -61,7 +61,7 @@ public record ImovelPostDTO(
         Double valorCondominio,
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
-        @NotBlank(message = "O id é obrigatório")
+        @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO enderecoPostDTO
 ) {
 }
