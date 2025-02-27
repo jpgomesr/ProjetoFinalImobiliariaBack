@@ -16,7 +16,7 @@ public abstract class ProprietarioPostMapper {
     @Autowired
     protected EnderecoRepository enderecoRepository;
 
-    @Mapping(target = "endereco", expression = "java(enderecoRepository.findById(proprietario.idEndereco()).orElse(null))")
+    @Mapping(source = "enderecoPostDTO", target = "endereco")
     public abstract Proprietario toEntity(ProprietarioPostDTO proprietario);
 
     public abstract ProprietarioPostDTO toDto(Proprietario proprietrio);

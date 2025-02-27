@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
@@ -60,8 +61,7 @@ public record ImovelPostDTO(
         Double valorCondominio,
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
-        @NotNull(message = "O id é obrigatório")
-        Long idEndereco
-
+        @NotNull(message = "O endereço é obrigatório")
+        EnderecoPostDTO enderecoPostDTO
 ) {
 }
