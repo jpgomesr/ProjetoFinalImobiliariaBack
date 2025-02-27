@@ -1,14 +1,28 @@
 package com.hav.imobiliaria.controller.mapper.imovel;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
+import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
+import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.Proprietario;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
-public interface ImovelGetMapper {
+public abstract class ImovelGetMapper {
 
-    Imovel toEntity(ImovelGetDTO ImovelGetDTO);
+    @Autowired
+    EnderecoGetMapper enderecoGetMapper;
 
-    ImovelGetDTO toDto(Imovel imovel);
+    @Autowired
+    ProprietarioGetMapper proprietarioGetMapper;
+    public  abstract Endereco toEntity(EnderecoGetDTO enderecoGetDTO);
 
+    @Mapping(target = "enderecoGetDTO", expression = "java(enderecoGetMapper.toDto(imovel.getEndereco()))")
+    @Mapping(target = "proprietarioGetDTO", expression = "java(proprietarioGetMapper.toDto(imovel.getId()))")
+    public  abstract ImovelGetDTO toDto(Imovel imovel);
 }

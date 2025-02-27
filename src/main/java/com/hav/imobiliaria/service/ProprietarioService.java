@@ -8,6 +8,7 @@ import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPutMapper;
@@ -33,6 +34,7 @@ public class ProprietarioService {
     private final ProprietarioPutMapper proprietarioPutMapper;
     private final ProprietarioPostMapper proprietarioPostMapper;
     private final ProprietarioGetMapper proprietarioGetMapper;
+    private final EnderecoGetMapper enderecoGetMapper;
 
     public Page<ProprietarioGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(proprietarioGetMapper::toDto);
@@ -47,6 +49,7 @@ public class ProprietarioService {
         Proprietario entity = proprietarioPostMapper.toEntity(dto);
         entity.setEndereco(enderecoSalvo);
         entity = repository.save(entity);
+
         return proprietarioGetMapper.toDto(entity);
     }
 

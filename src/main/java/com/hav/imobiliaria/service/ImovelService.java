@@ -40,6 +40,7 @@ public class ImovelService {
         Imovel entity = imovelPostMapper.toEntity(dto);
         entity.setEndereco(enderecoSalvo);
         entity = repository.save(entity);
+
         return imovelGetMapper.toDto(entity);
     }
 
