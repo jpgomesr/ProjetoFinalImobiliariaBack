@@ -26,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -79,6 +81,9 @@ public class ImovelService {
         return imovelGetMapper.toDto(entity);
     }
     public void removerPorId(Long id) {
+        Imovel imovel = this.repository.findById(id).get();
+        List<String> listaReferencias = imovel.getImagens().stream().map(ImagemImovel::getReferencia).toList();
+        s3Service.excluirObjeto(listaReferencias);
         repository.deleteById(id);
     }
 
