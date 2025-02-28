@@ -34,6 +34,8 @@ import java.util.Set;
 public class ImovelController implements GenericController {
     private final ImovelService service;
     private final DtoValidator dtoValidator;
+    private final ImovelPostMapper imovelPostMapper;
+    private final ImovelGetMapper imovelGetMapper;
 
     @GetMapping
     public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
@@ -50,13 +52,12 @@ public class ImovelController implements GenericController {
     ) throws IOException, MethodArgumentNotValidException {
 
 
-
         ObjectMapper mapper = new ObjectMapper();
         ImovelPostDTO imovelPostDTO = mapper.readValue(imovelPostDtoJSON, ImovelPostDTO.class);
 
         dtoValidator.validaDTO(ImovelPostDTO.class,imovelPostDTO,"ImovelPostDto");
 
-        return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
+        return ResponseEntity.ok(imovelGetMapper.toDto(service.salvar(imovelPostDTO,imagemPrincipal, imagens)));
 
     }
     @PutMapping("{id}")

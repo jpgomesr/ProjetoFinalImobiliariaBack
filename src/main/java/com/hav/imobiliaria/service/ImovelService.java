@@ -48,7 +48,7 @@ public class ImovelService {
 
 
 
-    public ImovelGetDTO salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
+    public Imovel salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
         Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
 
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
@@ -61,9 +61,7 @@ public class ImovelService {
 
         entity.setImagens(imagensImovel);
 
-        entity = repository.save(entity);
-
-        return imovelGetMapper.toDto(entity);
+        return entity = repository.save(entity);
     }
 
     public Page<ImovelGetDTO> buscarTodos(Pageable pageable) {
@@ -71,8 +69,7 @@ public class ImovelService {
     }
 
     public ImovelGetDTO buscarPorId(Long id) {
-        ImovelGetDTO dto = imovelGetMapper.toDto(repository.findById(id).get());
-        return dto;
+        return imovelGetMapper.toDto(repository.findById(id).get());
     }
 
     public ImovelGetDTO atualizar(@Positive(message = "O id deve ser positivo") Long id,
