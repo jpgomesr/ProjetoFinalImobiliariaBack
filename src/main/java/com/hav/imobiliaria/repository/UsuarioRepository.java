@@ -6,12 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 
     Page<Usuario> findByNomeContaining(String nome, Pageable pageable);
 
+    Boolean existsByEmail(String email);
+    Boolean existsByTelefone(String telefone);
 
-
+    Optional<Usuario> findByEmail(String email);
 }

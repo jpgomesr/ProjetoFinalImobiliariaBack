@@ -12,12 +12,6 @@ public class EnderecoValidator {
     private EnderecoRepository repository;
 
     public void validar(Endereco endereco){
-        if (existeEnderecoCadastrado(endereco)){
-            throw new EnderecoJaCadastradoException();
-        }
-    }
-
-    private boolean existeEnderecoCadastrado(Endereco endereco){
-        return repository.existsById(endereco.getId());
+        
     }
 }

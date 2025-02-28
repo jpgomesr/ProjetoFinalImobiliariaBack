@@ -80,3 +80,13 @@ CREATE TABLE endereco(
                         CEP CHAR(8) NOT NULL UNIQUE,
                         rua VARCHAR(45) NOT NULL
 )
+CREATE TABLE imagem_imovel(
+
+                              id INT NOT NULL PRIMARY KEY,
+                              referencia VARCHAR(150) NOT NULL UNIQUE,
+                              imagem_capa TINYINT(1) NOT NULL,
+                              id_imovel INT NOT NULL
+                                  FOREIGN KEY (id_imovel)
+     REFERENCES imovel (id)
+
+)

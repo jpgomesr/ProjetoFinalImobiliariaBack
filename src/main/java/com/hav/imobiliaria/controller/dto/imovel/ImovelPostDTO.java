@@ -6,36 +6,32 @@ import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
 
 public record ImovelPostDTO(
-        @Size(max = 45,message = "O título deve conter até 45 caracteres")
+        @Size(max = 45, message = "O título deve conter até 45 caracteres")
         @NotBlank(message = "O título é obrigatório")
         String titulo,
-        @Size(max = 100, message = "O link deve conter até 100 caracteres")
-        @NotBlank(message = "A imagem de capa é obrigatória")
-        String imagemCapa,
-        @Size(max = 45,message = "A descrição deve conter até 500 caracteres")
+        @Size(max = 500, message = "A descrição deve conter até 500 caracteres")
         @NotBlank(message = "A descrição é obrigatória")
         String descricao,
-        @Pattern(regexp = "^[0-9]+$", message = "O tamanho deve conter apenas números")
         @NotNull(message = "O tamanho é obrigatório")
+        @Positive(message = "O tamanho deve ser positivo")
         Integer tamanho,
-        @Pattern(regexp = "^[0-9]+$", message = "A quantidade de quartos deve conter apenas números")
         @NotNull(message = "A quantidade de quartos é obrigatória")
+        @PositiveOrZero(message = "A quantidade de quartos não deve ser positiva")
         Integer qtdQuartos,
-        @Pattern(regexp = "^[0-9]+$", message = "A quantidade de banheiros deve conter apenas números")
+        @PositiveOrZero(message = "A quantidade de banheiros não deve ser negativa")
         @NotNull(message = "A quantidade de banheiros é obrigatória")
         Integer qtdBanheiros,
-        @Pattern(regexp = "^[0-9]+$", message = "A quantidade de garagens deve conter apenas números")
+        @PositiveOrZero(message = "A quantidade de garagens não deve ser negativa")
         Integer qtdGaragens,
-        @Pattern(regexp = "^[0-9]+$", message = "A quantidade de churras deve conter apenas números")
-        String qtdChurrasqueira,
-        @Pattern(regexp = "^[0-9]+$", message = "A quantidade de piscinas deve conter apenas números")
+        @PositiveOrZero(message = "A quantidade de churrasqueiras não deve ser negativa")
+        Integer qtdChurrasqueira,
+        @PositiveOrZero(message = "A quantidade de piscinas não pode ser negativa")
         Integer qtdPiscina,
         TipoFinalidadeEnum finalidade,
         Boolean academia,
-        @Pattern(regexp = "^[0-9]+$", message = "O preço do imóvel deve conter apenas números")
+        @PositiveOrZero(message = "O preço não deve ser negativo")
         @NotNull(message = "O preço não deve ser nulo")
         Double preco,
-        @Pattern(regexp = "^[0-9]+$", message = "O preço promocional deve conter apenas números")
         Double precoPromocional,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean permitirDestaque,
@@ -47,12 +43,9 @@ public record ImovelPostDTO(
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
-        @Size(max = 100, message = "Os links devem conter até 255 caracteres")
-        @NotBlank(message = "A galeria de imagens é obrigatória")
-        String galeriaImagens,
-        @Pattern(regexp = "^[0-9]+$", message = "o IPTU deve conter apenas números")
+        @PositiveOrZero(message = "O valor do iptu não deve ser negativo")
         Double iptu,
-        @Pattern(regexp = "^[0-9]+$", message = "o valor do condomínio deve conter apenas números")
+        @PositiveOrZero(message = "O valor do condominio não deve ser negativo")
         Double valorCondominio,
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
