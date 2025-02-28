@@ -8,6 +8,7 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
+import com.hav.imobiliaria.validator.UsuarioValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class UsuarioService {
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
+    private final UsuarioValidator usuarioValidator;
 
     public Page<UsuarioGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(usuarioGetMapper::toDto);
@@ -46,6 +48,7 @@ public class UsuarioService {
         }
 
         Usuario entity = usuarioPostMapper.toEntity(dto);
+        usuarioValidator.validar(entity);
         entity.setFoto(url);
         entity = repository.save(entity);
         return usuarioGetMapper.toDto(entity);

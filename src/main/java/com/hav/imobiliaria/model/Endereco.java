@@ -27,5 +27,4 @@ public class Endereco {
     private Integer numeroApartamento;
 
 
-
 }
