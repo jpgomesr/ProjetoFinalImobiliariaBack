@@ -10,6 +10,7 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.service.ImovelService;
+import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ImovelController implements GenericController {
     private final ImovelService service;
-    private final Validator validator;
+    private final DtoValidator dtoValidator;
 
     @GetMapping
     public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
@@ -52,14 +53,7 @@ public class ImovelController implements GenericController {
         ObjectMapper mapper = new ObjectMapper();
         ImovelPostDTO imovelPostDTO = mapper.readValue(imovelPostDtoJSON, ImovelPostDTO.class);
 
-        Set<ConstraintViolation<ImovelPostDTO>> violations = validator.validate(imovelPostDTO);
-        if (!violations.isEmpty()) {
-            BindingResult bindingResult = new BeanPropertyBindingResult(imovelPostDTO, "imovelPostDTO");
-            for (ConstraintViolation<ImovelPostDTO> violation : violations) {
-                bindingResult.rejectValue(violation.getPropertyPath().toString(), violation.getMessage());
-            }
-            throw new MethodArgumentNotValidException(null, bindingResult);
-        }
+        dtoValidator.validaDTO(ImovelPostDTO.class,imovelPostDTO,"ImovelPostDto");
 
         return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
 
