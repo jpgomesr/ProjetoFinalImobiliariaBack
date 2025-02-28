@@ -12,15 +12,22 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import com.hav.imobiliaria.repository.ImovelRepository;
+import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.hav.imobiliaria.repository.specs.ImovelSpecs.tipoResidenciaEqual;
+import static com.hav.imobiliaria.repository.specs.ImovelSpecs.tituloLike;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +39,7 @@ public class ImovelService {
     private final ImovelGetMapper imovelGetMapper;
     private final ImovelPostMapper imovelPostMapper;
     private final ImovelPutMapper imovelPutMapper;
+
 
 
 
@@ -65,5 +73,50 @@ public class ImovelService {
     public void removerPorId(Long id) {
         repository.deleteById(id);
     }
+
+
+
+    public Page<ImovelGetDTO> pesquisa(String titulo,
+                                 String tipoResidencia,
+                                 Integer qtdBanheiros,
+                                 Integer qtdQuartos,
+                                 Integer qtdGaragens,
+                                 Double precoMin,
+                                 Double precoMax,
+                                 TipoFinalidadeEnum finalidade,
+                                 Integer pagina,
+                                 Integer tamanhoPagina) {
+
+        Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
+
+        if (titulo != null) {
+            specs = specs.and(ImovelSpecs.tituloLike(titulo));
+        }
+        if (tipoResidencia != null) {
+            specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
+        }
+        if (qtdQuartos != null) {
+            specs = specs.and(ImovelSpecs.qtdQuartosEqual(qtdQuartos));
+        }
+        if (qtdGaragens != null) {
+            specs = specs.and(ImovelSpecs.qtdGaragensGreaterThanEqual(qtdGaragens));
+        }
+        if (qtdBanheiros != null) {
+            specs = specs.and(ImovelSpecs.qtdBanheirosGreaterThanEqual(qtdBanheiros));
+        }
+        if (precoMin != null && precoMax != null) {
+            specs = specs.and(ImovelSpecs.precoBetween(precoMin, precoMax));
+        }
+        if (finalidade != null) {
+            specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
+        }
+
+        Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
+
+        Page<Imovel> paginaResultado = repository.findAll(specs, pageableRequest);
+
+        return paginaResultado.map(imovelGetMapper::toDto);
+    }
+
 
 }

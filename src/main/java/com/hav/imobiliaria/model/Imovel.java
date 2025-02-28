@@ -58,11 +58,6 @@ public class Imovel {
     private String tipoResidencia;
 
     @Column(nullable = false)
-    private Integer numeroCasaPredio;
-
-    private Integer numeroApartamento;
-
-    @Column(nullable = false)
     private Boolean banner;
 
     @Enumerated(EnumType.STRING)

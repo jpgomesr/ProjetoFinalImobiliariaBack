@@ -1,9 +1,6 @@
 package com.hav.imobiliaria.controller.dto.endereco;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record EnderecoPutDTO (
         @Size(max = 45, message = "O bairro deve conter até 45 caracteres")
@@ -23,6 +20,11 @@ public record EnderecoPutDTO (
         String rua,
         @NotNull(message = "O CEP é obrigatório")
         @Size(max = 8, min = 8)
-        String cep
+        String cep,
+        @Positive(message = "O número deve ser positivo")
+        @NotNull(message = "O número é obrigatório")
+        Integer numeroCasaPredio,
+        @Positive(message = "O número do apartamento deve ser positivo")
+        Integer numeroApartamento
 ){
 }

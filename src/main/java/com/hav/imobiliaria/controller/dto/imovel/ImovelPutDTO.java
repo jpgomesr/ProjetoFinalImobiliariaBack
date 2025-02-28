@@ -51,11 +51,6 @@ public record ImovelPutDTO(
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O tipo da residência deve conter apenas letras e acentos")
         @NotBlank(message = "A inserção tipo de residência é obrigatório")
         String tipoResidencia,
-        @Positive(message = "O número deve ser positivo")
-        @NotNull(message = "O número é obrigatório")
-        Integer numeroCasaPredio,
-        @Positive(message = "O número do apartamento deve ser positivo")
-        Integer numeroApartamento,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,

@@ -13,4 +13,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Page<Usuario> findByNomeContaining(String nome, Pageable pageable);
 
 
+
 }

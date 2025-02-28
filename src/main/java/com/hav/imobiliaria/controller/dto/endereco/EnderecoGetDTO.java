@@ -6,6 +6,8 @@ public record EnderecoGetDTO(
         String cidade,
         String estado,
         String rua,
-        String cep
+        String cep,
+        Integer numeroCasaPredio,
+        Integer numeroApartamento
 ){
 }
