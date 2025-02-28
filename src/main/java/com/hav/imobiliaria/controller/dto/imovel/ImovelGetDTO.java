@@ -24,8 +24,6 @@ public record ImovelGetDTO(
         Boolean permitirDestaque,
         Boolean habilitarVisibilidade,
         String tipoResidencia,
-        Integer numeroCasaPredio,
-        Integer numeroApartamento,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
         List<ImagemImovelResponseDTO> imagens,
