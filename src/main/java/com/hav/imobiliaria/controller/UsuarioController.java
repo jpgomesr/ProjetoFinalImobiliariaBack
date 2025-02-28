@@ -6,6 +6,9 @@ import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.service.UsuarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.ConstraintViolation;
@@ -30,6 +33,9 @@ public class UsuarioController implements GenericController{
 
     private UsuarioService service;
     private DtoValidator  dtoValidator;
+    private final UsuarioGetMapper usuarioGetMapper;
+    private final UsuarioPostMapper usuarioPostMapper;
+    private final UsuarioPutMapper usuarioPutMapper;
 
     @GetMapping
     public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(Pageable pageable) {
@@ -37,7 +43,7 @@ public class UsuarioController implements GenericController{
     }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
     }
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") String usuarioJson,
@@ -49,28 +55,32 @@ public class UsuarioController implements GenericController{
         this.dtoValidator.validaDTO(UsuarioPostDTO.class, usuarioPostDTO,"usuarioPostDTO");
 
 
-        return ResponseEntity.ok(service.salvar(usuarioPostDTO,file));
-
-
+        return ResponseEntity.ok(this.usuarioGetMapper.toDto
+                (service.salvar(usuarioPostDTO,file)));
 
 
     }
     @PutMapping("{id}")
-    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart String usuarioPutDtoJSON,
-                                                   @RequestPart MultipartFile novaImagem,
-                                                   @PathVariable Long id) throws JsonProcessingException, MethodArgumentNotValidException {
+    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart String usuario,
+                                                   @RequestPart(required = false) MultipartFile novaImagem,
+                                                   @PathVariable Long id ) throws IOException, MethodArgumentNotValidException {
 
         ObjectMapper mapper = new ObjectMapper();
-        UsuarioPutDTO usuarioPutDTO = mapper.readValue(usuarioPutDtoJSON, UsuarioPutDTO.class);
+        UsuarioPutDTO usuarioPutDTO = mapper.readValue(usuario, UsuarioPutDTO.class);
 
         this.dtoValidator.validaDTO(UsuarioPutDTO.class, usuarioPutDTO,"usuarioPutDTO");
 
 
-        return ResponseEntity.ok(service.atualizar(usuarioPutDTO,id));
+        return ResponseEntity.ok(this.usuarioGetMapper.toDto(service.atualizar(usuarioPutDTO,id, novaImagem)));
     }
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         service.removerPorId(id);
+        return ResponseEntity.noContent().build();
+    }
+    @DeleteMapping("/imagem/{id}")
+    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long idUsuario){
+        this.service.removerImagemUsuario(idUsuario);
         return ResponseEntity.noContent().build();
     }
 

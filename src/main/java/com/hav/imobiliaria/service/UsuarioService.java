@@ -34,27 +34,31 @@ public class UsuarioService {
     public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
         return repository.findByNomeContaining(nome, pageable);
     }
-    public UsuarioGetDTO buscarPorId(Long id) {
-        UsuarioGetDTO dto = usuarioGetMapper.toDto(repository.findById(id).get());
+    public Usuario buscarPorId(Long id) {
+        return repository.findById(id).get();
 
-        return dto;
     }
-    public UsuarioGetDTO salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
+    public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
         String url = null;
         if(foto != null) {
             url = s3Service.uploadArquivo(foto);
         }
-
         Usuario entity = usuarioPostMapper.toEntity(dto);
         entity.setFoto(url);
         entity = repository.save(entity);
-        return usuarioGetMapper.toDto(entity);
+        return entity;
     }
-    public UsuarioGetDTO atualizar(UsuarioPutDTO dto, Long id) {
+    public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
         Usuario entity = usuarioPutMapper.toEntity(dto);
+        if(imagemNova != null){
+            if(entity.getFoto() != null){
+                s3Service.excluirObjeto(entity.getFoto());
+            }
+            entity.setFoto(s3Service.uploadArquivo(imagemNova));
+        }
         entity.setId(id);
-        entity = repository.save(entity);
-        return usuarioGetMapper.toDto(entity);
+        return repository.save(entity);
+
     }
     public void removerPorId(Long id) {
         Optional<Usuario> usuarioOptional = repository.findById(id);
@@ -64,8 +68,15 @@ public class UsuarioService {
                 this.s3Service.excluirObjeto(usuario.getFoto());
             }
             repository.deleteById(id);
-
         }
     }
+    public void removerImagemUsuario(Long idUsuario){
+        Usuario usuario = this.buscarPorId(idUsuario);
+        if(usuario.getFoto() != null){
+            this.s3Service.excluirObjeto(usuario.getFoto());
+            usuario.setFoto(null);
+        }
+    }
+
 
 }
