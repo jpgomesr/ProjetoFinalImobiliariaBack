@@ -13,9 +13,8 @@ import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.ImagemImovel;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.Proprietario;
-import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.repository.ImagemImovelRepository;
 import com.hav.imobiliaria.repository.ImovelRepository;
-import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -23,9 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,9 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
-
-import static com.hav.imobiliaria.repository.specs.ImovelSpecs.tipoResidenciaEqual;
-import static com.hav.imobiliaria.repository.specs.ImovelSpecs.tituloLike;
 
 @Service
 @AllArgsConstructor
@@ -54,7 +48,7 @@ public class ImovelService {
 
 
 
-    public ImovelGetDTO salvar(ImovelPostDTO dto) {
+    public Imovel salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
         Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
 
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
@@ -160,50 +154,5 @@ public class ImovelService {
 
 
     }
-
-
-
-    public Page<ImovelGetDTO> pesquisa(String titulo,
-                                 String tipoResidencia,
-                                 Integer qtdBanheiros,
-                                 Integer qtdQuartos,
-                                 Integer qtdGaragens,
-                                 Double precoMin,
-                                 Double precoMax,
-                                 TipoFinalidadeEnum finalidade,
-                                 Integer pagina,
-                                 Integer tamanhoPagina) {
-
-        Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
-
-        if (titulo != null) {
-            specs = specs.and(ImovelSpecs.tituloLike(titulo));
-        }
-        if (tipoResidencia != null) {
-            specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
-        }
-        if (qtdQuartos != null) {
-            specs = specs.and(ImovelSpecs.qtdQuartosEqual(qtdQuartos));
-        }
-        if (qtdGaragens != null) {
-            specs = specs.and(ImovelSpecs.qtdGaragensGreaterThanEqual(qtdGaragens));
-        }
-        if (qtdBanheiros != null) {
-            specs = specs.and(ImovelSpecs.qtdBanheirosGreaterThanEqual(qtdBanheiros));
-        }
-        if (precoMin != null && precoMax != null) {
-            specs = specs.and(ImovelSpecs.precoBetween(precoMin, precoMax));
-        }
-        if (finalidade != null) {
-            specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
-        }
-
-        Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
-
-        Page<Imovel> paginaResultado = repository.findAll(specs, pageableRequest);
-
-        return paginaResultado.map(imovelGetMapper::toDto);
-    }
-
 
 }

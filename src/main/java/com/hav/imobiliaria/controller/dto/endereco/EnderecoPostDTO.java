@@ -21,10 +21,10 @@ public record EnderecoPostDTO (
         @NotNull(message = "O CEP é obrigatório")
         @Size(max = 8, min = 8)
         String cep,
-        @Positive(message = "O número deve ser positivo")
-        @NotNull(message = "O número é obrigatório")
+        @NotNull(message = "O numero não pode ser nulo")
+        @Positive(message = "O numero nao pode ser negativo")
         Integer numeroCasaPredio,
-        @Positive(message = "O número do apartamento deve ser positivo")
-        Integer numeroApartamento
+        @Positive(message = "O numero do apartamento nao pode ser negativo")
+        Integer  numeroApartamento
 ){
 }

@@ -19,12 +19,12 @@ public record EnderecoPutDTO (
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "A rua deve conter apenas letras e espaços")
         String rua,
         @NotNull(message = "O CEP é obrigatório")
-        @Size(max = 8, min = 8)
+        @Size(max = 8, min = 8, message = "O cep deve ter 8 digitos")
         String cep,
-        @Positive(message = "O número deve ser positivo")
-        @NotNull(message = "O número é obrigatório")
+        @NotNull(message = "O numero não pode ser nulo")
+                @Positive(message = "O numero nao pode ser negativo")
         Integer numeroCasaPredio,
-        @Positive(message = "O número do apartamento deve ser positivo")
-        Integer numeroApartamento
+        @Positive(message = "O numero do apartamento nao pode ser negativo")
+        Integer  numeroApartamento
 ){
 }

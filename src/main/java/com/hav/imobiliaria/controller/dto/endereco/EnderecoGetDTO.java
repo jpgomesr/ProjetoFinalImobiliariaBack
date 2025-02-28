@@ -8,6 +8,6 @@ public record EnderecoGetDTO(
         String rua,
         String cep,
         Integer numeroCasaPredio,
-        Integer numeroApartamento
-){
+        Integer  numeroApartamento)
+{
 }

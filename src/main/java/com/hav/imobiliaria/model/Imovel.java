@@ -55,7 +55,8 @@ public class    Imovel {
 
     @Column(nullable = false, length = 45)
     private String tipoResidencia;
-  
+
+
     @Column(nullable = false)
     private Boolean banner;
 
