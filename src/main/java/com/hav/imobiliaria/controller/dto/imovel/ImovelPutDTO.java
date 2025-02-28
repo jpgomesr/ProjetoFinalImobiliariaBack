@@ -8,9 +8,6 @@ import jakarta.validation.constraints.*;
 
 //a
 public record ImovelPutDTO(
-        @NotNull(message = "O id é obrigatório")
-        @Positive(message = "O id deve ser positivo")
-        Integer id,
         @Size(max = 45, message = "O título deve conter até 45 caracteres")
         @NotBlank(message = "O título é obrigatório")
         String titulo,
@@ -43,9 +40,6 @@ public record ImovelPutDTO(
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
         Boolean habilitarVisibilidade,
-        @NotNull(message = "O CEP é obrigatório")
-        @Size(max = 8, min = 8)
-        String cep,
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O tipo da residência deve conter apenas letras e acentos")
         @NotBlank(message = "A inserção tipo de residência é obrigatório")
         String tipoResidencia,

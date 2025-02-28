@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
@@ -43,7 +44,7 @@ public class ImovelController implements GenericController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
     @PostMapping
-    public ResponseEntity<ImovelGetDTO> cadastrar(@RequestPart("imovelPostDtoJSON") String imovelPostDtoJSON,
+    public ResponseEntity<ImovelGetDTO> cadastrar(@RequestPart("imovel") String imovelPostDtoJSON,
                                                   @RequestPart("imagens") List<MultipartFile> imagens,
                                                   @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal
     ) throws IOException, MethodArgumentNotValidException {
@@ -59,18 +60,31 @@ public class ImovelController implements GenericController {
 
     }
     @PutMapping("{id}")
-    public ResponseEntity<ImovelGetDTO> atualizar(@RequestBody ImovelPutDTO imovelPutDTO, @PathVariable Long id){
-        return ResponseEntity.ok(service.atualizar(imovelPutDTO,id));
+    public ResponseEntity<ImovelGetDTO> atualizar(@RequestPart("imovel") String imovelPutDTOJSON,
+                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
+                                                  @RequestPart(value = "imagens", required = false) List<MultipartFile> imagens,
+                                                  @PathVariable Long id) throws IOException, MethodArgumentNotValidException {
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        ImovelPutDTO imovelPutDTO = mapper.readValue(imovelPutDTOJSON, ImovelPutDTO.class);
+        dtoValidator.validaDTO(ImovelPutDTO.class, imovelPutDTO, "ImovelPutDTO");
+        ImovelGetDTO imovelAtualizado = service.atualizar(id, imovelPutDTO, imagemCapa, imagens);
+
+        return ResponseEntity.ok(imovelAtualizado);
+
     }
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id){
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
-    @DeleteMapping("/imagem/{referencia}")
-    public ResponseEntity<Void> removerImagemPorReferencia(@PathVariable String referencia){
+    @DeleteMapping("/imagem/{id}")
+    public ResponseEntity<Void> removerImagemPorReferencia(
+            @PathVariable Long id){
 
-        this.service.removerImagemPorReferencia(referencia);
+        this.service.removerImagemPorIdImagem(id);
+
         return ResponseEntity.noContent().build();
     }
 }

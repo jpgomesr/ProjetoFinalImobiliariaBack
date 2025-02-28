@@ -22,7 +22,7 @@ public record EnderecoPutDTO (
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "A rua deve conter apenas letras e espaços")
         String rua,
         @NotNull(message = "O CEP é obrigatório")
-        @Size(max = 8, min = 8)
+        @Size(max = 8, min = 8, message = "O cep deve ter 8 digitos")
         String cep
 ){
 }
