@@ -22,6 +22,10 @@ public class Endereco {
     private String rua;
     @Column(nullable = false, length = 8)
     private String cep;
+    @Column(nullable = false)
+    private Integer numeroCasaPredio;
+    private Integer numeroApartamento;
+
 
 
 }
