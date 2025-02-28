@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
-    Boolean existsByBairroAndCidadeAndEstadoAndCepAndRua(String bairro, String cidade,
-                                                         String estado, String cep, String rua);
 }

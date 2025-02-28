@@ -1,23 +1,30 @@
 package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ImovelSpecs {
 
+
     public static Specification<Imovel> tituloLike(String titulo) {
         return (root, query, cb) -> cb.like(cb.upper(root.get("titulo")), "%" + titulo.toUpperCase() + "%");
+    }
+
+    public static Specification<Imovel> descricaoLike(String descricao) {
+        return (root, query, cb) -> cb.like(cb.upper(root.get("descricao")), "%" + descricao.toUpperCase() + "%");
     }
 
     public static Specification<Imovel> tipoResidenciaEqual(String tipoResidencia) {
         return (root, query, cb) -> cb.equal(root.get("tipoResidencia"), tipoResidencia);
     }
 
-    public static Specification<Imovel> tamanhoGreaterThanEqual(Integer tamanho) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("tamanho"), tamanho);
+    public static Specification<Imovel> tamanhoEqual(Integer tamanho) {
+        return (root, query, cb) -> cb.equal(root.get("tamanho"), tamanho);
     }
 
     public static Specification<Imovel> qtdQuartosEqual(Integer qtdQuartos) {
@@ -45,11 +52,11 @@ public class ImovelSpecs {
         };
     }
 
-    public static Specification<Imovel> qtdGaragensGreaterThanEqual(Integer qtdGaragens) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("qtdGaragens"), qtdGaragens);
+    public static Specification<Imovel> qtdGaragensEqual(Integer qtdGaragens) {
+        return (root, query, cb) -> cb.equal(root.get("qtdGaragens"), qtdGaragens);
     }
 
-    public static Specification<Imovel> qtdBanheirosGreaterThanEqual(Integer qtdBanheiros) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("qtdBanheiros"), qtdBanheiros);
+    public static Specification<Imovel> qtdBanheirosEqual(Integer qtdBanheiros) {
+        return (root, query, cb) -> cb.equal(root.get("qtdBanheiros"), qtdBanheiros);
     }
 }

@@ -14,21 +14,14 @@ public class Proprietario {
     @Column(nullable = false, length = 45)
     private String nome;
 
+    @Column(nullable = false, length = 45)
+    private String email;
+
     @Column(nullable = false, unique = true, length = 11)
     private String telefone;
 
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
-
-
-    @Column(nullable = false, length = 45)
-    private String tipoResidencia;
-
-    @Column(nullable = false)
-    private Integer numeroCasaPredio;
-
-    private Integer numeroApartamento;
-
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)

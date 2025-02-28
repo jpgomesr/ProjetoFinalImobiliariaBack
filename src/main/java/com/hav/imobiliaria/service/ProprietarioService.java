@@ -17,10 +17,14 @@ import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.ProprietarioRepository;
+import com.hav.imobiliaria.repository.specs.ImovelSpecs;
+import com.hav.imobiliaria.repository.specs.ProprietarioSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,6 +77,27 @@ public class ProprietarioService {
         repository.deleteById(id);
     }
 
+
+    public Page<ProprietarioGetDTO> pesquisa(String nome, String cpf, String email, Integer pagina,Integer tamanhoPagina) {
+
+        Specification<Proprietario> specs = Specification.where((root, query, cb) -> cb.conjunction());
+
+        if (nome != null && !nome.isEmpty()) {
+            specs = specs.and(ProprietarioSpecs.nomeLike(nome));
+        }
+        if (cpf != null && !cpf.isEmpty()) {
+            specs = specs.and(ProprietarioSpecs.cpfLike(cpf));
+        }
+        if (email != null && !email.isEmpty()) {
+            specs = specs.and(ProprietarioSpecs.emailLike(email));
+        }
+
+        Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
+
+        Page<Proprietario>paginaResultado = repository.findAll(specs, pageableRequest);
+
+        return paginaResultado.map(proprietarioGetMapper::toDto);
+    }
 
 
 }

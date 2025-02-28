@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller;
 
+import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
@@ -26,8 +27,16 @@ public class ProprietarioController implements GenericController {
     private final ProprietarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<ProprietarioGetDTO>> listarEmPaginas(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
+    public ResponseEntity<Page<ProprietarioGetDTO>> listarProprietarios(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "cpf", required = false) String cpf,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+    ) {
+
+        Page<ProprietarioGetDTO> paginaResultadoDto = service.pesquisa(nome, cpf, email,pagina,tamanhoPagina);
+        return ResponseEntity.ok(paginaResultadoDto);
     }
 
     @GetMapping("{id}")

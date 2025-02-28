@@ -11,11 +11,11 @@ public record UsuarioPostDTO(
         @NotBlank(message = "O nome é obrigatório")
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O nome deve conter apenas letras e espaços")
         String nome,
-        @Size(max = 100, message = "O email deve conter até 45 caracteres")
+        @Size(max = 45, message = "O email deve conter até 45 caracteres")
         @NotBlank(message = "O email é obrigatório")
         @Email
         String email,
-        @Size(max = 45, message = "A senha deve conter até 30 caracteres")
+        @Size(max = 30, message = "A senha deve conter até 30 caracteres")
         @NotBlank(message = "A senha é obrigatória")
         String senha,
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")

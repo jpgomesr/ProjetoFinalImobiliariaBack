@@ -14,14 +14,8 @@ public record ProprietarioPostDTO (
         String telefone,
         @CPF
         String cpf,
-        @Size(max = 45, message = "O tipo da residência deve conter até 45 caracteres")
-        @NotBlank(message = "O tipo da residência é obrigatório")
-        String tipoResidencia,
-        @NotNull(message = "O número é obrigatório")
-        @Positive(message = "O numero deve ser positivo")
-        Integer numeroCasaPredio,
-        @Positive(message = "O numero do apartamento deve ser positivo")
-        Integer numeroApartamento,
+        @Email
+        String email,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO enderecoPostDTO
 ){

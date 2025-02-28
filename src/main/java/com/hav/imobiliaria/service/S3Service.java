@@ -19,9 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class S3Service {
@@ -82,15 +80,5 @@ public class S3Service {
         this.s3Client.deleteObject(builder -> builder.bucket(this.bucketName).key(key));
 
     }
-    public void excluirObjeto(List<String> urls){
-        Stream<String> urlsFormatadas =
-                urls.stream().map(url ->
-                        url.replace("https://hav-bucket-c.s3.amazonaws.com/", ""));
-
-        urlsFormatadas.forEach
-                (url ->
-                        this.s3Client.deleteObject(builder -> builder.bucket(this.bucketName).key(url)));
-    }
-
 
 }

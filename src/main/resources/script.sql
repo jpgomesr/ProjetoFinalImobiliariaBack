@@ -20,6 +20,7 @@ CREATE TABLE proprietario (
                               nome VARCHAR(45) NOT NULL,
                               telefone CHAR(11) NOT NULL UNIQUE,
                               CPF CHAR(11) NOT NULL UNIQUE,
+                              email VARCHAR(45) NOT NULL UNIQUE,
                               tipo_residencia VARCHAR(45) NOT NULL,
                               numero_casa_predio INT NOT NULL,
                               numero_apartamento INT,
@@ -79,14 +80,4 @@ CREATE TABLE endereco(
                         estado VARCHAR(45) NOT NULL,
                         CEP CHAR(8) NOT NULL UNIQUE,
                         rua VARCHAR(45) NOT NULL
-)
-CREATE TABLE imagem_imovel(
-
-                              id INT NOT NULL PRIMARY KEY,
-                              referencia VARCHAR(150) NOT NULL UNIQUE,
-                              imagem_capa TINYINT(1) NOT NULL,
-                              id_imovel INT NOT NULL
-                                  FOREIGN KEY (id_imovel)
-     REFERENCES imovel (id)
-
 )
