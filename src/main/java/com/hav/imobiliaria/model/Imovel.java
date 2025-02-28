@@ -3,10 +3,12 @@ package com.hav.imobiliaria.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table
 @Data
-public class Imovel {
+public class    Imovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,9 +16,6 @@ public class Imovel {
 
     @Column(nullable = false, length = 45)
     private String titulo;
-
-    @Column(nullable = false, length = 100)
-    private String imagemCapa;
 
     @Column(nullable = false, length = 500)
     private String descricao;
@@ -57,10 +56,6 @@ public class Imovel {
     @Column(nullable = false, length = 45)
     private String tipoResidencia;
 
-    @Column(nullable = false)
-    private Integer numeroCasaPredio;
-
-    private Integer numeroApartamento;
 
     @Column(nullable = false)
     private Boolean banner;
@@ -69,8 +64,10 @@ public class Imovel {
     private TipoBunnerEnum tipoBanner;
 
 
-    @Column(nullable = false, length = 255)
-    private String galeriaImagens;
+
+    @OneToMany
+    @JoinColumn(name = "id_imovel")
+    private List<ImagemImovel> imagens;
 
     private Double iptu;
 
@@ -83,4 +80,16 @@ public class Imovel {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
+
+
+    public void addImagem(ImagemImovel imagem) {
+        this.imagens.add(imagem);
+    }
+    public void removeImagem(ImagemImovel imagem) {
+        this.imagens.remove(imagem);
+    }
+    public Integer getQuantidadeImagens() {
+        return this.imagens.size();
+    }
+
 }
