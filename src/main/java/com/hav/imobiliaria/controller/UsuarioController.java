@@ -12,6 +12,7 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.service.UsuarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
     }
     @PostMapping
-    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") String usuarioJson,
+    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, MethodArgumentNotValidException {
 
         ObjectMapper mapper = new ObjectMapper();

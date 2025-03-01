@@ -7,15 +7,15 @@ import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 public record UsuarioPostDTO(
-        @Size(max = 45, message = "O nome deve conter até 45 caracteres")
+        @Size(max = 100, message = "O nome deve conter até 100 caracteres")
         @NotBlank(message = "O nome é obrigatório")
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O nome deve conter apenas letras e espaços")
         String nome,
-        @Size(max = 100, message = "O email deve conter até 45 caracteres")
-        @NotBlank(message = "O email é obrigatório")
-        @Email
+        @Size(max = 100, message = "O email deve conter até 100 caracteres")
+        @NotBlank(message = "O e-mail é obrigatório")
+        @Email(message = "Insira um e-mail valido")
         String email,
-        @Size(max = 45, message = "A senha deve conter até 30 caracteres")
+        @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
         @NotBlank(message = "A senha é obrigatória")
         String senha,
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
