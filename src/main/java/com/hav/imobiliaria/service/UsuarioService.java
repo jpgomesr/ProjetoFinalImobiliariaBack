@@ -49,15 +49,19 @@ public class UsuarioService {
         return entity;
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
-        Usuario entity = usuarioPutMapper.toEntity(dto);
+        Usuario usuarioAtualizado = usuarioPutMapper.toEntity(dto);
+        Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
-            if(entity.getFoto() != null){
-                s3Service.excluirObjeto(entity.getFoto());
+            if(usuarioJaSalvo.getFoto() != null){
+                s3Service.excluirObjeto(usuarioJaSalvo.getFoto());
             }
-            entity.setFoto(s3Service.uploadArquivo(imagemNova));
+            usuarioAtualizado.setFoto(s3Service.uploadArquivo(imagemNova));
+        }else {
+            usuarioAtualizado.setFoto(usuarioJaSalvo.getFoto());
         }
-        entity.setId(id);
-        return repository.save(entity);
+
+        usuarioAtualizado.setId(id);
+        return repository.save(usuarioAtualizado);
 
     }
     public void removerPorId(Long id) {
