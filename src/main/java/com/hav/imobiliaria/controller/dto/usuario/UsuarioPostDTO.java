@@ -1,9 +1,6 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 public record UsuarioPostDTO(
@@ -23,6 +20,8 @@ public record UsuarioPostDTO(
         @Size(max = 500, message = "A mensagem deve conter até 500 caracteres")
         String descricao,
         @NotBlank(message = "A role é obrigatória")
-        String role
+        String role,
+        @NotNull(message = "O usuario precisa ter um status")
+        Boolean ativo
 ) {
 }
