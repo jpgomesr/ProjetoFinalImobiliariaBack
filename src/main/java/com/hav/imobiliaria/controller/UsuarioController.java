@@ -62,7 +62,7 @@ public class UsuarioController implements GenericController{
 
     }
     @PutMapping("{id}")
-    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart String usuario,
+    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart @Valid String usuario,
                                                    @RequestPart(required = false) MultipartFile novaImagem,
                                                    @PathVariable Long id ) throws IOException, MethodArgumentNotValidException {
 
