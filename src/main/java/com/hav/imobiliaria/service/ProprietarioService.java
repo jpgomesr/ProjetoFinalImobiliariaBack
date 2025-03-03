@@ -66,6 +66,7 @@ public class ProprietarioService {
         Proprietario entity = proprietarioPutMapper.toEntity(dto);
         entity.setId(id);
         entity.setEndereco(enderecoAtualizado);
+        entity.setDeletado(false);
         entity = repository.save(entity);
         return proprietarioGetMapper.toDto(entity);
     }
