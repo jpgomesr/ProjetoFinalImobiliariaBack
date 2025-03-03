@@ -61,8 +61,9 @@ public class UsuarioService {
         }else {
             usuarioAtualizado.setFoto(usuarioJaSalvo.getFoto());
         }
-
         usuarioAtualizado.setId(id);
+        usuarioAtualizado.setDeletado(false);
+
         return repository.save(usuarioAtualizado);
 
     }
@@ -70,9 +71,9 @@ public class UsuarioService {
         Optional<Usuario> usuarioOptional = repository.findById(id);
         if(usuarioOptional.isPresent()){
             Usuario usuario = usuarioOptional.get();
-            if(usuario.getFoto() != null){
-                this.s3Service.excluirObjeto(usuario.getFoto());
-            }
+//            if(usuario.getFoto() != null){
+//                this.s3Service.excluirObjeto(usuario.getFoto());
+//            }
             usuario.setDeletado(true);
             usuario.setDataDelecao(LocalDateTime.now());
             this.repository.save(usuario);

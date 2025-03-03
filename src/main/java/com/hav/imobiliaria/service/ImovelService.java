@@ -87,6 +87,7 @@ public class ImovelService {
         entity.setId(id);
         entity.setEndereco(enderecoAtualizado);
         entity.setImagens(imovelExistente.getImagens());
+        entity.setDeletado(false);
         if(imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
