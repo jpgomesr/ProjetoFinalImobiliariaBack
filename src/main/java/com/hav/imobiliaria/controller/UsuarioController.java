@@ -79,6 +79,13 @@ public class UsuarioController implements GenericController{
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
+        this.service.restaurarUsuario(id);
+
+        return  ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/imagem/{id}")
     public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long idUsuario){
         this.service.removerImagemUsuario(idUsuario);

@@ -74,6 +74,14 @@ public class ImovelController implements GenericController {
         return ResponseEntity.ok(imovelAtualizado);
 
     }
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<Void> restaurarImagem(@PathVariable Long id){
+        this.service.restaurarImagem(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id){
         service.removerPorId(id);

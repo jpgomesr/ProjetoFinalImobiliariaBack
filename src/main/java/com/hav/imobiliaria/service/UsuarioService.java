@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -28,7 +30,7 @@ public class UsuarioService {
     private final UsuarioPutMapper usuarioPutMapper;
 
     public Page<UsuarioGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findAll(pageable).map(usuarioGetMapper::toDto);
+        return repository.findByDeletadoFalse(pageable).map(usuarioGetMapper::toDto);
 
     }
     public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
@@ -71,7 +73,9 @@ public class UsuarioService {
             if(usuario.getFoto() != null){
                 this.s3Service.excluirObjeto(usuario.getFoto());
             }
-            repository.deleteById(id);
+            usuario.setDeletado(true);
+            usuario.setDataDelecao(LocalDateTime.now());
+            this.repository.save(usuario);
         }
     }
     public void removerImagemUsuario(Long idUsuario){
@@ -80,6 +84,14 @@ public class UsuarioService {
             this.s3Service.excluirObjeto(usuario.getFoto());
             usuario.setFoto(null);
         }
+    }
+    public void restaurarUsuario(Long id){
+
+        Usuario usuario = this.buscarPorId(id);
+
+        usuario.setDeletado(false);
+        usuario.setDataDelecao(null);
+        this.repository.save(usuario);
     }
 
 
