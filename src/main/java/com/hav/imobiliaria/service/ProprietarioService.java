@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -70,9 +71,22 @@ public class ProprietarioService {
     }
 
     public void removerPorId(Long id) {
-        repository.deleteById(id);
+        Proprietario proprietario = this.repository.findById(id).get();
+
+        proprietario.setDeletado(true);
+        proprietario.setDataDelecao(LocalDateTime.now());
+
+        this.repository.save(proprietario);
+
     }
 
 
+    public void restaurarUsuario(Long id) {
+        Proprietario proprietario = this.repository.findById(id).get();
+        proprietario.setDeletado(false);
+        proprietario.setDataDelecao(null);
 
+        this.repository.save(proprietario);
+
+    }
 }
