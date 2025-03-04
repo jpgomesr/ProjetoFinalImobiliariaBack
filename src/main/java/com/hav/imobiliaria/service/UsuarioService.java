@@ -12,6 +12,7 @@ import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
+import com.hav.imobiliaria.validator.UsuarioValidator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class UsuarioService {
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
+    private final UsuarioValidator validator;
 
     public Page<UsuarioGetDTO> buscarTodos(
             String nome,
@@ -72,11 +74,14 @@ public class UsuarioService {
 
     }
     public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
+
+        Usuario entity = usuarioPostMapper.toEntity(dto);
+        this.validator.validar(entity);
+
         String url = null;
         if(foto != null) {
             url = s3Service.uploadArquivo(foto);
         }
-        Usuario entity = usuarioPostMapper.toEntity(dto);
         entity.setFoto(url);
         entity = repository.save(entity);
         return entity;

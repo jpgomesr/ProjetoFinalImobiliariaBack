@@ -58,11 +58,11 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
     }
 
-    @ExceptionHandler(EmailJaCadastradoException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErroResposta handelEmailJaCadastradoException(EmailJaCadastradoException e){
-        return new ErroResposta(HttpStatus.CONTINUE.value(), e.getMessage(), List.of());
-    }
+//    @ExceptionHandler(EmailJaCadastradoException.class)
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    public ErroResposta handelEmailJaCadastradoException(EmailJaCadastradoException e){
+//        return new ErroResposta(HttpStatus.CONTINUE.value(), e.getMessage(), List.of());
+//    }
 
     @ExceptionHandler(CPFJaCadastradoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -70,11 +70,11 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.CONTINUE.value(), e.getMessage(), List.of());
     }
 
-    @ExceptionHandler(TelefoneJaCadastradoException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErroResposta handleTelefoneJaCadastradoException(TelefoneJaCadastradoException e){
-        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(), List.of());
-    }
+//    @ExceptionHandler(TelefoneJaCadastradoException.class)
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    public ErroResposta handleTelefoneJaCadastradoException(TelefoneJaCadastradoException e){
+//        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(), List.of());
+//    }
 
     @ExceptionHandler(UsuarioJaCadastradoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
