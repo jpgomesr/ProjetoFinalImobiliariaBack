@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class ImovelService {
     }
 
     public Page<ImovelGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findAll(pageable).map(imovelGetMapper::toDto);
+        return repository.findByDeletadoFalse(pageable).map(imovelGetMapper::toDto);
     }
 
     public ImovelGetDTO buscarPorId(Long id) {
@@ -86,6 +87,7 @@ public class ImovelService {
         entity.setId(id);
         entity.setEndereco(enderecoAtualizado);
         entity.setImagens(imovelExistente.getImagens());
+        entity.setDeletado(false);
         if(imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
@@ -99,9 +101,10 @@ public class ImovelService {
     }
     public void removerPorId(Long id) {
         Imovel imovel = this.repository.findById(id).get();
-        List<String> listaReferencias = imovel.getImagens().stream().map(ImagemImovel::getReferencia).toList();
-        s3Service.excluirObjeto(listaReferencias);
-        repository.deleteById(id);
+        imovel.setDeletado(true);
+        imovel.setDataDelecao(LocalDateTime.now());
+
+        this.repository.save(imovel);
     }
     public void removerImagemPorIdImagem(Long idImagem) {
 
@@ -110,7 +113,9 @@ public class ImovelService {
         this.imagemImovelRepository.deleteById(idImagem);
 
     }
-    public void removerImagemPorReferencia(String referencia) {}
+    private void removerImagemPorReferencia(String referencia) {
+        s3Service.excluirObjeto(referencia);
+    }
 
     private ImagemImovel salvarImagemPrincipal(MultipartFile imagemPrincipal) throws IOException {
 
@@ -158,4 +163,12 @@ public class ImovelService {
 
     }
 
+    public void restaurarImagem(Long id) {
+        Imovel imovel = this.repository.findById(id).get();
+
+        imovel.setDeletado(false);
+        imovel.setDataDelecao(null);
+
+        this.repository.save(imovel);
+    }
 }

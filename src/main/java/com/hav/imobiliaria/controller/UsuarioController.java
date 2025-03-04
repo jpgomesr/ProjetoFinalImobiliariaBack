@@ -3,6 +3,7 @@ package com.hav.imobiliaria.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
+import com.hav.imobiliaria.controller.dto.usuario.SenhaUsuarioDto;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
@@ -79,10 +80,24 @@ public class UsuarioController implements GenericController{
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
+        this.service.restaurarUsuario(id);
+
+        return  ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/imagem/{id}")
     public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long idUsuario){
         this.service.removerImagemUsuario(idUsuario);
         return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/alterarSenha/{id}")
+    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
+                                             @PathVariable Long id) {
+        this.service.alterarSenha(id,senhaUsuarioDto.senha());
+
+        return ResponseEntity.ok().build();
     }
 
 

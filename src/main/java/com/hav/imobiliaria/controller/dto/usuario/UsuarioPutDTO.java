@@ -11,8 +11,6 @@ public record UsuarioPutDTO(
         @NotBlank(message = "O e-mail é obrigatório")
         @Email(message = "Insira um e-mail valido")
         String email,
-        @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
-        @NotBlank(message = "A senha é obrigatória")
         String senha,
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
         String telefone,
