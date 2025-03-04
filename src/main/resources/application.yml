@@ -17,7 +17,7 @@ spring:
 server:
   port: 8081
 aws:
-  access-key: d
-  secret-key: d
+  access-key: AKIA2AUOPIM3J2WOGT5N
+  secret-key: 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
   region: us-east-1
   bucket-name: hav-bucket-c
