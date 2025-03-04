@@ -10,6 +10,7 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import com.hav.imobiliaria.service.ImovelService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.ConstraintViolation;
@@ -36,9 +37,29 @@ public class ImovelController implements GenericController {
     private final DtoValidator dtoValidator;
 
     @GetMapping
-    public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
+    public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(
+            @RequestParam(value = "descricao", required = false) String descricao,
+            @RequestParam(value = "tamanho", required = false) Integer tamanho,
+            @RequestParam(value = "titulo", required = false) String titulo,
+            @RequestParam(value = "tipoResidencia", required = false) String tipoResidencia,
+            @RequestParam(value = "qtdQuartos", required = false) Integer qtdQuartos,
+            @RequestParam(value = "qtdBanheiros", required = false) Integer qtdBanheiros,
+            @RequestParam(value = "qtdGaragens", required = false) Integer qtdGaragens,
+            @RequestParam(value = "precoMin", required = false) Double precoMin,
+            @RequestParam(value = "precoMax", required = false) Double precoMax,
+            @RequestParam(value = "finalidade", required = false) TipoFinalidadeEnum finalidade,
+            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+    ) {
+
+
+        Page<ImovelGetDTO> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+                qtdGaragens, precoMin, precoMax, finalidade, pagina, tamanhoPagina);
+
+
+        return ResponseEntity.ok(paginaResultadoDto);
     }
+
     @GetMapping("{id}")
     public ResponseEntity<ImovelGetDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(service.buscarPorId(id));
