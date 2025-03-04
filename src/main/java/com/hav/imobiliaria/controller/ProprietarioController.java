@@ -26,9 +26,18 @@ public class ProprietarioController implements GenericController {
     private final ProprietarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<ProprietarioGetDTO>> listarEmPaginas(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
+    public ResponseEntity<Page<ProprietarioGetDTO>> listarProprietarios(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "cpf", required = false) String cpf,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+    ) {
+
+        Page<ProprietarioGetDTO> paginaResultadoDto = service.pesquisa(nome, cpf, email,pagina,tamanhoPagina);
+        return ResponseEntity.ok(paginaResultadoDto);
     }
+
 
     @GetMapping("{id}")
     public ResponseEntity<ProprietarioGetDTO> buscarPorId(@PathVariable Long id) {
