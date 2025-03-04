@@ -88,6 +88,8 @@ public class UsuarioService {
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
         Usuario usuarioAtualizado = usuarioPutMapper.toEntity(dto);
+        usuarioAtualizado.setId(id);
+        this.validator.validar(usuarioAtualizado);
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
             if(usuarioJaSalvo.getFoto() != null){
