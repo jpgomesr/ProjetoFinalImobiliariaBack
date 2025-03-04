@@ -33,11 +33,11 @@ public class UsuarioValidator {
     private boolean existeEmailCadastrado(Usuario usuario){
 
         Optional<Usuario> usuario1 = this.repository.findByEmail(usuario.getEmail());
-        return usuario1.isEmpty() || usuario1.get().getId().equals(usuario.getId());
+        return usuario1.isPresent();
     }
 
     private boolean existeTelefoneCadastrado(Usuario usuario){
         Optional<Usuario> usuario1 = this.repository.findByTelefone(usuario.getTelefone());
-        return usuario1.isEmpty() || usuario1.get().getId().equals(usuario.getId());
+        return usuario1.isPresent();
     }
 }
