@@ -3,6 +3,9 @@ package com.hav.imobiliaria.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -78,4 +81,29 @@ public class Imovel {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
+
+
+    @Column
+    private Boolean deletado;
+
+    @Column
+    private LocalDateTime dataDelecao;
+
+
+    public void addImagem(ImagemImovel imagem) {
+        this.imagens.add(imagem);
+    }
+    public void removeImagem(ImagemImovel imagem) {
+        this.imagens.remove(imagem);
+    }
+    public Integer getQuantidadeImagens() {
+        return this.imagens.size();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if(this.deletado == null) {
+            deletado = false;
+        }
+    }
 }

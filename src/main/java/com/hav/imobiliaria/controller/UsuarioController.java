@@ -1,49 +1,74 @@
-package com.hav.imobiliaria.controller;
+package com.hav.imobiliaria.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
-import com.hav.imobiliaria.service.UsuarioService;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
+import com.hav.imobiliaria.model.Usuario;
+import com.hav.imobiliaria.repository.UsuarioRepository;
+import com.hav.imobiliaria.validator.UsuarioValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/usuarios")
+@Service
 @AllArgsConstructor
-public class UsuarioController implements GenericController{
+public class UsuarioService {
 
-    private UsuarioService service;
+    private final UsuarioRepository repository;
+    private final S3Service s3Service;
+    private final UsuarioGetMapper usuarioGetMapper;
+    private final UsuarioPostMapper usuarioPostMapper;
+    private final UsuarioPutMapper usuarioPutMapper;
+    private final UsuarioValidator usuarioValidator;
 
-    @GetMapping
-    public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
-    }
-    @GetMapping("{id}")
-    public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
-    }
-    @PostMapping
-    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") String usuarioJson,
-                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+    public Page<UsuarioGetDTO> buscarTodos(Pageable pageable) {
+        return repository.findAll(pageable).map(usuarioGetMapper::toDto);
 
-        ObjectMapper mapper = new ObjectMapper();
-        UsuarioPostDTO usuarioPostDTO = mapper.readValue(usuarioJson, UsuarioPostDTO.class);
-        return ResponseEntity.ok(service.salvar(usuarioPostDTO,file));
     }
-    @PutMapping("{id}")
-    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestBody UsuarioPutDTO usuarioPutDTO, @PathVariable Long id) {
-        return ResponseEntity.ok(service.atualizar(usuarioPutDTO,id));
+    public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
+        return repository.findByNomeContaining(nome, pageable);
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
-        service.removerPorId(id);
-        return ResponseEntity.noContent().build();
+    public UsuarioGetDTO buscarPorId(Long id) {
+        UsuarioGetDTO dto = usuarioGetMapper.toDto(repository.findById(id).get());
+
+        return dto;
     }
+    public UsuarioGetDTO salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
+        String url = null;
+        if(foto != null) {
+            url = s3Service.uploadArquivo(foto);
+        }
+
+        Usuario entity = usuarioPostMapper.toEntity(dto);
+        usuarioValidator.validar(entity);
+        entity.setFoto(url);
+        entity = repository.save(entity);
+        return usuarioGetMapper.toDto(entity);
+    }
+    public UsuarioGetDTO atualizar(UsuarioPutDTO dto, Long id) {
+        Usuario entity = usuarioPutMapper.toEntity(dto);
+        entity.setId(id);
+        entity = repository.save(entity);
+        return usuarioGetMapper.toDto(entity);
+    }
+    public void removerPorId(Long id) {
+        Optional<Usuario> usuarioOptional = repository.findById(id);
+        if(usuarioOptional.isPresent()){
+            Usuario usuario = usuarioOptional.get();
+            if(usuario.getFoto() != null){
+                this.s3Service.excluirObjeto(usuario.getFoto());
+            }
+            repository.deleteById(id);
+
+        }
+    }
+
 }

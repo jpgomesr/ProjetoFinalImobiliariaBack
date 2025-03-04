@@ -59,6 +59,12 @@ public class ProprietarioController implements GenericController {
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
+        this.service.restaurarUsuario(id);
+
+        return  ResponseEntity.ok().build();
+    }
 
 
 

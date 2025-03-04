@@ -9,5 +9,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ImovelRepository extends JpaRepository<Imovel, Long> {
+
     Page<Imovel> findAll(Specification<Imovel> specs, Pageable pageableRequest);
+
+
+    Page<Imovel> findByDeletadoFalse(Pageable pageable);
+
 }
