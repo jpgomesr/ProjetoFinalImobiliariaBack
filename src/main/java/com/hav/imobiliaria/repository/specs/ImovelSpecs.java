@@ -43,12 +43,15 @@ public class ImovelSpecs {
         return (root, query, cb) -> cb.equal(root.get("permitirDestaque"), permitirDestaque);
     }
 
-    public static Specification<Imovel> enderecoCidadeLike(String cidade) {
-        return (root, query, cb) -> {
-            Join<Object, Object> joinEndereco = root.join("endereco", JoinType.LEFT);
-            return cb.like(cb.upper(joinEndereco.get("cidade")), "%" + cidade.toUpperCase() + "%");
-        };
+
+    public static Specification<Imovel> enderecoBairroEqual(String bairro) {
+        return (root, query, cb) -> cb.equal(root.get("endereco").get("bairro"), bairro);
     }
+
+    public static Specification<Imovel> enderecoCidadeEqual(String cidade) {
+        return (root, query, cb) -> cb.equal(root.get("endereco").get("cidade"), cidade);
+    }
+
 
     public static Specification<Imovel> qtdGaragensEqual(Integer qtdGaragens) {
         return (root, query, cb) -> cb.equal(root.get("qtdGaragens"), qtdGaragens);
