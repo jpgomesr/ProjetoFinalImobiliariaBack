@@ -40,8 +40,13 @@ public class UsuarioController implements GenericController{
     private final UsuarioPutMapper usuarioPutMapper;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
+    public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "ativo", required = false) Boolean ativo,
+            @RequestParam(value = "role", required = false) String role,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable));
     }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
