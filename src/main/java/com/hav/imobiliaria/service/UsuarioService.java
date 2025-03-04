@@ -47,7 +47,7 @@ public class UsuarioService {
 
         Specification<Usuario> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
-        if (nome != null) {
+        if (nome != null && !nome.isBlank()) {
             specs = specs.and(UsuarioSpecs.nomeLike(nome));
         }
         if (ativo != null) {
