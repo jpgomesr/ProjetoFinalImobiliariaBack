@@ -181,6 +181,8 @@ public class ImovelService {
                                        Double precoMin,
                                        Double precoMax,
                                        TipoFinalidadeEnum finalidade,
+                                       String cidade,
+                                       String bairro,
                                        Integer pagina,
                                        Integer tamanhoPagina) {
 
@@ -213,6 +215,14 @@ public class ImovelService {
         if (finalidade != null) {
             specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
         }
+        if (bairro != null) {
+            specs = specs.and(ImovelSpecs.enderecoBairroEqual(bairro));
+        }
+        if (cidade != null) {
+            specs = specs.and(ImovelSpecs.enderecoCidadeEqual(cidade));
+        }
+
+
 
         Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
 

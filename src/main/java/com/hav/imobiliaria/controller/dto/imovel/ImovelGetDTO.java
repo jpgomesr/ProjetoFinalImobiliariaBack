@@ -2,6 +2,7 @@ package com.hav.imobiliaria.controller.dto.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetResponseDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 
@@ -29,7 +30,7 @@ public record ImovelGetDTO(
         List<ImagemImovelResponseDTO> imagens,
         Double iptu,
         Double valorCondominio,
-        ProprietarioGetDTO proprietarioGetDTO,
+        ProprietarioGetResponseDTO proprietarioGetResponseDTO,
         EnderecoGetDTO enderecoGetDTO
 ) {
 }

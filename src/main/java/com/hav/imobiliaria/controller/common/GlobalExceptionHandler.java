@@ -27,12 +27,12 @@ public class GlobalExceptionHandler {
                 "Erro de validação", listaDeErros);
     }
 
-    @ExceptionHandler(CampoInvalidoException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ErroResposta handleCampoInvalidoException(CampoInvalidoException e){
-        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(),
-                List.of(new ErroCampo(e.getMessage(), e.getCampo())));
-    }
+//    @ExceptionHandler(CampoInvalidoException.class)
+//    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+//    public ErroResposta handleCampoInvalidoException(CampoInvalidoException e){
+//        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(),
+//                List.of(new ErroCampo(e.getMessage(), e.getCampo())));
+//    }
 
     @ExceptionHandler(ProprietarioNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

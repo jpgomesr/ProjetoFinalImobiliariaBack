@@ -9,6 +9,7 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
+import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
 import com.hav.imobiliaria.service.ImovelService;
@@ -48,13 +49,15 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "precoMin", required = false) Double precoMin,
             @RequestParam(value = "precoMax", required = false) Double precoMax,
             @RequestParam(value = "finalidade", required = false) TipoFinalidadeEnum finalidade,
+            @RequestParam(value = "cidade", required = false) String cidade,
+            @RequestParam(value = "bairro", required = false) String bairro,
             @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
             @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
     ) {
 
 
         Page<ImovelGetDTO> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
-                qtdGaragens, precoMin, precoMax, finalidade, pagina, tamanhoPagina);
+                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pagina, tamanhoPagina);
 
 
         return ResponseEntity.ok(paginaResultadoDto);
