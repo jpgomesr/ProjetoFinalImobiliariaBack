@@ -8,6 +8,8 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,9 @@ public class UsuarioService {
         }else {
             usuarioAtualizado.setFoto(usuarioJaSalvo.getFoto());
         }
+        if(usuarioAtualizado.getSenha() == null){
+            usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
+        }
         usuarioAtualizado.setId(id);
         usuarioAtualizado.setDeletado(false);
 
@@ -96,4 +101,16 @@ public class UsuarioService {
     }
 
 
+    public void alterarSenha(
+            Long id,
+            @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
+            @NotBlank(message = "A senha é obrigatória")
+            String senha) {
+
+        Usuario usuario = this.buscarPorId(id);
+        usuario.setSenha(senha);
+
+        this.repository.save(usuario);
+
+    }
 }
