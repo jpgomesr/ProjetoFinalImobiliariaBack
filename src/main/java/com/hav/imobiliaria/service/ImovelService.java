@@ -9,12 +9,10 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
-import com.hav.imobiliaria.model.Endereco;
-import com.hav.imobiliaria.model.ImagemImovel;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.*;
 import com.hav.imobiliaria.repository.ImagemImovelRepository;
 import com.hav.imobiliaria.repository.ImovelRepository;
+import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -22,7 +20,9 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -170,5 +170,54 @@ public class ImovelService {
         imovel.setDataDelecao(null);
 
         this.repository.save(imovel);
+    }
+    public Page<ImovelGetDTO> pesquisa(String descricao,
+                                       Integer tamanho,
+                                       String titulo,
+                                       String tipoResidencia,
+                                       Integer qtdBanheiros,
+                                       Integer qtdQuartos,
+                                       Integer qtdGaragens,
+                                       Double precoMin,
+                                       Double precoMax,
+                                       TipoFinalidadeEnum finalidade,
+                                       Integer pagina,
+                                       Integer tamanhoPagina) {
+
+        Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
+
+        if (titulo != null) {
+            specs = specs.and(ImovelSpecs.tituloLike(titulo));
+        }
+        if (descricao != null) {
+            specs = specs.and(ImovelSpecs.descricaoLike(descricao));
+        }
+        if (tipoResidencia != null) {
+            specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
+        }
+        if (qtdQuartos != null) {
+            specs = specs.and(ImovelSpecs.qtdQuartosEqual(qtdQuartos));
+        }
+        if (tamanho != null) {
+            specs = specs.and(ImovelSpecs.tamanhoEqual(tamanho));
+        }
+        if (qtdGaragens != null) {
+            specs = specs.and(ImovelSpecs.qtdGaragensEqual(qtdGaragens));
+        }
+        if (qtdBanheiros != null) {
+            specs = specs.and(ImovelSpecs.qtdBanheirosEqual(qtdBanheiros));
+        }
+        if (precoMin != null && precoMax != null) {
+            specs = specs.and(ImovelSpecs.precoBetween(precoMin, precoMax));
+        }
+        if (finalidade != null) {
+            specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
+        }
+
+        Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
+
+        Page<Imovel> paginaResultado = repository.findAll(specs, pageableRequest);
+
+        return paginaResultado.map(imovelGetMapper::toDto);
     }
 }

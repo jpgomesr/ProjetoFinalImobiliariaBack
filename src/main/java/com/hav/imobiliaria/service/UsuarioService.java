@@ -6,15 +6,22 @@ import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
+import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
+import com.hav.imobiliaria.repository.specs.ImovelSpecs;
+import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,8 +38,30 @@ public class UsuarioService {
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
 
-    public Page<UsuarioGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findByDeletadoFalse(pageable).map(usuarioGetMapper::toDto);
+    public Page<UsuarioGetDTO> buscarTodos(
+            String nome,
+            Boolean ativo,
+            String role,
+            Pageable pageable
+            ) {
+
+        Specification<Usuario> specs = Specification.where((root, query, cb) -> cb.conjunction());
+
+        if (nome != null) {
+            specs = specs.and(UsuarioSpecs.nomeLike(nome));
+        }
+        if (ativo != null) {
+            specs = specs.and(UsuarioSpecs.usuarioAtivo(ativo));
+        }
+        if (role != null) {
+            specs = specs.and(UsuarioSpecs.roleUsuario(role));
+        }
+        specs = specs.and(UsuarioSpecs.naoDeletado());
+
+
+        Page<Usuario> paginaResultado = repository.findAll(specs, pageable);
+
+        return paginaResultado.map(usuarioGetMapper::toDto);
 
     }
     public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
