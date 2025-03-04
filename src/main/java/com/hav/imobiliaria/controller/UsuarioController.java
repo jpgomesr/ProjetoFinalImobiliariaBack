@@ -97,13 +97,13 @@ public class UsuarioController implements GenericController{
         this.service.removerImagemUsuario(idUsuario);
         return ResponseEntity.noContent().build();
     }
-    @PatchMapping("/alterarSenha/{id}")
-    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
-                                             @PathVariable Long id) {
-        this.service.alterarSenha(id,senhaUsuarioDto.senha());
-
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("/alterarSenha/{id}")
+//    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
+//                                             @PathVariable Long id) {
+//        this.service.alterarSenha(id,senhaUsuarioDto.senha());
+//
+//        return ResponseEntity.ok().build();
+//    }
 
 
 }
