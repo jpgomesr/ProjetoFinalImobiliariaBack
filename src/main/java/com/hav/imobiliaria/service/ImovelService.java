@@ -174,7 +174,7 @@ public class ImovelService {
     public Page<ImovelGetDTO> pesquisa(String descricao,
                                        Integer tamanho,
                                        String titulo,
-                                       String tipoResidencia,
+                                       TipoImovelEnum tipoResidencia,
                                        Integer qtdBanheiros,
                                        Integer qtdQuartos,
                                        Integer qtdGaragens,

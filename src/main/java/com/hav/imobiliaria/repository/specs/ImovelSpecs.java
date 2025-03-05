@@ -2,6 +2,7 @@ package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.TipoImovelEnum;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +18,7 @@ public class ImovelSpecs {
         return (root, query, cb) -> cb.like(cb.upper(root.get("descricao")), "%" + descricao.toUpperCase() + "%");
     }
 
-    public static Specification<Imovel> tipoResidenciaEqual(String tipoResidencia) {
+    public static Specification<Imovel> tipoResidenciaEqual(TipoImovelEnum tipoResidencia) {
         return (root, query, cb) -> cb.equal(root.get("tipoResidencia"), tipoResidencia);
     }
 

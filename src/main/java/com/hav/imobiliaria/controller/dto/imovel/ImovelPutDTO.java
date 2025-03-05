@@ -40,9 +40,6 @@ public record ImovelPutDTO(
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
         Boolean habilitarVisibilidade,
-        @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O tipo da residência deve conter apenas letras e acentos")
-        @NotBlank(message = "A inserção tipo de residência é obrigatório")
-        String tipoResidencia,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,

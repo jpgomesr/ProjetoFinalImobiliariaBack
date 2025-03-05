@@ -12,6 +12,7 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
 import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.Imovel;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.TipoImovelEnum;
 import com.hav.imobiliaria.service.ImovelService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.ConstraintViolation;
@@ -42,7 +43,7 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "tamanho", required = false) Integer tamanho,
             @RequestParam(value = "titulo", required = false) String titulo,
-            @RequestParam(value = "tipoResidencia", required = false) String tipoResidencia,
+            @RequestParam(value = "tipoResidencia", required = false) TipoImovelEnum tipoResidencia,
             @RequestParam(value = "qtdQuartos", required = false) Integer qtdQuartos,
             @RequestParam(value = "qtdBanheiros", required = false) Integer qtdBanheiros,
             @RequestParam(value = "qtdGaragens", required = false) Integer qtdGaragens,

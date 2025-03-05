@@ -54,17 +54,11 @@ public class    Imovel {
     private Boolean habilitarVisibilidade;
 
 
-    @Column(nullable = false, length = 45)
-    private String tipoResidencia;
-
-
     @Column(nullable = false)
     private Boolean banner;
 
     @Enumerated(EnumType.STRING)
     private TipoBunnerEnum tipoBanner;
-
-
 
     @OneToMany
     @JoinColumn(name = "id_imovel")
