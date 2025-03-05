@@ -22,14 +22,8 @@ public class Proprietario {
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
-
-    @Column(nullable = false, length = 45)
-    private String tipoResidencia;
-
-    @Column(nullable = false)
-    private Integer numeroCasaPredio;
-
-    private Integer numeroApartamento;
+    @Column(nullable = false, unique = true, length = 200)
+    private String email;
 
 
     @ManyToOne(cascade = CascadeType.REMOVE)
