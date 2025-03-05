@@ -5,6 +5,7 @@ import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetResponseDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.TipoImovelEnum;
 
 import java.util.List;
 
@@ -24,7 +25,6 @@ public record ImovelGetDTO(
         Double precoPromocional,
         Boolean permitirDestaque,
         Boolean habilitarVisibilidade,
-        String tipoResidencia,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
         List<ImagemImovelResponseDTO> imagens,

@@ -22,6 +22,8 @@ public class Endereco {
     private String rua;
     @Column(nullable = false, length = 8)
     private String cep;
+    @Enumerated(EnumType.STRING)
+    private TipoImovelEnum tipoResidencia;
     @Column(nullable = false)
     private Integer numeroCasaPredio;
     private Integer numeroApartamento;
