@@ -15,6 +15,7 @@ public class ImovelValidator {
     private ImovelRepository repository;
 
     public void validar(Imovel imovel){
+
     }
 
 

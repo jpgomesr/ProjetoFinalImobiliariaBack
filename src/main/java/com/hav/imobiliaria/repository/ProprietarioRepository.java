@@ -18,4 +18,6 @@ public interface ProprietarioRepository extends JpaRepository<Proprietario, Long
 
     Page<Proprietario> findAll(Specification<Proprietario> specs, Pageable pageableRequest);
 
+    Optional<Proprietario> findByEmail(String email);
+
 }

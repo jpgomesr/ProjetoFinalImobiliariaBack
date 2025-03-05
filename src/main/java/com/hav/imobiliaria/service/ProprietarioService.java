@@ -19,6 +19,7 @@ import com.hav.imobiliaria.model.Usuario;
 import com.hav.imobiliaria.repository.ProprietarioRepository;
 import com.hav.imobiliaria.repository.specs.ProprietarioSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
+import com.hav.imobiliaria.validator.ProprietarioValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +40,7 @@ public class ProprietarioService {
     private final ProprietarioPostMapper proprietarioPostMapper;
     private final ProprietarioGetMapper proprietarioGetMapper;
     private final EnderecoGetMapper enderecoGetMapper;
+    private final ProprietarioValidator validator;
 
     public Page<ProprietarioGetDTO> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable).map(proprietarioGetMapper::toDto);
@@ -48,9 +50,9 @@ public class ProprietarioService {
     }
 
     public ProprietarioGetDTO salvar(ProprietarioPostDTO dto) {
-
         Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
         Proprietario entity = proprietarioPostMapper.toEntity(dto);
+        this.validator.validar(entity);
         entity.setEndereco(enderecoSalvo);
         entity = repository.save(entity);
 
@@ -68,6 +70,7 @@ public class ProprietarioService {
         Endereco enderecoAtualizado = enderecoService.atualizar(dto.enderecoPutDTO(), proprietarioExistente.getEndereco().getId());
         Proprietario entity = proprietarioPutMapper.toEntity(dto);
         entity.setId(id);
+        this.validator.validar(entity);
         entity.setEndereco(enderecoAtualizado);
         entity.setDeletado(false);
         entity = repository.save(entity);
