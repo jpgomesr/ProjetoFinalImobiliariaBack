@@ -33,7 +33,6 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
                 List.of(new ErroCampo(e.getMessage(), e.getCampo())));
     }
-
     @ExceptionHandler(ProprietarioNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErroResposta handleProprietarioNaoEncontradoException(ProprietarioNaoEncontradoException e){
