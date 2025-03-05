@@ -3,6 +3,7 @@ package com.hav.imobiliaria.controller.dto.imovel;
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.TipoImovelEnum;
 import jakarta.validation.constraints.*;
 
 public record ImovelPostDTO(
@@ -37,9 +38,6 @@ public record ImovelPostDTO(
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
         Boolean habilitarVisibilidade,
-        @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "O tipo da residência deve conter apenas letras e acentos")
-        @NotBlank(message = "A inserção tipo de residência é obrigatório")
-        String tipoResidencia,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,

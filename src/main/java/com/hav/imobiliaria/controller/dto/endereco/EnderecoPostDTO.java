@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.endereco;
 
+import com.hav.imobiliaria.model.TipoImovelEnum;
 import jakarta.validation.constraints.*;
 
 public record EnderecoPostDTO (
@@ -21,6 +22,7 @@ public record EnderecoPostDTO (
         @NotNull(message = "O CEP é obrigatório")
         @Size(max = 8, min = 8)
         String cep,
+        TipoImovelEnum tipoResidencia,
         @NotNull(message = "O numero não pode ser nulo")
         @Positive(message = "O numero nao pode ser negativo")
         Integer numeroCasaPredio,

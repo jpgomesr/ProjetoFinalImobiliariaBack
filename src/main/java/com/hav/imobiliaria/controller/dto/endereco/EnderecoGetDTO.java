@@ -1,5 +1,7 @@
 package com.hav.imobiliaria.controller.dto.endereco;
 
+import com.hav.imobiliaria.model.TipoImovelEnum;
+
 public record EnderecoGetDTO(
         Integer id,
         String bairro,
@@ -7,6 +9,7 @@ public record EnderecoGetDTO(
         String estado,
         String rua,
         String cep,
+        TipoImovelEnum tipoResidencia,
         Integer numeroCasaPredio,
         Integer  numeroApartamento)
 {
