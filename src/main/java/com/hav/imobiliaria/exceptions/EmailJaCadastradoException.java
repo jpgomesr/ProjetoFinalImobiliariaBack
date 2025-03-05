@@ -1,7 +1,7 @@
 package com.hav.imobiliaria.exceptions;
 
-public class EmailJaCadastradoException extends RuntimeException {
+public class EmailJaCadastradoException extends CampoInvalidoException {
     public EmailJaCadastradoException() {
-        super("Email já cadastrado");
+        super("email", "Já existe um usuário com este e-mail");
     }
 }

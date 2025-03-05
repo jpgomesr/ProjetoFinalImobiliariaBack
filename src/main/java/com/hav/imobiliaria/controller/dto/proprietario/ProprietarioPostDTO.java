@@ -14,6 +14,8 @@ public record ProprietarioPostDTO (
         String telefone,
         @CPF
         String cpf,
+        @Email
+        String email,
         @Size(max = 45, message = "O tipo da residência deve conter até 45 caracteres")
         @NotBlank(message = "O tipo da residência é obrigatório")
         String tipoResidencia,
