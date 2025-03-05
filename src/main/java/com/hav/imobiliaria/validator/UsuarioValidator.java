@@ -32,12 +32,20 @@ public class UsuarioValidator {
 
     private boolean existeEmailCadastrado(Usuario usuario){
 
-        Optional<Usuario> usuario1 = this.repository.findByEmail(usuario.getEmail());
-        return usuario1.isEmpty() || usuario1.get().getId().equals(usuario.getId());
+        Optional<Usuario> usuarioOptional = this.repository.findByEmail(usuario.getEmail());
+        if(usuario.getId() == null){
+            return usuarioOptional.isPresent();
+        }
+        return usuarioOptional.map(Usuario::getId).
+                stream().anyMatch(id -> !id.equals(usuario.getId()));
     }
 
     private boolean existeTelefoneCadastrado(Usuario usuario){
-        Optional<Usuario> usuario1 = this.repository.findByTelefone(usuario.getTelefone());
-        return usuario1.isEmpty() || usuario1.get().getId().equals(usuario.getId());
+        Optional<Usuario> usuarioOptional = this.repository.findByTelefone(usuario.getTelefone());
+        if(usuario.getId() == null){
+            return usuarioOptional.isPresent();
+        }
+        return usuarioOptional.map(Usuario::getId).stream()
+                .anyMatch(id -> !id.equals(usuario.getId()));
     }
 }
