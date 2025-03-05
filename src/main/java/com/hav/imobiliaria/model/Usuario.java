@@ -19,13 +19,13 @@ public class Usuario {
     @Column(nullable = false, length = 45)
     private String nome;
 
-    @Column(length = 13)
+    @Column(length = 13, unique = true)
     private String telefone;
 
     @Column
     private String senha;
 
-    @Column(nullable = false, length = 45)
+    @Column(nullable = false, length = 45,unique = true)
     private String email;
 
     @Column(length = 500)

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class UsuarioSpecs {
 
     public static Specification<Usuario> nomeLike(String nome) {
-        return (root, query, cb) -> cb.like(cb.upper(root.get("titulo")), "%" + nome.toUpperCase() + "%");
+        return (root, query, cb) -> cb.like(cb.upper(root.get("nome")), "%" + nome.toUpperCase() + "%");
     }
 
     public static Specification<Usuario> usuarioAtivo(Boolean ativo) {
