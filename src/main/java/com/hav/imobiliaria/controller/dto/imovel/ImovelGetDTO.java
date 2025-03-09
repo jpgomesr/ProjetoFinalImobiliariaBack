@@ -1,11 +1,9 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetResponseDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
-import com.hav.imobiliaria.model.TipoImovelEnum;
 
 import java.util.List;
 

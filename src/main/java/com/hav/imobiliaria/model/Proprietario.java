@@ -16,8 +16,11 @@ public class Proprietario {
     @Column(nullable = false, length = 45)
     private String nome;
 
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(nullable = false, length = 11)
     private String telefone;
+
+    @Column(nullable = false, length = 11)
+    private String celular;
 
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
@@ -35,6 +38,9 @@ public class Proprietario {
 
     @Column
     private LocalDateTime dataDelecao;
+
+    @Column(length = 150)
+    private String imagemUrl;
 
     @PrePersist
     public void prePersist() {

@@ -2,13 +2,10 @@ package com.hav.imobiliaria.controller.mapper.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
-import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetResponseMapper;
 import com.hav.imobiliaria.model.Endereco;
 import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.Proprietario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
