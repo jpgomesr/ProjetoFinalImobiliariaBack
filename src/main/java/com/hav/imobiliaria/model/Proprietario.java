@@ -36,6 +36,9 @@ public class Proprietario {
     @Column
     private LocalDateTime dataDelecao;
 
+    @Column(length = 150)
+    private String imagemUrl;
+
     @PrePersist
     public void prePersist() {
         if(this.deletado == null) {
