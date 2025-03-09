@@ -11,6 +11,9 @@ public record ProprietarioPutDTO (
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
         @NotBlank(message = "O telefone é obrigatório")
         String telefone,
+        @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
+        @NotBlank(message = "O celular é obrigatório")
+        String celular,
         @Pattern(regexp = "^[0-9]{11}$", message = "O CPF deve conter exatamente 11 dígitos numéricos")
         @NotBlank(message = "O CPF é obrigatório")
         String cpf,

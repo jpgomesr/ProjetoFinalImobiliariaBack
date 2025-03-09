@@ -17,4 +17,8 @@ public class ProprietarioSpecs {
     public static Specification<Proprietario> emailLike(String email) {
         return (root, query, cb) -> cb.like(cb.upper(root.get("email")), "%" + email.toUpperCase() + "%");
     }
+    public static Specification<Proprietario> deletadoFalse() {
+        return (root, query, cb) -> cb.equal(root.get("deletado"), false);
+    }
+
 }
