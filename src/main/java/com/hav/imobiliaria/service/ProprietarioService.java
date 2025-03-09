@@ -1,9 +1,8 @@
 package com.hav.imobiliaria.service;
 
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
-import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
+import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioRespostaUnicaMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPutMapper;
 import com.hav.imobiliaria.model.Endereco;
@@ -30,7 +29,6 @@ public class ProprietarioService {
     private final EnderecoService enderecoService;
     private final ProprietarioPutMapper proprietarioPutMapper;
     private final ProprietarioPostMapper proprietarioPostMapper;
-    private final ProprietarioGetMapper proprietarioGetMapper;
     private final ProprietarioValidator validator;
     private final S3Service s3Service;
 
@@ -43,7 +41,6 @@ public class ProprietarioService {
         this.validator.validar(entity);
         entity.setEndereco(enderecoSalvo);
         return repository.save(entity);
-
 
     }
 
@@ -62,6 +59,9 @@ public class ProprietarioService {
                 this.s3Service.excluirObjeto(entity.getImagemUrl());
             }
             entity.setImagemUrl(this.s3Service.uploadArquivo(foto));
+        }
+        else {
+            entity.setImagemUrl(proprietarioExistente.getImagemUrl());
         }
         entity.setEndereco(enderecoAtualizado);
         entity.setDeletado(false);

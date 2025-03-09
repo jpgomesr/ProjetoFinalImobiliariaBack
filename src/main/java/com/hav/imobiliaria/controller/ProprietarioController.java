@@ -1,23 +1,17 @@
 package com.hav.imobiliaria.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioRespostaUnicaDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioListagemDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
-import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetMapper;
+import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioRespostaUnicaMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioListagemMapper;
 import com.hav.imobiliaria.model.Proprietario;
 import com.hav.imobiliaria.service.ProprietarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +26,7 @@ public class ProprietarioController implements GenericController {
 
     private final ProprietarioService service;
     private final DtoValidator dtoValidator;
-    private final ProprietarioGetMapper proprietarioGetMapper;
+    private final ProprietarioRespostaUnicaMapper proprietarioRespostaUnicaMapper;
     private final ProprietarioListagemMapper proprietarioListagemMapper;
 
 
@@ -51,13 +45,13 @@ public class ProprietarioController implements GenericController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity<ProprietarioGetDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(proprietarioGetMapper.toDto(service.buscarPorId(id)));
+    public ResponseEntity<ProprietarioRespostaUnicaDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(proprietarioRespostaUnicaMapper.toDto(service.buscarPorId(id)));
     }
 
     @PostMapping
-    public ResponseEntity<ProprietarioGetDTO> cadastrar(@RequestPart("proprietario") String proprietarioPostDTOJSON,
-                                                        @RequestPart(value = "foto",required = false) MultipartFile foto) throws IOException, MethodArgumentNotValidException {
+    public ResponseEntity<ProprietarioRespostaUnicaDTO> cadastrar(@RequestPart("proprietario") String proprietarioPostDTOJSON,
+                                                                  @RequestPart(value = "foto",required = false) MultipartFile foto) throws IOException, MethodArgumentNotValidException {
 
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -66,19 +60,19 @@ public class ProprietarioController implements GenericController {
         this.dtoValidator.validaDTO(ProprietarioPostDTO.class,proprietarioPostDTO, "proprietario");
 
 
-        return ResponseEntity.ok(proprietarioGetMapper.toDto(service.salvar(proprietarioPostDTO, foto)));
+        return ResponseEntity.ok(proprietarioRespostaUnicaMapper.toDto(service.salvar(proprietarioPostDTO, foto)));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ProprietarioGetDTO> atualizar(@RequestPart("proprietario") String proprietarioPutDTOJSON,
-                                                        @RequestPart("foto") MultipartFile foto,
-                                                        @PathVariable Long id) throws IOException {
+    public ResponseEntity<ProprietarioRespostaUnicaDTO> atualizar(@RequestPart("proprietario") String proprietarioPutDTOJSON,
+                                                                  @RequestPart(value = "foto", required = false) MultipartFile foto,
+                                                                  @PathVariable Long id) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ProprietarioPutDTO proprietarioPutDTO = objectMapper.readValue(proprietarioPutDTOJSON, ProprietarioPutDTO.class);
 
 
-        return ResponseEntity.ok(proprietarioGetMapper.toDto(service.atualizar(proprietarioPutDTO, foto, id)));
+        return ResponseEntity.ok(proprietarioRespostaUnicaMapper.toDto(service.atualizar(proprietarioPutDTO, foto, id)));
     }
 
     @DeleteMapping("{id}")

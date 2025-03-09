@@ -1,5 +1,7 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+
 public record UsuarioGetDTO (
         Long id,
         String role,
@@ -8,6 +10,5 @@ public record UsuarioGetDTO (
         String email,
         String descricao,
         Boolean ativo,
-        String foto
-){
+        String foto){
 }
