@@ -40,7 +40,7 @@ public class UsuarioService {
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
 
-    public Page<UsuarioGetDTO> buscarTodos(
+    public Page<Usuario> buscarTodos(
             String nome,
             Boolean ativo,
             String role,
@@ -60,10 +60,7 @@ public class UsuarioService {
         }
         specs = specs.and(UsuarioSpecs.naoDeletado());
 
-
-        Page<Usuario> paginaResultado = repository.findAll(specs, pageable);
-
-        return paginaResultado.map(usuarioGetMapper::toDto);
+        return repository.findAll(specs, pageable);
 
     }
     public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {

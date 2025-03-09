@@ -1,32 +1,21 @@
 package com.hav.imobiliaria.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
-import com.hav.imobiliaria.controller.dto.usuario.SenhaUsuarioDto;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
-import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
-import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
 import com.hav.imobiliaria.service.UsuarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -36,17 +25,16 @@ public class UsuarioController implements GenericController{
     private UsuarioService service;
     private DtoValidator  dtoValidator;
     private final UsuarioGetMapper usuarioGetMapper;
-    private final UsuarioPostMapper usuarioPostMapper;
-    private final UsuarioPutMapper usuarioPutMapper;
+    private final UsuarioListagemResponseMapper usuarioListagemResponseMapper;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(
+    public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "ativo", required = false) Boolean ativo,
             @RequestParam(value = "role", required = false) String role,
             Pageable pageable) {
 
-        return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable));
+        return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
@@ -93,8 +81,8 @@ public class UsuarioController implements GenericController{
     }
 
     @DeleteMapping("/imagem/{id}")
-    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long idUsuario){
-        this.service.removerImagemUsuario(idUsuario);
+    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
+        this.service.removerImagemUsuario(id);
         return ResponseEntity.noContent().build();
     }
 //    @PatchMapping("/alterarSenha/{id}")
