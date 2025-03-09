@@ -1,35 +1,22 @@
 package com.hav.imobiliaria.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
-import com.hav.imobiliaria.model.Endereco;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.TipoFinalidadeEnum;
-import com.hav.imobiliaria.model.TipoImovelEnum;
+import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.service.ImovelService;
 import com.hav.imobiliaria.validator.DtoValidator;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("imoveis")

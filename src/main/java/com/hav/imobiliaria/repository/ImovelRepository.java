@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.repository;
 
-import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.entity.Imovel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

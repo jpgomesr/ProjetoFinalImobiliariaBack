@@ -1,24 +1,22 @@
 package com.hav.imobiliaria.service;
 
-import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
-import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
-import com.hav.imobiliaria.model.*;
+import com.hav.imobiliaria.model.entity.Endereco;
+import com.hav.imobiliaria.model.entity.ImagemImovel;
+import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.repository.ImagemImovelRepository;
 import com.hav.imobiliaria.repository.ImovelRepository;
 import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import lombok.Value;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +28,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor

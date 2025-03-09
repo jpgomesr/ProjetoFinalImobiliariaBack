@@ -1,10 +1,11 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+import com.hav.imobiliaria.model.enums.RoleEnum;
 
 public record UsuarioGetDTO (
         Long id,
-        String role,
+        RoleEnum role,
         String nome,
         String telefone,
         String email,
