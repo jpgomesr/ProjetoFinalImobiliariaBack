@@ -1,5 +1,6 @@
-package com.hav.imobiliaria.model;
+package com.hav.imobiliaria.model.entity;
 
+import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class Usuario {
     private Long id;
 
     @Column(nullable = false, length = 45)
-    private String role;
+    private RoleEnum role;
 
     @Column(nullable = false, length = 45)
     private String nome;

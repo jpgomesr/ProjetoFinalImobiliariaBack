@@ -1,31 +1,26 @@
 package com.hav.imobiliaria.service;
 
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.Proprietario;
-import com.hav.imobiliaria.model.Usuario;
+import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.enums.RoleEnum;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
-import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import com.hav.imobiliaria.validator.UsuarioValidator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -43,7 +38,7 @@ public class UsuarioService {
     public Page<Usuario> buscarTodos(
             String nome,
             Boolean ativo,
-            String role,
+            RoleEnum role,
             Pageable pageable
             ) {
 

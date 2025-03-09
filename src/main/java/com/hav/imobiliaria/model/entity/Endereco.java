@@ -1,6 +1,7 @@
-package com.hav.imobiliaria.model;
+package com.hav.imobiliaria.model.entity;
 
 
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 

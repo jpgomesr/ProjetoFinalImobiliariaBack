@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
+import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +20,8 @@ public record UsuarioPostDTO(
         String telefone,
         @Size(max = 500, message = "A mensagem deve conter até 500 caracteres")
         String descricao,
-        @NotBlank(message = "A role é obrigatória")
-        String role,
+        @NotNull(message = "A role é obrigatória")
+        RoleEnum role,
         @NotNull(message = "O usuario precisa ter um status")
         Boolean ativo
 ) {

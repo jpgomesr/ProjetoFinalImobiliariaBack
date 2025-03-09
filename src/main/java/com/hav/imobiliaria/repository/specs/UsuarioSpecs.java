@@ -1,7 +1,8 @@
 package com.hav.imobiliaria.repository.specs;
 
 
-import com.hav.imobiliaria.model.Usuario;
+import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.enums.RoleEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UsuarioSpecs {
@@ -14,7 +15,7 @@ public class UsuarioSpecs {
         return (root, query, cb) -> cb.equal(root.get("ativo"), ativo);
     }
 
-    public static Specification<Usuario> roleUsuario(String role) {
+    public static Specification<Usuario> roleUsuario(RoleEnum role) {
         return (root, query, cb) -> cb.equal(root.get("role"), role);
     }
     public static Specification<Usuario> naoDeletado() {

@@ -3,7 +3,7 @@ package com.hav.imobiliaria.controller.mapper.proprietario;
 
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioRespostaUnicaDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

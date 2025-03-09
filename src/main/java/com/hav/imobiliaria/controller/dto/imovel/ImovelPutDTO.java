@@ -1,9 +1,8 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
-import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
-import com.hav.imobiliaria.model.TipoBunnerEnum;
-import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
+import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
 
 //a

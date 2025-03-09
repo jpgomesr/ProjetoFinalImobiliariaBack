@@ -2,14 +2,12 @@ package com.hav.imobiliaria.validator;
 
 import com.hav.imobiliaria.exceptions.EmailJaCadastradoException;
 import com.hav.imobiliaria.exceptions.TelefoneJaCadastradoException;
-import com.hav.imobiliaria.exceptions.UsuarioJaCadastradoException;
-import com.hav.imobiliaria.model.Usuario;
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
 import java.util.Optional;
 
 @Component
