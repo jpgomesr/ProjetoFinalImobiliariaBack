@@ -94,8 +94,8 @@ public class UsuarioController implements GenericController{
     }
 
     @DeleteMapping("/imagem/{id}")
-    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long idUsuario){
-        this.service.removerImagemUsuario(idUsuario);
+    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
+        this.service.removerImagemUsuario(id);
         return ResponseEntity.noContent().build();
     }
 //    @PatchMapping("/alterarSenha/{id}")
