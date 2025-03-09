@@ -87,7 +87,7 @@ public class ProprietarioService {
 
         this.repository.save(proprietario);
     }
-    public Page<Proprietario> pesquisa(String nome, String cpf, String email, Integer pagina,Integer tamanhoPagina) {
+    public Page<Proprietario> pesquisa(String nome, String cpf, String email, Pageable pageable) {
 
         Specification<Proprietario> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
@@ -102,8 +102,7 @@ public class ProprietarioService {
         }
         specs = specs.and(ProprietarioSpecs.deletadoFalse());
 
-        Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
 
-        return repository.findAll(specs, pageableRequest);
+        return repository.findAll(specs, pageable);
     }
 }

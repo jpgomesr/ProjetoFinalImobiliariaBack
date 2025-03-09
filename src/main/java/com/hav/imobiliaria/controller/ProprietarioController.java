@@ -12,6 +12,7 @@ import com.hav.imobiliaria.service.ProprietarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +36,10 @@ public class ProprietarioController implements GenericController {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "cpf", required = false) String cpf,
             @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
-            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+            Pageable pageable
     ) {
 
-        Page<Proprietario> paginaResultado = service.pesquisa(nome, cpf, email,pagina,tamanhoPagina);
+        Page<Proprietario> paginaResultado = service.pesquisa(nome, cpf, email,pageable);
         return ResponseEntity.ok(paginaResultado.map(proprietarioListagemMapper::toDTO));
     }
 
