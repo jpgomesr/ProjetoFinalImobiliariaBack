@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoListagemImovelDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetResponseDTO;
 import com.hav.imobiliaria.controller.dto.usuario.CorretorRespostaImovelDto;
 import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
@@ -25,7 +26,7 @@ public record ImovelListagemDTO(
         Boolean banner,
         TipoBunnerEnum tipoBanner,
         List<ImagemImovelResponseDTO> imagens,
-        EnderecoGetDTO enderecoGetDTO
+        EnderecoListagemImovelDTO endereco
 
 ) {
 }

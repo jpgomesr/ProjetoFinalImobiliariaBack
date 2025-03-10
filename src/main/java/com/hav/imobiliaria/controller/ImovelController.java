@@ -2,8 +2,11 @@ package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.service.ImovelService;
@@ -24,9 +27,10 @@ import java.util.List;
 public class ImovelController implements GenericController {
     private final ImovelService service;
     private final DtoValidator dtoValidator;
+    private final ImovelGetMapper imovelGetMapper;
 
     @GetMapping
-    public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(
+    public ResponseEntity<Page<ImovelListagemDTO>> listarImoveis(
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "tamanho", required = false) Integer tamanho,
             @RequestParam(value = "titulo", required = false) String titulo,
@@ -44,23 +48,22 @@ public class ImovelController implements GenericController {
     ) {
 
 
-        Page<ImovelGetDTO> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+        Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
                 qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pagina, tamanhoPagina);
 
 
-        return ResponseEntity.ok(paginaResultadoDto);
+        return ResponseEntity.ok(paginaResultadoDto.map(imovelGetMapper::toImovelListagemDto));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ImovelGetDTO> buscarPorId(@PathVariable Long id){
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.buscarPorId(id)));
     }
     @PostMapping
     public ResponseEntity<ImovelGetDTO> cadastrar(@RequestPart("imovel") String imovelPostDtoJSON,
                                                   @RequestPart("imagens") List<MultipartFile> imagens,
                                                   @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal
     ) throws IOException, MethodArgumentNotValidException {
-
 
 
         ObjectMapper mapper = new ObjectMapper();
@@ -70,7 +73,7 @@ public class ImovelController implements GenericController {
 
         System.out.println(imovelPostDTO + "\n");
 
-        return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.salvar(imovelPostDTO,imagemPrincipal, imagens)));
 
     }
     @PutMapping("{id}")
@@ -83,9 +86,8 @@ public class ImovelController implements GenericController {
         ObjectMapper mapper = new ObjectMapper();
         ImovelPutDTO imovelPutDTO = mapper.readValue(imovelPutDTOJSON, ImovelPutDTO.class);
         dtoValidator.validaDTO(ImovelPutDTO.class, imovelPutDTO, "ImovelPutDTO");
-        ImovelGetDTO imovelAtualizado = service.atualizar(id, imovelPutDTO, imagemCapa, imagens);
 
-        return ResponseEntity.ok(imovelAtualizado);
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.atualizar(id, imovelPutDTO, imagemCapa, imagens)));
 
     }
     @PostMapping("/restaurar/{id}")

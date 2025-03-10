@@ -5,6 +5,7 @@ import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
+import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
@@ -168,4 +169,12 @@ public class UsuarioService {
         throw new RuntimeException("Role inválida");
     }
 
+    public Corretor buscarCorretor(Long id) {
+        Usuario usuario = this.repository.findById(id).get();
+
+        if(usuario.getRole().equals(RoleEnum.CORRETOR)){
+            return (Corretor) usuario;
+        }
+        throw new RuntimeException("O usuário informado não é um corretor");
+    }
 }

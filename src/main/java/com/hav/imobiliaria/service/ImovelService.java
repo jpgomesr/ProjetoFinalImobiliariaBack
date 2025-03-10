@@ -44,8 +44,8 @@ public class ImovelService {
 
 
 
-    public ImovelGetDTO salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
-        Endereco enderecoSalvo = enderecoService.salvar(dto.enderecoPostDTO());
+    public Imovel salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
+        Endereco enderecoSalvo = enderecoService.salvar(dto.endereco());
 
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
         List<ImagemImovel> imagensImovel = salvarImagens(imagens);
@@ -57,27 +57,24 @@ public class ImovelService {
 
         entity.setImagens(imagensImovel);
 
-        entity = repository.save(entity);
+        return  repository.save(entity);
 
-        return imovelGetMapper.toDto(entity);
+
     }
 
-    public Page<ImovelGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findByDeletadoFalse(pageable).map(imovelGetMapper::toDto);
+
+    public Imovel buscarPorId(Long id) {
+
+        return repository.findById(id).get();
     }
 
-    public ImovelGetDTO buscarPorId(Long id) {
-        ImovelGetDTO dto = imovelGetMapper.toDto(repository.findById(id).get());
-        return dto;
-    }
-
-    public ImovelGetDTO atualizar(@Positive(message = "O id deve ser positivo") Long id,
+    public Imovel atualizar(@Positive(message = "O id deve ser positivo") Long id,
                                   ImovelPutDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException  {
 
 
 
         Imovel imovelExistente = repository.findById(id).get();
-        Endereco enderecoAtualizado = enderecoService.atualizar(dto.enderecoPutDTO(), imovelExistente.getEndereco().getId());
+        Endereco enderecoAtualizado = enderecoService.atualizar(dto.endereco(), imovelExistente.getEndereco().getId());
         Imovel entity = imovelPutMapper.toEntity(dto);
         entity.setId(id);
         entity.setEndereco(enderecoAtualizado);
@@ -89,10 +86,7 @@ public class ImovelService {
         if(imagens != null) {
             atualizarImagens(entity, imagens);
         }
-        entity = repository.save(entity);
-
-        return imovelGetMapper.toDto(entity);
-
+        return repository.save(entity);
     }
     public void removerPorId(Long id) {
         Imovel imovel = this.repository.findById(id).get();
@@ -166,7 +160,7 @@ public class ImovelService {
 
         this.repository.save(imovel);
     }
-    public Page<ImovelGetDTO> pesquisa(String descricao,
+    public Page<Imovel> pesquisa(String descricao,
                                        Integer tamanho,
                                        String titulo,
                                        TipoImovelEnum tipoResidencia,
@@ -217,12 +211,8 @@ public class ImovelService {
             specs = specs.and(ImovelSpecs.enderecoCidadeEqual(cidade));
         }
 
-
-
         Pageable pageableRequest = PageRequest.of(pagina, tamanhoPagina);
 
-        Page<Imovel> paginaResultado = repository.findAll(specs, pageableRequest);
-
-        return paginaResultado.map(imovelGetMapper::toDto);
+        return repository.findAll(specs, pageableRequest);
     }
 }

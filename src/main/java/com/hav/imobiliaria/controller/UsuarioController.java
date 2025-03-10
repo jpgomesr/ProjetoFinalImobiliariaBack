@@ -43,6 +43,11 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
     }
+    @GetMapping("/corretor/{id}")
+    public ResponseEntity<CorretorResponseDto> buscarPorCorretor(@PathVariable Long id) {
+
+        return ResponseEntity.ok(usuarioListagemResponseMapper.toCorretorResponseDto(service.buscarCorretor(id)));
+    }
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, MethodArgumentNotValidException {
