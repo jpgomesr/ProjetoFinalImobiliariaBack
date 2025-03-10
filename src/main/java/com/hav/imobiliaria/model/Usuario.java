@@ -3,6 +3,8 @@ package com.hav.imobiliaria.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 public class Usuario {
@@ -17,10 +19,13 @@ public class Usuario {
     @Column(nullable = false, length = 45)
     private String nome;
 
-    @Column(length = 13)
+    @Column(length = 13, unique = true)
     private String telefone;
 
-    @Column(nullable = false, length = 45)
+    @Column
+    private String senha;
+
+    @Column(nullable = false, length = 45,unique = true)
     private String email;
 
     @Column(length = 500)
@@ -32,10 +37,19 @@ public class Usuario {
     @Column(columnDefinition = "BOOLEAN DEFAULT true")
     private Boolean ativo;
 
+    @Column
+    private Boolean deletado;
+
+    @Column
+    private LocalDateTime dataDelecao;
+
     @PrePersist
     public void prePersist(){
         if(ativo == null){
             ativo = true;
+        }
+        if(deletado == null){
+            deletado = false;
         }
     }
 }

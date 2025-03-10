@@ -12,12 +12,12 @@ spring:
     show-sql: true
   servlet:
     multipart:
-      max-request-size: 10MB
-      max-file-size: 10MB
+      max-request-size: 20MB
+      max-file-size: 20MB
 server:
   port: 8081
 aws:
-  access-key: a
-  secret-key: a
+  access-key: AKIA2AUOPIM3J2WOGT5N
+  secret-key: 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
   region: us-east-1
   bucket-name: hav-bucket-c

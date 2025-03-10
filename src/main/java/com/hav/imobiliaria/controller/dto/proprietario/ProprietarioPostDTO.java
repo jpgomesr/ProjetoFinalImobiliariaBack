@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller.dto.proprietario;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -11,17 +12,16 @@ public record ProprietarioPostDTO (
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
         @NotBlank(message = "O telefone é obrigatório")
         String telefone,
-        @CPF
+        @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
+        @NotBlank(message = "O celular é obrigatório")
+        String celular,
+        @CPF(message = "Insira um cpf válido")
+        @Pattern(regexp = "^[0-9]{11}$", message = "O cpf deve conter exatamente 11 dígitos numéricos")
         String cpf,
-        @Size(max = 45, message = "O tipo da residência deve conter até 45 caracteres")
-        @NotBlank(message = "O tipo da residência é obrigatório")
-        String tipoResidencia,
-        @NotNull(message = "O número é obrigatório")
-        @Positive(message = "O numero deve ser positivo")
-        Integer numeroCasaPredio,
-        @Positive(message = "O numero do apartamento deve ser positivo")
-        Integer numeroApartamento,
-        @NotNull(message = "O id é obrigatório")
-        Long idEndereco
+        @Email
+        @NotNull
+        String email,
+        @NotNull(message = "O endereço é obrigatório")
+        EnderecoPostDTO enderecoPostDTO
 ){
 }

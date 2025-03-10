@@ -1,12 +1,15 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioGetResponseDTO;
 import com.hav.imobiliaria.model.TipoBunnerEnum;
 import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+
+import java.util.List;
 
 public record ImovelGetDTO(
         Integer id,
         String titulo,
-        String imagemCapa,
         String descricao,
         Integer tamanho,
         Integer qtdQuartos,
@@ -20,15 +23,12 @@ public record ImovelGetDTO(
         Double precoPromocional,
         Boolean permitirDestaque,
         Boolean habilitarVisibilidade,
-        String tipoResidencia,
-        Integer numeroCasaPredio,
-        Integer numeroApartamento,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
-        String galeriaImagens,
+        List<ImagemImovelResponseDTO> imagens,
         Double iptu,
         Double valorCondominio,
-        Long idProprietario,
-        Long idEndereco
+        ProprietarioGetResponseDTO proprietarioGetResponseDTO,
+        EnderecoGetDTO enderecoGetDTO
 ) {
 }

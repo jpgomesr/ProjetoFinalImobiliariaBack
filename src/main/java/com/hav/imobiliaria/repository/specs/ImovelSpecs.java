@@ -1,0 +1,64 @@
+package com.hav.imobiliaria.repository.specs;
+
+import com.hav.imobiliaria.model.Imovel;
+import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.TipoImovelEnum;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import org.springframework.data.jpa.domain.Specification;
+
+public class ImovelSpecs {
+
+
+    public static Specification<Imovel> tituloLike(String titulo) {
+        return (root, query, cb) -> cb.like(cb.upper(root.get("titulo")), "%" + titulo.toUpperCase() + "%");
+    }
+
+    public static Specification<Imovel> descricaoLike(String descricao) {
+        return (root, query, cb) -> cb.like(cb.upper(root.get("descricao")), "%" + descricao.toUpperCase() + "%");
+    }
+
+    public static Specification<Imovel> tipoResidenciaEqual(TipoImovelEnum tipoResidencia) {
+        return (root, query, cb) -> cb.equal(root.get("tipoResidencia"), tipoResidencia);
+    }
+
+    public static Specification<Imovel> tamanhoEqual(Integer tamanho) {
+        return (root, query, cb) -> cb.equal(root.get("tamanho"), tamanho);
+    }
+
+    public static Specification<Imovel> qtdQuartosEqual(Integer qtdQuartos) {
+        return (root, query, cb) -> {
+            System.out.println("Filtrando por qtdQuartos: " + qtdQuartos);
+            return cb.equal(root.get("qtdQuartos"), qtdQuartos);
+        };
+    }
+    public static Specification<Imovel> precoBetween(Double precoMin, Double precoMax) {
+        return (root, query, cb) -> cb.between(root.get("preco"), precoMin, precoMax);
+    }
+
+    public static Specification<Imovel> finalidadeEqual(TipoFinalidadeEnum finalidade) {
+        return (root, query, cb) -> cb.equal(root.get("finalidade"), finalidade);
+    }
+
+    public static Specification<Imovel> permitirDestaqueEqual(Boolean permitirDestaque) {
+        return (root, query, cb) -> cb.equal(root.get("permitirDestaque"), permitirDestaque);
+    }
+
+
+    public static Specification<Imovel> enderecoBairroEqual(String bairro) {
+        return (root, query, cb) -> cb.equal(root.get("endereco").get("bairro"), bairro);
+    }
+
+    public static Specification<Imovel> enderecoCidadeEqual(String cidade) {
+        return (root, query, cb) -> cb.equal(root.get("endereco").get("cidade"), cidade);
+    }
+
+
+    public static Specification<Imovel> qtdGaragensEqual(Integer qtdGaragens) {
+        return (root, query, cb) -> cb.equal(root.get("qtdGaragens"), qtdGaragens);
+    }
+
+    public static Specification<Imovel> qtdBanheirosEqual(Integer qtdBanheiros) {
+        return (root, query, cb) -> cb.equal(root.get("qtdBanheiros"), qtdBanheiros);
+    }
+}

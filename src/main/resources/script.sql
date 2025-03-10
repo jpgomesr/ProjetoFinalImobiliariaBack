@@ -27,8 +27,8 @@ CREATE TABLE proprietario (
                               CONSTRAINT fk_proprietario_endereco
                                   FOREIGN KEY (id_endereco)
                                       REFERENCES endereco (id)
-                                      ON DELETE NO ACTION
-                                      ON UPDATE NO ACTION
+                                      ON DELETE CASCADE
+                                      ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
 -- Tabela Imóvel
@@ -67,8 +67,8 @@ CREATE TABLE imovel (
                         CONSTRAINT fk_imovel_endereco
                             FOREIGN KEY (id_endereco)
                                 REFERENCES endereco (id)
-                                ON DELETE NO ACTION
-                                ON UPDATE NO ACTION
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
 --Tabela endereço
@@ -79,4 +79,14 @@ CREATE TABLE endereco(
                         estado VARCHAR(45) NOT NULL,
                         CEP CHAR(8) NOT NULL UNIQUE,
                         rua VARCHAR(45) NOT NULL
+)
+CREATE TABLE imagem_imovel(
+
+                              id INT NOT NULL PRIMARY KEY,
+                              referencia VARCHAR(150) NOT NULL UNIQUE,
+                              imagem_capa TINYINT(1) NOT NULL,
+                              id_imovel INT NOT NULL
+                                  FOREIGN KEY (id_imovel)
+     REFERENCES imovel (id)
+
 )

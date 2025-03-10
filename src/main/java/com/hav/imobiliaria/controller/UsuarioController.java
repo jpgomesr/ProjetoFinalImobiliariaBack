@@ -1,14 +1,17 @@
 package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioGetDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
-import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.dto.usuario.*;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
 import com.hav.imobiliaria.service.UsuarioService;
+import com.hav.imobiliaria.validator.DtoValidator;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,30 +23,75 @@ import java.io.IOException;
 public class UsuarioController implements GenericController{
 
     private UsuarioService service;
+    private DtoValidator  dtoValidator;
+    private final UsuarioGetMapper usuarioGetMapper;
+    private final UsuarioListagemResponseMapper usuarioListagemResponseMapper;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioGetDTO>> listarEmPaginas(Pageable pageable) {
-        return ResponseEntity.ok(service.buscarTodos(pageable));
+    public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "ativo", required = false) Boolean ativo,
+            @RequestParam(value = "role", required = false) String role,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
     }
     @PostMapping
-    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") String usuarioJson,
-                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
+                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, MethodArgumentNotValidException {
 
         ObjectMapper mapper = new ObjectMapper();
         UsuarioPostDTO usuarioPostDTO = mapper.readValue(usuarioJson, UsuarioPostDTO.class);
-        return ResponseEntity.ok(service.salvar(usuarioPostDTO,file));
+
+        this.dtoValidator.validaDTO(UsuarioPostDTO.class, usuarioPostDTO,"usuarioPostDTO");
+
+
+        return ResponseEntity.ok(this.usuarioGetMapper.toDto
+                (service.salvar(usuarioPostDTO,file)));
+
+
     }
     @PutMapping("{id}")
-    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestBody UsuarioPutDTO usuarioPutDTO, @PathVariable Long id) {
-        return ResponseEntity.ok(service.atualizar(usuarioPutDTO,id));
+    public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart @Valid String usuario,
+                                                   @RequestPart(required = false) MultipartFile novaImagem,
+                                                   @PathVariable Long id ) throws IOException, MethodArgumentNotValidException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        UsuarioPutDTO usuarioPutDTO = mapper.readValue(usuario, UsuarioPutDTO.class);
+
+        this.dtoValidator.validaDTO(UsuarioPutDTO.class, usuarioPutDTO,"usuarioPutDTO");
+
+
+        return ResponseEntity.ok(this.usuarioGetMapper.toDto(service.atualizar(usuarioPutDTO,id, novaImagem)));
     }
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
+        this.service.restaurarUsuario(id);
+
+        return  ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/imagem/{id}")
+    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
+        this.service.removerImagemUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
+//    @PatchMapping("/alterarSenha/{id}")
+//    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
+//                                             @PathVariable Long id) {
+//        this.service.alterarSenha(id,senhaUsuarioDto.senha());
+//
+//        return ResponseEntity.ok().build();
+//    }
+
+
 }
