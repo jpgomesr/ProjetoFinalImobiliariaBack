@@ -8,13 +8,16 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 45)
+    @Column(insertable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
     @Column(nullable = false, length = 45)
@@ -26,7 +29,7 @@ public class Usuario {
     @Column
     private String senha;
 
-    @Column(nullable = false, length = 45,unique = true)
+    @Column(nullable = false, length = 45, unique = true)
     private String email;
 
     @Column(length = 500)
@@ -45,11 +48,11 @@ public class Usuario {
     private LocalDateTime dataDelecao;
 
     @PrePersist
-    public void prePersist(){
-        if(ativo == null){
+    public void prePersist() {
+        if (ativo == null) {
             ativo = true;
         }
-        if(deletado == null){
+        if (deletado == null) {
             deletado = false;
         }
     }

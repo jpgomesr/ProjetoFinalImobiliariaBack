@@ -68,6 +68,8 @@ public class ImovelController implements GenericController {
 
         dtoValidator.validaDTO(ImovelPostDTO.class,imovelPostDTO,"ImovelPostDto");
 
+        System.out.println(imovelPostDTO + "\n");
+
         return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
 
     }

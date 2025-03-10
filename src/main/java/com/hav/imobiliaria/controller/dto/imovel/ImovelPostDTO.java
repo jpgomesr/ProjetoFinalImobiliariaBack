@@ -1,9 +1,12 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
+import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 public record ImovelPostDTO(
         @Size(max = 45, message = "O título deve conter até 45 caracteres")
@@ -46,6 +49,7 @@ public record ImovelPostDTO(
         Double valorCondominio,
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
+        List<Corretor> corretores,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO enderecoPostDTO
 ) {

@@ -70,6 +70,7 @@ public class    Imovel {
 
     private Double valorCondominio;
 
+
     @ManyToOne
     @JoinColumn(name = "id_proprietario", nullable = false)
     private Proprietario proprietario;
@@ -77,6 +78,15 @@ public class    Imovel {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
+
+    @ManyToMany
+    @JoinTable(
+            name = "imovel_corretor", // Nome da tabela de junção
+            joinColumns = @JoinColumn(name = "id_imovel"), // Coluna que referencia o Imovel
+            inverseJoinColumns = @JoinColumn(name = "id_corretor") // Coluna que referencia o Corretor
+    )
+    private List<Corretor> corretores;
+
 
     @Column
     private Boolean deletado;
