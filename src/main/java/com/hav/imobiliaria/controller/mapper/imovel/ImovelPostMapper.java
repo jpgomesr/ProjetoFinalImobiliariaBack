@@ -13,7 +13,7 @@ public abstract class ImovelPostMapper {
     @Autowired
     protected ProprietarioRepository proprietarioRepository;
     @Mapping(target = "proprietario", expression = "java(proprietarioRepository.findById(imovel.idProprietario()).orElse(null))")
-    @Mapping(source = "enderecoPostDTO", target = "endereco")
+    @Mapping(source = "endereco", target = "endereco")
     public abstract Imovel toEntity(ImovelPostDTO imovel);
 
     public abstract ImovelPostDTO toDto(Imovel imovel);

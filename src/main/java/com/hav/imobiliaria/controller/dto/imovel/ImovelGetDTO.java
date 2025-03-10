@@ -30,8 +30,8 @@ public record ImovelGetDTO(
         List<ImagemImovelResponseDTO> imagens,
         Double iptu,
         Double valorCondominio,
-        ProprietarioGetResponseDTO proprietarioGetResponseDTO,
+        ProprietarioGetResponseDTO proprietario,
         List<CorretorRespostaImovelDto> corretores,
-        EnderecoGetDTO enderecoGetDTO
+        EnderecoGetDTO endereco
 ) {
 }

@@ -2,6 +2,7 @@ package com.hav.imobiliaria.controller.mapper.imovel;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioGetResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
@@ -25,10 +26,12 @@ public abstract class ImovelGetMapper {
 
     public  abstract Endereco toEntity(EnderecoGetDTO enderecoGetDTO);
 
-    @Mapping(target = "enderecoGetDTO", expression = "java(enderecoGetMapper.toDto(imovel.getEndereco()))")
-    @Mapping(target = "proprietarioGetResponseDTO", expression = "java(proprietarioGetResponseMapper.toDto(imovel.getProprietario()))")
+    @Mapping(target = "endereco", expression = "java(enderecoGetMapper.toDto(imovel.getEndereco()))")
+    @Mapping(target = "proprietario", expression = "java(proprietarioGetResponseMapper.toDto(imovel.getProprietario()))")
     @Mapping(target = "corretores", expression = "java(imovel.getCorretores().stream().map(usuarioListagemResponseMapper::toCorretorRespostaImovelDto).toList())")
-    public  abstract ImovelGetDTO toDto(Imovel imovel);
+    public  abstract ImovelGetDTO toImovelGetDto(Imovel imovel);
 
-   
+    @Mapping(target = "endereco", expression = "java(enderecoGetMapper.toEnderecoListagemImovelDTO(imovel.getEndereco()))")
+    public abstract ImovelListagemDTO toImovelListagemDto(Imovel imovel);
+
 }

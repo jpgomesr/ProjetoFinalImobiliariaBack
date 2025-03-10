@@ -51,6 +51,6 @@ public record ImovelPostDTO(
         Long idProprietario,
         List<Corretor> corretores,
         @NotNull(message = "O endereço é obrigatório")
-        EnderecoPostDTO enderecoPostDTO
+        EnderecoPostDTO endereco
 ) {
 }
