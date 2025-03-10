@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.service.UsuarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
@@ -34,6 +35,7 @@ public class UsuarioController implements GenericController{
             @RequestParam(value = "ativo", required = false) Boolean ativo,
             @RequestParam(value = "role", required = false) RoleEnum role,
             Pageable pageable) {
+        Page<Usuario> usuarios = service.buscarTodos(nome, ativo, role, pageable);
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }

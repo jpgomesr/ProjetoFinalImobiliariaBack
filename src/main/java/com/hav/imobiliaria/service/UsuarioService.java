@@ -7,7 +7,6 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
-import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import com.hav.imobiliaria.validator.UsuarioValidator;
@@ -58,16 +57,14 @@ public class UsuarioService {
         return repository.findAll(specs, pageable);
 
     }
-    public Page<Usuario> buscarUsuarioPorNome(String nome, Pageable pageable) {
-        return repository.findByNomeContaining(nome, pageable);
-    }
     public Usuario buscarPorId(Long id) {
         return repository.findById(id).get();
 
     }
     public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
 
-        Usuario entity = usuarioPostMapper.toEntity(dto);
+        Usuario entity = instanciandoUsuarioPostDtoPorRole(dto);
+
         this.validator.validar(entity);
 
         String url = null;
@@ -75,13 +72,14 @@ public class UsuarioService {
             url = s3Service.uploadArquivo(foto);
         }
         entity.setFoto(url);
-        entity = repository.save(entity);
-        return entity;
+        return repository.save(entity);
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
-        Usuario usuarioAtualizado = usuarioPutMapper.toEntity(dto);
+        Usuario usuarioAtualizado = instanciadoUsuarioPutDtoPorRole(dto);
+
         usuarioAtualizado.setId(id);
         this.validator.validar(usuarioAtualizado);
+        usuarioAtualizado.setId(null);
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
             if(usuarioJaSalvo.getFoto() != null){
@@ -94,9 +92,9 @@ public class UsuarioService {
         if(usuarioAtualizado.getSenha() == null){
             usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
         }
-        usuarioAtualizado.setId(id);
         usuarioAtualizado.setDeletado(false);
 
+        this.repository.deleteById(id);
         return repository.save(usuarioAtualizado);
 
     }
@@ -141,4 +139,33 @@ public class UsuarioService {
         this.repository.save(usuario);
 
     }
+    private Usuario instanciandoUsuarioPostDtoPorRole(UsuarioPostDTO dto) {
+
+        if(dto.role().equals(RoleEnum.CORRETOR)){
+            return usuarioPostMapper.toCorretorEntity(dto);
+        }
+        else if (dto.role().equals(RoleEnum.USUARIO)) {
+            return usuarioPostMapper.toUsuarioComumEntity(dto);
+        } else if (dto.role().equals(RoleEnum.EDITOR)) {
+            return  usuarioPostMapper.toEditorEntity(dto);
+        } else if (dto.role().equals(RoleEnum.ADMINISTRADOR)) {
+            return usuarioPostMapper.toAdministradorEntity(dto);
+        }
+        throw new RuntimeException("Role inválida");
+    }
+    private Usuario instanciadoUsuarioPutDtoPorRole(UsuarioPutDTO dto) {
+
+        if(dto.role().equals(RoleEnum.CORRETOR)){
+            return usuarioPutMapper.toCorretorEntity(dto);
+        }
+        else if (dto.role().equals(RoleEnum.USUARIO)) {
+            return usuarioPutMapper.toUsuarioComumEntity(dto);
+        } else if (dto.role().equals(RoleEnum.EDITOR)) {
+            return  usuarioPutMapper.toEditorEntity(dto);
+        } else if (dto.role().equals(RoleEnum.ADMINISTRADOR)) {
+            return usuarioPutMapper.toAdministradorEntity(dto);
+        }
+        throw new RuntimeException("Role inválida");
+    }
+
 }
