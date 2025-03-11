@@ -35,7 +35,6 @@ public class UsuarioController implements GenericController{
             @RequestParam(value = "ativo", required = false) Boolean ativo,
             @RequestParam(value = "role", required = false) RoleEnum role,
             Pageable pageable) {
-        Page<Usuario> usuarios = service.buscarTodos(nome, ativo, role, pageable);
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
