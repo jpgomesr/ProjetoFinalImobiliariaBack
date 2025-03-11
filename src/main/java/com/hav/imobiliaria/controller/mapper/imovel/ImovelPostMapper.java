@@ -1,8 +1,7 @@
 package com.hav.imobiliaria.controller.mapper.imovel;
 
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.repository.EnderecoRepository;
+import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.repository.ProprietarioRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +13,7 @@ public abstract class ImovelPostMapper {
     @Autowired
     protected ProprietarioRepository proprietarioRepository;
     @Mapping(target = "proprietario", expression = "java(proprietarioRepository.findById(imovel.idProprietario()).orElse(null))")
-    @Mapping(source = "enderecoPostDTO", target = "endereco")
+    @Mapping(source = "endereco", target = "endereco")
     public abstract Imovel toEntity(ImovelPostDTO imovel);
 
     public abstract ImovelPostDTO toDto(Imovel imovel);

@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.controller.dto.endereco;
 
-import com.hav.imobiliaria.model.TipoImovelEnum;
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 
 public record EnderecoGetDTO(
         Integer id,

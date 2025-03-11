@@ -1,10 +1,8 @@
 package com.hav.imobiliaria.controller.mapper.proprietario;
 
 
-import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import com.hav.imobiliaria.repository.EnderecoRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
+import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.service.UsuarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import jakarta.validation.Valid;
@@ -31,7 +33,7 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "ativo", required = false) Boolean ativo,
-            @RequestParam(value = "role", required = false) String role,
+            @RequestParam(value = "role", required = false) RoleEnum role,
             Pageable pageable) {
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
@@ -39,6 +41,11 @@ public class UsuarioController implements GenericController{
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
+    }
+    @GetMapping("/corretor/{id}")
+    public ResponseEntity<CorretorResponseDto> buscarPorCorretor(@PathVariable Long id) {
+
+        return ResponseEntity.ok(usuarioListagemResponseMapper.toCorretorResponseDto(service.buscarCorretor(id)));
     }
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
