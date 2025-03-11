@@ -68,16 +68,22 @@ public class ImovelService {
     }
 
     public Imovel atualizar(@Positive(message = "O id deve ser positivo") Long id,
-                                  ImovelPutDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException  {
+                            ImovelPutDTO dto,
+                            MultipartFile imagemPrincipal,
+                            List<MultipartFile> imagens,
+                            List<String> refImagensExcluidas) throws IOException  {
 
         Imovel imovelExistente = repository.findById(id).get();
         Imovel entity = imovelPutMapper.toEntity(dto);
         entity.setId(id);
         Endereco enderecoEntity = enderecoPutMapper.toEntity(dto.endereco());
         enderecoEntity.setId(imovelExistente.getEndereco().getId());
+        removerImagensImovel(refImagensExcluidas, imovelExistente);
+
         entity.setEndereco(enderecoEntity);
         entity.setImagens(imovelExistente.getImagens());
         entity.setDeletado(false);
+
         if(imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
@@ -102,6 +108,21 @@ public class ImovelService {
     }
     private void removerImagemPorReferencia(String referencia) {
         s3Service.excluirObjeto(referencia);
+
+    }
+    private void removerImagensImovel(List<String> referencia, Imovel imovel) {
+        if(referencia != null && !referencia.isEmpty()) {
+            for(String referenciaImovel : referencia) {
+                for (int i = 0; i < imovel.getImagens().size(); i++) {
+                    if(imovel.getImagens().get(i).getReferencia().equals(referenciaImovel)) {
+                        imovel.removeImagem(imovel.getImagens().get(i));
+                        s3Service.excluirObjeto(referencia);
+                    }
+                }
+            }
+        }
+
+
     }
 
     private ImagemImovel salvarImagemPrincipal(MultipartFile imagemPrincipal) throws IOException {
