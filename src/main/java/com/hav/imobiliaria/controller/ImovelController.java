@@ -78,7 +78,7 @@ public class ImovelController implements GenericController {
     }
     @PutMapping("{id}")
     public ResponseEntity<ImovelGetDTO> atualizar(@RequestPart("imovel") String imovelPutDTOJSON,
-                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
+                                                  @RequestParam(value = "refImagensDeletadas", required = false) List<String> refImagensDeletadas,                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
                                                   @RequestPart(value = "imagens", required = false) List<MultipartFile> imagens,
                                                   @PathVariable Long id) throws IOException, MethodArgumentNotValidException {
 
@@ -87,7 +87,7 @@ public class ImovelController implements GenericController {
         ImovelPutDTO imovelPutDTO = mapper.readValue(imovelPutDTOJSON, ImovelPutDTO.class);
         dtoValidator.validaDTO(ImovelPutDTO.class, imovelPutDTO, "ImovelPutDTO");
 
-        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.atualizar(id, imovelPutDTO, imagemCapa, imagens)));
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.atualizar(id, imovelPutDTO, imagemCapa, imagens,refImagensDeletadas)));
 
     }
     @PostMapping("/restaurar/{id}")
