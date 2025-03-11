@@ -3,6 +3,8 @@ package com.hav.imobiliaria.service;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPostMapper;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
@@ -41,25 +43,22 @@ public class ImovelService {
     private final ImovelGetMapper imovelGetMapper;
     private final ImovelPostMapper imovelPostMapper;
     private final ImovelPutMapper imovelPutMapper;
+    private EnderecoPostMapper enderecoPostMapper;
+    private EnderecoPutMapper enderecoPutMapper;
 
 
 
     public Imovel salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
-        Endereco enderecoSalvo = enderecoService.salvar(dto.endereco());
-
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
         List<ImagemImovel> imagensImovel = salvarImagens(imagens);
         imagensImovel.add(imagemPrincipalEntidade);
 
         Imovel entity = imovelPostMapper.toEntity(dto);
-
-        entity.setEndereco(enderecoSalvo);
+        entity.setEndereco(enderecoPostMapper.toEntity(dto.endereco()));
 
         entity.setImagens(imagensImovel);
 
         return  repository.save(entity);
-
-
     }
 
 
@@ -71,13 +70,12 @@ public class ImovelService {
     public Imovel atualizar(@Positive(message = "O id deve ser positivo") Long id,
                                   ImovelPutDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException  {
 
-
-
         Imovel imovelExistente = repository.findById(id).get();
-        Endereco enderecoAtualizado = enderecoService.atualizar(dto.endereco(), imovelExistente.getEndereco().getId());
         Imovel entity = imovelPutMapper.toEntity(dto);
         entity.setId(id);
-        entity.setEndereco(enderecoAtualizado);
+        Endereco enderecoEntity = enderecoPutMapper.toEntity(dto.endereco());
+        enderecoEntity.setId(imovelExistente.getEndereco().getId());
+        entity.setEndereco(enderecoEntity);
         entity.setImagens(imovelExistente.getImagens());
         entity.setDeletado(false);
         if(imagemPrincipal != null) {
@@ -131,26 +129,27 @@ public class ImovelService {
 
     private void atualizarImagemPrincipalImovel(Imovel imovel, MultipartFile imagemPrincipal) throws IOException {
 
-            for (ImagemImovel imagem : imovel.getImagens()) {
-                if(imagem.getImagemCapa()){
-                    removerImagemPorReferencia(imagem.getReferencia());
-                }
+        for (ImagemImovel imagem : imovel.getImagens()) {
+            if(imagem.getImagemCapa()){
+                removerImagemPorReferencia(imagem.getReferencia());
             }
-            ImagemImovel imagemImovel = salvarImagemPrincipal(imagemPrincipal);
-            imovel.addImagem(imagemImovel);
+        }
+        ImagemImovel imagemImovel = salvarImagemPrincipal(imagemPrincipal);
+        imovel.addImagem(imagemImovel);
 
 
     }
     private void atualizarImagens(Imovel imovel, List<MultipartFile> imagens) throws IOException {
 
 
-            if(imovel.getImagens().size() + imagens.size() <= 4){
-                List<ImagemImovel> imagensImovel = salvarImagens(imagens);
-                imagensImovel.forEach(imovel::addImagem);
-            }
+        if(imovel.getImagens().size() + imagens.size() <= 4){
+            List<ImagemImovel> imagensImovel = salvarImagens(imagens);
+            imagensImovel.forEach(imovel::addImagem);
+        }
 
 
     }
+
 
     public void restaurarImagem(Long id) {
         Imovel imovel = this.repository.findById(id).get();

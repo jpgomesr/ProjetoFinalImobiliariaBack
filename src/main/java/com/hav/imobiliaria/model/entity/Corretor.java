@@ -13,7 +13,8 @@ import java.util.List;
 @Setter
 public class Corretor extends Usuario{
 
-    @ManyToMany(mappedBy = "corretores") // Refere-se ao atributo 'corretores' na classe Imovel
+    @ManyToMany(mappedBy = "corretores")
+    // Refere-se ao atributo 'corretores' na classe Imovel
     private List<Imovel> imoveis;
 
 

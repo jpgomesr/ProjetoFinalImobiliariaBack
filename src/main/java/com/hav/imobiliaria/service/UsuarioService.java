@@ -77,10 +77,14 @@ public class UsuarioService {
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
         Usuario usuarioAtualizado = instanciadoUsuarioPutDtoPorRole(dto);
-
+        Usuario usuarioSalvo = buscarPorId(id);
         usuarioAtualizado.setId(id);
         this.validator.validar(usuarioAtualizado);
-        usuarioAtualizado.setId(null);
+        if(!usuarioSalvo.getRole().equals(usuarioAtualizado.getRole())) {
+            usuarioAtualizado.setId(null);
+            excluirReferenciaImovelCorretor(id);
+
+        }
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
             if(usuarioJaSalvo.getFoto() != null){
@@ -94,8 +98,9 @@ public class UsuarioService {
             usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
         }
         usuarioAtualizado.setDeletado(false);
-
-        this.repository.deleteById(id);
+        if(usuarioAtualizado.getId() == null){
+            this.repository.deleteById(id);
+        }
         return repository.save(usuarioAtualizado);
 
     }
@@ -176,5 +181,14 @@ public class UsuarioService {
             return (Corretor) usuario;
         }
         throw new RuntimeException("O usuário informado não é um corretor");
+    }
+    public void excluirReferenciaImovelCorretor(Long id) {
+        Usuario usuario = this.repository.findById(id).get();
+
+        if(usuario.getRole().equals(RoleEnum.CORRETOR)){
+            ((Corretor) usuario).getImoveis().forEach(i -> {
+               i.getCorretores().remove(usuario);
+            });
+        }
     }
 }

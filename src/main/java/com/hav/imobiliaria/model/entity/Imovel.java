@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table
 @Data
-public class    Imovel {
+public class   Imovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,7 +62,7 @@ public class    Imovel {
     @Enumerated(EnumType.STRING)
     private TipoBunnerEnum tipoBanner;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_imovel")
     private List<ImagemImovel> imagens;
 
@@ -75,15 +75,15 @@ public class    Imovel {
     @JoinColumn(name = "id_proprietario", nullable = false)
     private Proprietario proprietario;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
-            name = "imovel_corretor", // Nome da tabela de junção
-            joinColumns = @JoinColumn(name = "id_imovel"), // Coluna que referencia o Imovel
-            inverseJoinColumns = @JoinColumn(name = "id_corretor") // Coluna que referencia o Corretor
+            name = "imovel_corretor",
+            joinColumns = @JoinColumn(name = "id_imovel"),
+            inverseJoinColumns = @JoinColumn(name = "id_corretor")
     )
     private List<Corretor> corretores;
 
