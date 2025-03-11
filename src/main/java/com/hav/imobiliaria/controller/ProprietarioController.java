@@ -7,7 +7,7 @@ import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioRespostaUnicaMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioListagemMapper;
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import com.hav.imobiliaria.service.ProprietarioService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import lombok.AllArgsConstructor;

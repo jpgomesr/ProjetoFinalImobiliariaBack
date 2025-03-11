@@ -2,7 +2,7 @@ package com.hav.imobiliaria.controller.mapper.proprietario;
 
 
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

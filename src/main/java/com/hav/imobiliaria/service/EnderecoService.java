@@ -6,7 +6,7 @@ import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPostMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
-import com.hav.imobiliaria.model.Endereco;
+import com.hav.imobiliaria.model.entity.Endereco;
 import com.hav.imobiliaria.repository.EnderecoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

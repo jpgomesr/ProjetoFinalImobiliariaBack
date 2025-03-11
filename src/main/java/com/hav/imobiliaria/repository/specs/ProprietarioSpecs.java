@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.repository.specs;
 
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProprietarioSpecs {

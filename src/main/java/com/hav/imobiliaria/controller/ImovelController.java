@@ -1,35 +1,25 @@
 package com.hav.imobiliaria.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
-import com.hav.imobiliaria.model.Endereco;
-import com.hav.imobiliaria.model.Imovel;
-import com.hav.imobiliaria.model.TipoFinalidadeEnum;
-import com.hav.imobiliaria.model.TipoImovelEnum;
+import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.service.ImovelService;
 import com.hav.imobiliaria.validator.DtoValidator;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("imoveis")
@@ -37,9 +27,10 @@ import java.util.Set;
 public class ImovelController implements GenericController {
     private final ImovelService service;
     private final DtoValidator dtoValidator;
+    private final ImovelGetMapper imovelGetMapper;
 
     @GetMapping
-    public ResponseEntity<Page<ImovelGetDTO>> listarImoveis(
+    public ResponseEntity<Page<ImovelListagemDTO>> listarImoveis(
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "tamanho", required = false) Integer tamanho,
             @RequestParam(value = "titulo", required = false) String titulo,
@@ -57,16 +48,16 @@ public class ImovelController implements GenericController {
     ) {
 
 
-        Page<ImovelGetDTO> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+        Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
                 qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pagina, tamanhoPagina);
 
 
-        return ResponseEntity.ok(paginaResultadoDto);
+        return ResponseEntity.ok(paginaResultadoDto.map(imovelGetMapper::toImovelListagemDto));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ImovelGetDTO> buscarPorId(@PathVariable Long id){
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.buscarPorId(id)));
     }
     @PostMapping
     public ResponseEntity<ImovelGetDTO> cadastrar(@RequestPart("imovel") String imovelPostDtoJSON,
@@ -75,18 +66,19 @@ public class ImovelController implements GenericController {
     ) throws IOException, MethodArgumentNotValidException {
 
 
-
         ObjectMapper mapper = new ObjectMapper();
         ImovelPostDTO imovelPostDTO = mapper.readValue(imovelPostDtoJSON, ImovelPostDTO.class);
 
         dtoValidator.validaDTO(ImovelPostDTO.class,imovelPostDTO,"ImovelPostDto");
 
-        return ResponseEntity.ok(service.salvar(imovelPostDTO,imagemPrincipal, imagens));
+        System.out.println(imovelPostDTO + "\n");
+
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.salvar(imovelPostDTO,imagemPrincipal, imagens)));
 
     }
     @PutMapping("{id}")
     public ResponseEntity<ImovelGetDTO> atualizar(@RequestPart("imovel") String imovelPutDTOJSON,
-                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
+                                                  @RequestParam(value = "refImagensDeletadas", required = false) List<String> refImagensDeletadas,                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
                                                   @RequestPart(value = "imagens", required = false) List<MultipartFile> imagens,
                                                   @PathVariable Long id) throws IOException, MethodArgumentNotValidException {
 
@@ -94,9 +86,8 @@ public class ImovelController implements GenericController {
         ObjectMapper mapper = new ObjectMapper();
         ImovelPutDTO imovelPutDTO = mapper.readValue(imovelPutDTOJSON, ImovelPutDTO.class);
         dtoValidator.validaDTO(ImovelPutDTO.class, imovelPutDTO, "ImovelPutDTO");
-        ImovelGetDTO imovelAtualizado = service.atualizar(id, imovelPutDTO, imagemCapa, imagens);
 
-        return ResponseEntity.ok(imovelAtualizado);
+        return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.atualizar(id, imovelPutDTO, imagemCapa, imagens,refImagensDeletadas)));
 
     }
     @PostMapping("/restaurar/{id}")
