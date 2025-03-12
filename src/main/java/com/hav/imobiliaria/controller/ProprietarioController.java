@@ -1,10 +1,8 @@
 package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioRespostaUnicaDTO;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioListagemDTO;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
-import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
+import com.hav.imobiliaria.controller.dto.proprietario.*;
+import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioRespostaUnicaMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioListagemMapper;
 import com.hav.imobiliaria.model.entity.Proprietario;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/proprietarios")
@@ -29,6 +28,7 @@ public class ProprietarioController implements GenericController {
     private final DtoValidator dtoValidator;
     private final ProprietarioRespostaUnicaMapper proprietarioRespostaUnicaMapper;
     private final ProprietarioListagemMapper proprietarioListagemMapper;
+    private final ProprietarioListaSelectResponseMapper proprietarioListaSelectResponseMapper;
 
 
     @GetMapping
@@ -85,6 +85,10 @@ public class ProprietarioController implements GenericController {
         this.service.restaurarUsuario(id);
 
         return  ResponseEntity.ok().build();
+    }
+    @GetMapping("/lista-select")
+    public ResponseEntity<List<ProprietarioListaSelectResponseDTO>> listarProprietarios(){
+        return  ResponseEntity.ok(this.service.buscarTodos().stream().map(proprietarioListaSelectResponseMapper::toDto).toList());
     }
 
 
