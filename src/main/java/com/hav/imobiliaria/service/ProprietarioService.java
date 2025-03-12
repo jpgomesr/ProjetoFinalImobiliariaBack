@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -106,5 +107,8 @@ public class ProprietarioService {
 
 
         return repository.findAll(specs, pageable);
+    }
+    public List<Proprietario> buscarTodos(){
+        return repository.findAll();
     }
 }

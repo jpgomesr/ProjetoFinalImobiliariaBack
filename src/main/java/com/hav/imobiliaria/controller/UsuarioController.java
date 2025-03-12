@@ -2,6 +2,7 @@ package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.usuario.*;
+import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
 import com.hav.imobiliaria.model.entity.Usuario;
@@ -18,12 +19,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
 @AllArgsConstructor
 public class UsuarioController implements GenericController{
 
+    private final UsuarioListaSelectResponseMapper usuarioListaSelectResponseMapper;
     private UsuarioService service;
     private DtoValidator  dtoValidator;
     private final UsuarioGetMapper usuarioGetMapper;
@@ -92,6 +95,12 @@ public class UsuarioController implements GenericController{
         this.service.removerImagemUsuario(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/corretores-lista-select")
+    public ResponseEntity<List<UsuarioListaSelectResponseDTO>> listarCorretoresListaSelect(){
+        List<Usuario> usuarios = this.service.buscarCorretorListagem();
+        return  ResponseEntity.ok(usuarios.stream().map(usuarioListaSelectResponseMapper::toDto).toList());
+    }
+
 //    @PatchMapping("/alterarSenha/{id}")
 //    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
 //                                             @PathVariable Long id) {
