@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
 import com.hav.imobiliaria.model.enums.RoleEnum;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,13 +17,13 @@ public record UsuarioPostDTO(
         @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
         @NotBlank(message = "A senha é obrigatória")
         String senha,
+        @Nullable
         @Pattern(regexp = "^[0-9]{11}$", message = "O telefone deve conter exatamente 11 dígitos numéricos")
         String telefone,
         @Size(max = 500, message = "A mensagem deve conter até 500 caracteres")
         String descricao,
         @NotNull(message = "A role é obrigatória")
         RoleEnum role,
-        @NotNull(message = "O usuario precisa ter um status")
         Boolean ativo
 ) {
 }

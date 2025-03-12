@@ -83,7 +83,6 @@ public class UsuarioService {
         if(!usuarioSalvo.getRole().equals(usuarioAtualizado.getRole())) {
             usuarioAtualizado.setId(null);
             excluirReferenciaImovelCorretor(id);
-
         }
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){

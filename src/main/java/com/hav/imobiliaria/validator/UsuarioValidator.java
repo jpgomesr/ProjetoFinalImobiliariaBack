@@ -19,9 +19,9 @@ public class UsuarioValidator {
         if (existeEmailCadastrado(usuario)){
             throw new EmailJaCadastradoException();
         }
-        if (existeTelefoneCadastrado(usuario)){
-            throw new TelefoneJaCadastradoException();
-        }
+//        if (existeTelefoneCadastrado(usuario)){
+//            throw new TelefoneJaCadastradoException();
+//        }
         emailInvalido(usuario.getEmail());
     }
 
@@ -38,12 +38,12 @@ public class UsuarioValidator {
                 stream().anyMatch(id -> !id.equals(usuario.getId()));
     }
 
-    private boolean existeTelefoneCadastrado(Usuario usuario){
-        Optional<Usuario> usuarioOptional = this.repository.findByTelefone(usuario.getTelefone());
-        if(usuario.getId() == null){
-            return usuarioOptional.isPresent();
-        }
-        return usuarioOptional.map(Usuario::getId).stream()
-                .anyMatch(id -> !id.equals(usuario.getId()));
-    }
+//    private boolean existeTelefoneCadastrado(Usuario usuario){
+//        Optional<Usuario> usuarioOptional = this.repository.findByTelefone(usuario.getTelefone());
+//        if(usuario.getId() == null){
+//            return usuarioOptional.isPresent();
+//        }
+//        return usuarioOptional.map(Usuario::getId).stream()
+//                .anyMatch(id -> !id.equals(usuario.getId()));
+//    }
 }
