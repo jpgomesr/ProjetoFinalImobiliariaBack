@@ -2,20 +2,24 @@ spring:
   application:
     name: hav.imobiliaria
   datasource:
-    urL: jdbc:mysql://localhost:3306/db_hav?createDatabaseIfNotExist=true
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:file:C:/Users/carlos_kviatkowsky/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
+    driverClassName: org.h2.Driver  # Driver do H2
+    username: sa  # Usuário padrão do H2
+    password: password  # Senha padrão do H2
+  h2:
+    console:
+      enabled: true  # Habilita o console do H2
+      path: /h2-console  # Caminho para acessar o console
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect  # Dialeto do Hibernate para H2
     hibernate:
       ddl-auto: update
-    show-sql: true
   servlet:
     multipart:
       max-request-size: 20MB
       max-file-size: 20MB
 server:
-  port: 8081
+  port: 8082
 aws:
   access-key: AKIA2AUOPIM3J2WOGT5N
   secret-key: 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
