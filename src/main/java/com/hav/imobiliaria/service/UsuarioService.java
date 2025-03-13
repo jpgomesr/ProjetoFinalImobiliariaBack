@@ -1,11 +1,14 @@
 package com.hav.imobiliaria.service;
 
+import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.model.entity.Corretor;
+import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
@@ -35,6 +38,7 @@ public class UsuarioService {
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
+    private final ImovelService imovelService;
 
     public Page<Usuario> buscarTodos(
             String nome,
@@ -193,5 +197,23 @@ public class UsuarioService {
     }
     public List<Usuario> buscarCorretorListagem(){
         return  this.repository.findByRole(RoleEnum.CORRETOR);
+    }
+
+    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable ) {
+        Usuario usuario = this.buscarPorId(id);
+        return  usuario.getImoveisFavoritosPaginados(pageable);
+    }
+
+    public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {
+        Usuario usuario = this.buscarPorId(idUsuario);
+        Imovel imovel = this.imovelService.buscarPorId(idImovel);
+
+        usuario.adicionarImovelFavorito(imovel);
+        this.repository.save(usuario);
+
+    }
+    public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
+        Usuario usuario = this.buscarPorId(idUsuario);
+        usuario.removerImovelFavorito(idImovel);
     }
 }

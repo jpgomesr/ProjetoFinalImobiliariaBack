@@ -3,8 +3,13 @@ package com.hav.imobiliaria.model.entity;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import software.amazon.awssdk.core.util.PaginatorUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -44,10 +49,30 @@ public class Usuario {
     @Column
     private LocalDateTime dataDelecao;
 
+    @ManyToMany
+    @JoinTable(
+            name = "imovel_favorito_usuario",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_imovel")
+    )
+    private List<Imovel> imoveisFavoritados;
+
     @PrePersist
     public void prePersist() {
         if (ativo == null) {
             ativo = true;
         }
     }
+    public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
+        return  new PageImpl<>(this.getImoveisFavoritados(), pageable, this.getImoveisFavoritados().size());
+    }
+    public void  adicionarImovelFavorito(Imovel imovel) {
+        if(this.imoveisFavoritados.contains(imovel)) {
+            this.imoveisFavoritados.add(imovel);
+        }
+    }
+    public void removerImovelFavorito(Long id) {
+        imoveisFavoritados.removeIf(i -> i.getId().equals(id));
+    }
+
 }

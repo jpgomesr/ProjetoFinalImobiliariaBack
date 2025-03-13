@@ -1,10 +1,13 @@
 package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.*;
+import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
+import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.service.UsuarioService;
@@ -13,6 +16,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +36,8 @@ public class UsuarioController implements GenericController{
     private DtoValidator  dtoValidator;
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioListagemResponseMapper usuarioListagemResponseMapper;
+    private final ImovelGetMapper imovelGetMapper;
+
 
     @GetMapping
     public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
@@ -99,6 +106,28 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<List<UsuarioListaSelectResponseDTO>> listarCorretoresListaSelect(){
         List<Usuario> usuarios = this.service.buscarCorretorListagem();
         return  ResponseEntity.ok(usuarios.stream().map(usuarioListaSelectResponseMapper::toDto).toList());
+    }
+    @GetMapping("favoritos/{id}")
+    public ResponseEntity<Page<ImovelListagemDTO>> listarFavoritos(@PathVariable Long id, Pageable pageable) {
+        Page<Imovel> imoveis = this.service.buscarImoveisFavoritados(id, pageable);
+
+        return ResponseEntity.ok(imoveis.map(imovelGetMapper::toImovelListagemDto));
+    }
+    @PostMapping("favoritos")
+    public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel,
+                                                           @RequestParam Long idUsuario){
+
+        this.service.adicionarImovelFavorito(idImovel,idUsuario);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @DeleteMapping("favoritos")
+    public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel,
+                                                @RequestParam Long idUsuario){
+
+        this.service.remocarImovelFavorito(idImovel,idUsuario);
+        return ResponseEntity.noContent().build();
+
     }
 
 //    @PatchMapping("/alterarSenha/{id}")
