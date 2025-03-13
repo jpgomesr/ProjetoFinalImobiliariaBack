@@ -51,7 +51,9 @@ public class ImovelController implements GenericController {
 
 
         Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+
                 qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo, pageable);
+
 
 
         return ResponseEntity.ok(paginaResultadoDto.map(imovelGetMapper::toImovelListagemDto));

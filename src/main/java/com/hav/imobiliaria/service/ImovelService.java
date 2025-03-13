@@ -193,6 +193,7 @@ public class ImovelService {
                                        String cidade,
                                        String bairro,
                                        Boolean ativo,
+
                                        Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -234,7 +235,7 @@ public class ImovelService {
             specs = specs.and(ImovelSpecs.ativo(ativo));
         }
 
-
         return repository.findAll(specs,pageable );
+
     }
 }
