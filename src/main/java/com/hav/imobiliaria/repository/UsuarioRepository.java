@@ -28,7 +28,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByTelefone(String telefone);
 
-    List<Usuario> findByDeletadoFalse();
+    List<Usuario> findByAtivoTrue();
 
     List<Usuario> findByRole(RoleEnum role);
 

@@ -67,7 +67,6 @@ public class ProprietarioService {
         else {
             entity.setImagemUrl(proprietarioExistente.getImagemUrl());
         }
-        entity.setDeletado(false);
         return repository.save(entity);
 
     }
@@ -75,7 +74,7 @@ public class ProprietarioService {
     public void removerPorId(Long id) {
         Proprietario proprietario = this.repository.findById(id).get();
 
-        proprietario.setDeletado(true);
+        proprietario.setAtivo(false);
         proprietario.setDataDelecao(LocalDateTime.now());
 
         this.repository.save(proprietario);
@@ -85,12 +84,12 @@ public class ProprietarioService {
 
     public void restaurarUsuario(Long id) {
         Proprietario proprietario = this.repository.findById(id).get();
-        proprietario.setDeletado(false);
+        proprietario.setAtivo(true);
         proprietario.setDataDelecao(null);
 
         this.repository.save(proprietario);
     }
-    public Page<Proprietario> pesquisa(String nome, String cpf, String email, Pageable pageable) {
+    public Page<Proprietario> pesquisa(String nome, String cpf, String email, Boolean ativo, Pageable pageable) {
 
         Specification<Proprietario> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
@@ -103,8 +102,9 @@ public class ProprietarioService {
         if (email != null && !email.isEmpty()) {
             specs = specs.and(ProprietarioSpecs.emailLike(email));
         }
-        specs = specs.and(ProprietarioSpecs.deletadoFalse());
-
+        if (ativo != null) {
+            specs = specs.and(ProprietarioSpecs.ativo(ativo));
+        }
 
         return repository.findAll(specs, pageable);
     }

@@ -36,10 +36,12 @@ public class ProprietarioController implements GenericController {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "cpf", required = false) String cpf,
             @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "ativo", required = false) Boolean ativo,
+
             Pageable pageable
     ) {
 
-        Page<Proprietario> paginaResultado = service.pesquisa(nome, cpf, email,pageable);
+        Page<Proprietario> paginaResultado = service.pesquisa(nome, cpf, email,ativo,pageable);
         return ResponseEntity.ok(paginaResultado.map(proprietarioListagemMapper::toDTO));
     }
 
