@@ -44,12 +44,13 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "cidade", required = false) String cidade,
             @RequestParam(value = "bairro", required = false) String bairro,
             @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
-            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina,
+            @RequestParam(value = "ativo") Boolean ativo
     ) {
 
 
         Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
-                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pagina, tamanhoPagina);
+                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo,pagina, tamanhoPagina);
 
 
         return ResponseEntity.ok(paginaResultadoDto.map(imovelGetMapper::toImovelListagemDto));

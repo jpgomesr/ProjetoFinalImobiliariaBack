@@ -59,4 +59,8 @@ public class ImovelSpecs {
     public static Specification<Imovel> qtdBanheirosEqual(Integer qtdBanheiros) {
         return (root, query, cb) -> cb.equal(root.get("qtdBanheiros"), qtdBanheiros);
     }
+
+    public static Specification<Imovel> ativo(Boolean ativo) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("ativo"), ativo);
+    }
 }

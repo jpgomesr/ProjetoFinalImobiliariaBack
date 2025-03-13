@@ -50,7 +50,9 @@ public record ImovelPostDTO(
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
         List<Corretor> corretores,
+        Boolean ativo,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO endereco
+
 ) {
 }
