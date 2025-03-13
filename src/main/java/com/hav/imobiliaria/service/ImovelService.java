@@ -82,7 +82,7 @@ public class ImovelService {
 
         entity.setEndereco(enderecoEntity);
         entity.setImagens(imovelExistente.getImagens());
-        entity.setDeletado(false);
+        entity.setAtivo(dto.ativo());
 
         if(imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
@@ -94,7 +94,7 @@ public class ImovelService {
     }
     public void removerPorId(Long id) {
         Imovel imovel = this.repository.findById(id).get();
-        imovel.setDeletado(true);
+        imovel.setAtivo(false);
         imovel.setDataDelecao(LocalDateTime.now());
 
         this.repository.save(imovel);
@@ -175,7 +175,7 @@ public class ImovelService {
     public void restaurarImagem(Long id) {
         Imovel imovel = this.repository.findById(id).get();
 
-        imovel.setDeletado(false);
+        imovel.setAtivo(true);
         imovel.setDataDelecao(null);
 
         this.repository.save(imovel);
@@ -192,6 +192,8 @@ public class ImovelService {
                                        TipoFinalidadeEnum finalidade,
                                        String cidade,
                                        String bairro,
+                                       Boolean ativo,
+
                                        Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -229,8 +231,11 @@ public class ImovelService {
         if (cidade != null) {
             specs = specs.and(ImovelSpecs.enderecoCidadeEqual(cidade));
         }
+        if(ativo != null){
+            specs = specs.and(ImovelSpecs.ativo(ativo));
+        }
 
+        return repository.findAll(specs,pageable );
 
-        return repository.findAll(specs, pageable);
     }
 }

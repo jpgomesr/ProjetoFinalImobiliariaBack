@@ -1,6 +1,15 @@
 spring:
   application:
     name: hav.imobiliaria
+#  datasource:
+#    urL: jdbc:mysql://localhost:3306/db_hav?createDatabaseIfNotExist=true
+#    username: root
+#    password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
   datasource:
     url: jdbc:h2:file:C:/Users/carlos_kviatkowsky/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
     driverClassName: org.h2.Driver  # Driver do H2

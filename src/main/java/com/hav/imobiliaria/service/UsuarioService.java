@@ -54,7 +54,7 @@ public class UsuarioService {
         if (role != null) {
             specs = specs.and(UsuarioSpecs.roleUsuario(role));
         }
-        specs = specs.and(UsuarioSpecs.naoDeletado());
+
 
         return repository.findAll(specs, pageable);
 
@@ -97,7 +97,7 @@ public class UsuarioService {
         if(usuarioAtualizado.getSenha() == null){
             usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
         }
-        usuarioAtualizado.setDeletado(false);
+
         if(usuarioAtualizado.getId() == null){
             this.repository.deleteById(id);
         }
@@ -111,7 +111,7 @@ public class UsuarioService {
 //            if(usuario.getFoto() != null){
 //                this.s3Service.excluirObjeto(usuario.getFoto());
 //            }
-            usuario.setDeletado(true);
+            usuario.setAtivo(false);
             usuario.setDataDelecao(LocalDateTime.now());
             this.repository.save(usuario);
         }
@@ -127,7 +127,7 @@ public class UsuarioService {
 
         Usuario usuario = this.buscarPorId(id);
 
-        usuario.setDeletado(false);
+        usuario.setAtivo(true);
         usuario.setDataDelecao(null);
         this.repository.save(usuario);
     }

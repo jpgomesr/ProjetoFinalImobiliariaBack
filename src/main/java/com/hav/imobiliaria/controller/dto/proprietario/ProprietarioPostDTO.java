@@ -21,6 +21,8 @@ public record ProprietarioPostDTO (
         @Email
         @NotNull
         String email,
+        @NotNull
+        Boolean ativo,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO enderecoPostDTO
 ){
