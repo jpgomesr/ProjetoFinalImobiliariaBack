@@ -54,6 +54,7 @@ public record ImovelPutDTO(
         Long idProprietario,
         @NotNull
         List<Corretor> corretores,
+        Boolean ativo,
         @NotNull
         EnderecoPutDTO endereco
 ) {

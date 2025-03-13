@@ -1,29 +1,28 @@
 spring:
   application:
     name: hav.imobiliaria
-
-  datasource:
-    urL: jdbc:mysql://localhost:3306/db_hav?createDatabaseIfNotExist=true
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
 #  datasource:
-#    url: jdbc:h2:file:C:/Users/carlos_kviatkowsky/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
-#    driverClassName: org.h2.Driver  # Driver do H2
-#    username: sa  # Usuário padrão do H2
-#    password: password  # Senha padrão do H2
-#  h2:
-#    console:
-#      enabled: true  # Habilita o console do H2
-#      path: /h2-console  # Caminho para acessar o console
+#    urL: jdbc:mysql://localhost:3306/db_hav?createDatabaseIfNotExist=true
+#    username: root
+#    password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 #  jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect  # Dialeto do Hibernate para H2
 #    hibernate:
 #      ddl-auto: update
+#    show-sql: true
+  datasource:
+    url: jdbc:h2:file:C:/Users/carlos_kviatkowsky/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
+    driverClassName: org.h2.Driver  # Driver do H2
+    username: sa  # Usuário padrão do H2
+    password: password  # Senha padrão do H2
+  h2:
+    console:
+      enabled: true  # Habilita o console do H2
+      path: /h2-console  # Caminho para acessar o console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect  # Dialeto do Hibernate para H2
+    hibernate:
+      ddl-auto: update
   servlet:
     multipart:
       max-request-size: 20MB
