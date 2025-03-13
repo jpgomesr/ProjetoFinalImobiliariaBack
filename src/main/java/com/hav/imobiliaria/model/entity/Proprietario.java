@@ -34,7 +34,7 @@ public class Proprietario {
     private Endereco endereco;
 
     @Column
-    private Boolean deletado;
+    private Boolean ativo;
 
     @Column
     private LocalDateTime dataDelecao;
@@ -42,10 +42,4 @@ public class Proprietario {
     @Column(length = 150)
     private String imagemUrl;
 
-    @PrePersist
-    public void prePersist() {
-        if(this.deletado == null) {
-            deletado = false;
-        }
-    }
 }
