@@ -13,6 +13,7 @@ import com.hav.imobiliaria.service.ImovelService;
 import com.hav.imobiliaria.validator.DtoValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -43,13 +44,12 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "finalidade", required = false) TipoFinalidadeEnum finalidade,
             @RequestParam(value = "cidade", required = false) String cidade,
             @RequestParam(value = "bairro", required = false) String bairro,
-            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
-            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
+            Pageable pageable
     ) {
 
 
         Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
-                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pagina, tamanhoPagina);
+                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, pageable);
 
 
         return ResponseEntity.ok(paginaResultadoDto.map(imovelGetMapper::toImovelListagemDto));
