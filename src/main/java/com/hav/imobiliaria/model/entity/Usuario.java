@@ -42,18 +42,12 @@ public class Usuario {
     private Boolean ativo;
 
     @Column
-    private Boolean deletado;
-
-    @Column
     private LocalDateTime dataDelecao;
 
     @PrePersist
     public void prePersist() {
         if (ativo == null) {
             ativo = true;
-        }
-        if (deletado == null) {
-            deletado = false;
         }
     }
 }

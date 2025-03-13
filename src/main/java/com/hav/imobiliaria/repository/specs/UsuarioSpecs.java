@@ -18,8 +18,6 @@ public class UsuarioSpecs {
     public static Specification<Usuario> roleUsuario(RoleEnum role) {
         return (root, query, cb) -> cb.equal(root.get("role"), role);
     }
-    public static Specification<Usuario> naoDeletado() {
-        return (root, query, cb) -> cb.equal(root.get("deletado"), false);
-    }
+
 
 }

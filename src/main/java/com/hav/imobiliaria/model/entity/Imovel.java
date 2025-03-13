@@ -89,7 +89,7 @@ public class   Imovel {
 
 
     @Column
-    private Boolean deletado;
+    private Boolean ativo;
 
     @Column
     private LocalDateTime dataDelecao;
@@ -107,8 +107,8 @@ public class   Imovel {
 
     @PrePersist
     public void prePersist() {
-        if(this.deletado == null) {
-            deletado = false;
+        if(this.ativo == null) {
+            ativo = true;
         }
     }
 
