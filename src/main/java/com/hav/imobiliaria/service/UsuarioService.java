@@ -196,7 +196,7 @@ public class UsuarioService {
         }
     }
     public List<Usuario> buscarCorretorListagem(){
-        return  this.repository.findByRole(RoleEnum.CORRETOR);
+        return  this.repository.findByRoleAndAtivoTrue(RoleEnum.CORRETOR);
     }
 
     public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable ) {
