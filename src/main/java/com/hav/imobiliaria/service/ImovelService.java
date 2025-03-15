@@ -19,6 +19,7 @@ import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -198,10 +199,10 @@ public class ImovelService {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
-        if (titulo != null) {
+        if (StringUtils.isNotBlank(titulo)) {
             specs = specs.and(ImovelSpecs.tituloLike(titulo));
         }
-        if (descricao != null) {
+        if (StringUtils.isNotBlank(descricao)) {
             specs = specs.and(ImovelSpecs.descricaoLike(descricao));
         }
         if (tipoResidencia != null) {
@@ -225,10 +226,10 @@ public class ImovelService {
         if (finalidade != null) {
             specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
         }
-        if (bairro != null) {
+        if (StringUtils.isNotBlank(bairro)) {
             specs = specs.and(ImovelSpecs.enderecoBairroEqual(bairro));
         }
-        if (cidade != null) {
+        if (StringUtils.isNotBlank(cidade)) {
             specs = specs.and(ImovelSpecs.enderecoCidadeEqual(cidade));
         }
         if(ativo != null){
@@ -236,6 +237,5 @@ public class ImovelService {
         }
 
         return repository.findAll(specs,pageable );
-
     }
 }
