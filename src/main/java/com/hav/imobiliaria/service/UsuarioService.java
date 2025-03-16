@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -53,19 +54,23 @@ public class UsuarioService {
             specs = specs.and(UsuarioSpecs.nomeLike(nome));
         }
         if (ativo != null) {
+            System.out.println(ativo);
             specs = specs.and(UsuarioSpecs.usuarioAtivo(ativo));
         }
         if (role != null) {
             specs = specs.and(UsuarioSpecs.roleUsuario(role));
         }
+        System.out.println(repository.findAll(specs, pageable));
 
 
         return repository.findAll(specs, pageable);
-
     }
     public Usuario buscarPorId(Long id) {
         return repository.findById(id).get();
 
+    }
+    public List<Long> buscarIdUsuarios(){
+        return repository.findAll().stream().map(Usuario::getId).toList();
     }
     public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
 
