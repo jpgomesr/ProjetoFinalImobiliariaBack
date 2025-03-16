@@ -27,12 +27,12 @@ public class EnderecoService {
 
     public Set<String> buscarCidades(String estado){
 
-        return enderecoRepository.findDistinctByEstado(estado).stream().map(Endereco::getCidade).collect(Collectors.toSet());
+        return enderecoRepository.buscarCidadesDeUmEstado(estado);
     }
 
     public Set<String> buscarBarrosPorCidade(String cidade){
 
-        return enderecoRepository.findDistinctByCidade(cidade).stream().map(Endereco::getBairro).collect(Collectors.toSet());
+        return enderecoRepository.buscarBairrosDeUmaCidade(cidade);
     }
     public Set<String> buscarEstados(){
         return enderecoRepository.findAll().stream().map(Endereco::getEstado).collect(Collectors.toSet());

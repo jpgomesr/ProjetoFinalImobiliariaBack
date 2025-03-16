@@ -17,21 +17,38 @@ public class ImovelSpecs {
     }
 
     public static Specification<Imovel> tipoResidenciaEqual(TipoImovelEnum tipoResidencia) {
-        return (root, query, cb) -> cb.equal(root.get("tipoResidencia"), tipoResidencia);
+        return (root, query, cb) -> cb.equal(root.join("endereco").get("tipoResidencia"), tipoResidencia);
     }
 
-    public static Specification<Imovel> tamanhoEqual(Integer tamanho) {
-        return (root, query, cb) -> cb.equal(root.get("tamanho"), tamanho);
+    public static Specification<Imovel> tamanhoBeetween(Integer tamanhoMinimo, Integer tamanhoMaximo) {
+        return (root, query, cb) -> cb.between(root.get("tamanho"), tamanhoMinimo, tamanhoMaximo);
+    }
+    public static Specification<Imovel> tamanhoMin(Integer tamanhoMinimo) {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("tamanho"), tamanhoMinimo);
+    }
+    public static Specification<Imovel> tamanhoMax(Integer tamanhoMaximo) {
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("tamanho"), tamanhoMaximo);
     }
 
     public static Specification<Imovel> qtdQuartosEqual(Integer qtdQuartos) {
         return (root, query, cb) -> {
-            System.out.println("Filtrando por qtdQuartos: " + qtdQuartos);
             return cb.equal(root.get("qtdQuartos"), qtdQuartos);
         };
     }
+    public static Specification<Imovel> qtdQuartosEqualOrGratherThan(Integer qtdQuartos) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("qtdQuartos"), qtdQuartos);
+    }
+    public static Specification<Imovel> qtdGaragemEqualOrGratherThan(Integer qtdGaragem) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("qtdGaragens"), qtdGaragem);
+    }
     public static Specification<Imovel> precoBetween(Double precoMin, Double precoMax) {
         return (root, query, cb) -> cb.between(root.get("preco"), precoMin, precoMax);
+    }
+    public static Specification<Imovel> precoMin(Double precoMin) {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("preco"), precoMin);
+    }
+    public static Specification<Imovel> precoMax(Double precoMin) {
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("preco"), precoMin);
     }
 
     public static Specification<Imovel> finalidadeEqual(TipoFinalidadeEnum finalidade) {
@@ -44,11 +61,12 @@ public class ImovelSpecs {
 
 
     public static Specification<Imovel> enderecoBairroEqual(String bairro) {
-        return (root, query, cb) -> cb.equal(root.get("endereco").get("bairro"), bairro);
+        return (root, query, cb) -> cb.equal(cb.upper(root.get("endereco").get("bairro")), bairro.toUpperCase());
     }
 
     public static Specification<Imovel> enderecoCidadeEqual(String cidade) {
-        return (root, query, cb) -> cb.equal(root.get("endereco").get("cidade"), cidade);
+        System.out.println(cidade.toUpperCase());
+        return (root, query, cb) -> cb.equal(cb.upper(root.get("endereco").get("cidade")), cidade.toUpperCase());
     }
 
 
@@ -63,4 +81,6 @@ public class ImovelSpecs {
     public static Specification<Imovel> ativo(Boolean ativo) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("ativo"), ativo);
     }
+
+
 }

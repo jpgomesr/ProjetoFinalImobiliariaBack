@@ -2,6 +2,7 @@ package com.hav.imobiliaria.model.entity;
 
 import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Table
 @Data
-public class   Imovel {
+public class  Imovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,6 +70,7 @@ public class   Imovel {
     private Double iptu;
 
     private Double valorCondominio;
+
 
 
     @ManyToOne
