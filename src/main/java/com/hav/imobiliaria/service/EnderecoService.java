@@ -13,40 +13,29 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class EnderecoService {
 
-    private EnderecoRepository repository;
-    private EnderecoGetMapper enderecoGetMapper;
-    private EnderecoPostMapper enderecoPostMapper;
-    private EnderecoPutMapper enderecoPutMapper;
+
+    public final EnderecoRepository enderecoRepository;
 
 
-    public Page<EnderecoGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findAll(pageable).map(enderecoGetMapper::toDto);
+    public Set<String> buscarCidades(String estado){
+
+        return enderecoRepository.findDistinctByEstado(estado).stream().map(Endereco::getCidade).collect(Collectors.toSet());
     }
 
-    public EnderecoGetDTO buscarPorId(Long id) {
-        EnderecoGetDTO dto = enderecoGetMapper.toDto(repository.findById(id).get());
-        return dto;
+    public Set<String> buscarBarrosPorCidade(String cidade){
+
+        return enderecoRepository.findDistinctByCidade(cidade).stream().map(Endereco::getBairro).collect(Collectors.toSet());
+    }
+    public Set<String> buscarEstados(){
+        return enderecoRepository.findAll().stream().map(Endereco::getEstado).collect(Collectors.toSet());
     }
 
-    public Endereco salvar(EnderecoPostDTO dto) {
-        Endereco entity = enderecoPostMapper.toEntity(dto);
-
-        entity = repository.save(entity);
-        return entity;
-    }
-
-    public Endereco atualizar(EnderecoPutDTO dto, Long id) {
-        Endereco entity = enderecoPutMapper.toEntity(dto);
-        entity.setId(id);
-        entity = repository.save(entity);
-        return entity;
-    }
-
-    public void removerPorId(Long id) {
-        repository.deleteById(id);
-    }
 }
