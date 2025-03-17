@@ -170,10 +170,10 @@ public class ImovelService {
     private void atualizarImagens(Imovel imovel, List<MultipartFile> imagens) throws IOException {
 
 
-        if (imovel.getImagens().size() + imagens.size() <= 4) {
+
             List<ImagemImovel> imagensImovel = salvarImagens(imagens);
             imagensImovel.forEach(imovel::addImagem);
-        }
+
 
 
     }
