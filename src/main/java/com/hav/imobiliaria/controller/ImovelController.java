@@ -47,7 +47,7 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "cidade", required = false) String cidade,
             @RequestParam(value = "bairro", required = false) String bairro,
             @RequestParam(value = "destaque", required = false) Boolean destaque,
-            @RequestParam(value = "condicoesEspecias", required = false) Boolean condicoesEspecias,
+            @RequestParam(value = "condicoesEspeciais", required = false) Boolean condicoesEspecias,
             @PageableDefault(page = 0, size = 10) Pageable pageable,
             @RequestParam(value = "ativo") Boolean ativo
     ) {
