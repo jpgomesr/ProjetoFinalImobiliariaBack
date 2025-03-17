@@ -255,7 +255,7 @@ public class ImovelService {
             specs = specs.and(ImovelSpecs.precoMin(precoMin));
         }
         else if (precoMax != null && precoMax != 0) {
-            specs.and(ImovelSpecs.precoMax(precoMax));
+            specs = specs.and(ImovelSpecs.precoMax(precoMax));
         }
         if (finalidade != null) {
             specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));

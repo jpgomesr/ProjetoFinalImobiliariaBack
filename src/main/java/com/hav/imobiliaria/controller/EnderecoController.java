@@ -32,13 +32,12 @@ public class EnderecoController {
     private ResponseEntity<Set<String>>buscarBairros(@PathVariable String cidade){
         String cidadeFormatada = cidade.replace("-"," ");
 
-        System.out.println(cidadeFormatada);
         return ResponseEntity.ok(service.buscarBarrosPorCidade(cidadeFormatada));
     }
-    @GetMapping("estados")
-    private ResponseEntity<Set<String>>buscarBairros(){
-
-        return ResponseEntity.ok(service.buscarEstados());
-    }
+//    @GetMapping("estados")
+//    private ResponseEntity<Set<String>>buscarBairros(){
+//
+//        return ResponseEntity.ok(service.buscarEstados());
+//    }
 
 }

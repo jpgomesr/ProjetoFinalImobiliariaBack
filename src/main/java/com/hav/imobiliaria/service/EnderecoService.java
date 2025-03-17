@@ -26,13 +26,13 @@ public class EnderecoService {
 
 
     public Set<String> buscarCidades(String estado){
-
-        return enderecoRepository.buscarCidadesDeUmEstado(estado);
+        System.out.println(enderecoRepository.buscarCidadesDeUmEstado("Santa Catarina"));
+        return enderecoRepository.buscarCidadesDeUmEstado(estado.toLowerCase());
     }
 
     public Set<String> buscarBarrosPorCidade(String cidade){
 
-        return enderecoRepository.buscarBairrosDeUmaCidade(cidade);
+        return enderecoRepository.buscarBairrosDeUmaCidade(cidade.toLowerCase());
     }
     public Set<String> buscarEstados(){
         return enderecoRepository.findAll().stream().map(Endereco::getEstado).collect(Collectors.toSet());

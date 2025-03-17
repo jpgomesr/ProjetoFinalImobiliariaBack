@@ -13,11 +13,11 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
     Boolean existsByBairroAndCidadeAndEstadoAndCepAndRua(String bairro, String cidade,
                                                          String estado, String cep, String rua);
 
-    @Query("SELECT distinct e.bairro from Endereco e join Imovel i on i.endereco.id = e.id where e.cidade = ?1")
+    @Query("SELECT distinct e.bairro from Endereco e join Imovel i on i.endereco.id = e.id where lower(e.cidade)  = ?1")
     Set<String> buscarBairrosDeUmaCidade(String cidade);
 
 
-    @Query("SELECT  distinct e.cidade  from Endereco e join Imovel i  on i.endereco.id = e.id where e.estado = ?1")
+    @Query("SELECT  distinct e.cidade  from Endereco e join Imovel i  on i.endereco.id = e.id where lower( e.estado) = ?1")
     Set<String> buscarCidadesDeUmEstado(String estado);
 
 
