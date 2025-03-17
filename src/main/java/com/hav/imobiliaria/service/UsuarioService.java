@@ -221,4 +221,7 @@ public class UsuarioService {
         Usuario usuario = this.buscarPorId(idUsuario);
         usuario.removerImovelFavorito(idImovel);
     }
+    public List<Usuario> buscarPorRole(String role) {
+        return repository.buscarPorRole(role);
+    }
 }
