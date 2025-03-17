@@ -5,6 +5,8 @@ import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 @Entity
 @Table
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class  Imovel {
 
     @Id
@@ -70,6 +73,9 @@ public class  Imovel {
     private Double iptu;
 
     private Double valorCondominio;
+
+    @CreatedDate
+    private LocalDateTime dataCadastro;
 
 
 
