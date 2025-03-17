@@ -2,7 +2,6 @@ package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPostDTO;
 import com.hav.imobiliaria.controller.dto.proprietario.ProprietarioPutDTO;
-import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPostMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.proprietario.ProprietarioPostMapper;
@@ -22,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -110,5 +110,9 @@ public class ProprietarioService {
     }
     public List<Proprietario> buscarTodos(){
         return repository.findAll();
+    }
+
+    public List<Long> buscarIdProprietarios() {
+        return repository.findAll().stream().map(Proprietario::getId).collect(Collectors.toList());
     }
 }

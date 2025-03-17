@@ -129,6 +129,10 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.noContent().build();
 
     }
+    @GetMapping("lista-id-usuarios")
+    public ResponseEntity<List<Long>> listarIdUsuario(){
+        return ResponseEntity.ok(service.buscarIdUsuarios());
+    }
 
 //    @PatchMapping("/alterarSenha/{id}")
 //    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,

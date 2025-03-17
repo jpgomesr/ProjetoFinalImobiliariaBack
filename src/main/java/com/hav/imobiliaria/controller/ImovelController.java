@@ -34,14 +34,15 @@ public class ImovelController implements GenericController {
     @GetMapping
     public ResponseEntity<Page<ImovelListagemDTO>> listarImoveis(
             @RequestParam(value = "descricao", required = false) String descricao,
-            @RequestParam(value = "tamanho", required = false) Integer tamanho,
+            @RequestParam(value = "tamanhoMinimo", required = false) Integer tamanhoMinimo,
+            @RequestParam(value = "tamanhoMaximo", required = false) Integer tamanhoMaximo,
             @RequestParam(value = "titulo", required = false) String titulo,
             @RequestParam(value = "tipoResidencia", required = false) TipoImovelEnum tipoResidencia,
             @RequestParam(value = "qtdQuartos", required = false) Integer qtdQuartos,
             @RequestParam(value = "qtdBanheiros", required = false) Integer qtdBanheiros,
             @RequestParam(value = "qtdGaragens", required = false) Integer qtdGaragens,
-            @RequestParam(value = "precoMin", required = false) Double precoMin,
-            @RequestParam(value = "precoMax", required = false) Double precoMax,
+            @RequestParam(value = "precoMinimo", required = false) Double precoMin,
+            @RequestParam(value = "precoMaximo", required = false) Double precoMax,
             @RequestParam(value = "finalidade", required = false) TipoFinalidadeEnum finalidade,
             @RequestParam(value = "cidade", required = false) String cidade,
             @RequestParam(value = "bairro", required = false) String bairro,
@@ -50,7 +51,7 @@ public class ImovelController implements GenericController {
     ) {
 
 
-        Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanho, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+        Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
 
                 qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo, pageable);
 
@@ -114,5 +115,9 @@ public class ImovelController implements GenericController {
         this.service.removerImagemPorIdImagem(id);
 
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/ids-imoveis")
+    public ResponseEntity<List<Long>> listarImoveis(){
+        return  ResponseEntity.ok(service.buscarTodosIds());
     }
 }
