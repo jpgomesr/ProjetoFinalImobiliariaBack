@@ -11,7 +11,7 @@ spring:
 #      ddl-auto: update
 #    show-sql: true
   datasource:
-    url: jdbc:h2:file:C:/Users/carlos_kviatkowsky/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
+    url: jdbc:h2:file:C:/Users/pedro_scholemberg/db_hav;AUTO_SERVER=TRUE  # URL do banco de dados H2 em memória
     driverClassName: org.h2.Driver  # Driver do H2
     username: sa  # Usuário padrão do H2
     password: password  # Senha padrão do H2
