@@ -11,6 +11,9 @@ import java.util.List;
 @DiscriminatorValue("USUARIO")
 public class UsuarioComum extends Usuario {
 
+    @OneToMany(mappedBy = "usuarioComum")
+    List<Agendamento> agendamentos;
+
 
 
 }

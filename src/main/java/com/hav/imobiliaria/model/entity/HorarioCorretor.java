@@ -2,12 +2,14 @@ package com.hav.imobiliaria.model.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "horarios_corretor")
-public class HorariosCorretor {
+@Table(name = "horario_corretor")
+@Data
+public class HorarioCorretor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,4 +17,8 @@ public class HorariosCorretor {
 
     @Column
     private LocalDateTime dataHora;
+
+    @ManyToOne
+    @JoinColumn
+    private Corretor corretor;
 }

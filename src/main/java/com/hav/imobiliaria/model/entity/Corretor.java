@@ -1,7 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +16,10 @@ public class Corretor extends Usuario{
     // Refere-se ao atributo 'corretores' na classe Imovel
     private List<Imovel> imoveis;
 
+    @OneToMany(mappedBy = "corretor")
+    private List<HorarioCorretor> horariosCorretor;
+
+    @OneToMany(mappedBy = "corretor")
+    private List<Agendamento> agendamentos;
 
 }
