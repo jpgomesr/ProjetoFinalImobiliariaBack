@@ -13,4 +13,6 @@ public interface ImovelRepository extends JpaRepository<Imovel, Long> {
 
     Page<Imovel> findAll(Specification<Imovel> specs, Pageable pageableRequest);
 
+
+
 }

@@ -92,6 +92,10 @@ public class ProprietarioController implements GenericController {
     public ResponseEntity<List<ProprietarioListaSelectResponseDTO>> listarProprietarios(){
         return  ResponseEntity.ok(this.service.buscarTodos().stream().map(proprietarioListaSelectResponseMapper::toDto).toList());
     }
+    @GetMapping("lista-id-proprietarios")
+    public ResponseEntity<List<Long>> listarIdUsuario(){
+        return ResponseEntity.ok(service.buscarIdProprietarios());
+    }
 
 
 
