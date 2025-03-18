@@ -202,7 +202,8 @@ public class ImovelService {
                                  String cidade,
                                  String bairro,
                                  Boolean ativo,
-
+                                 Boolean destaque,
+                                 Boolean condicoesEspeciais,
                                  Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -226,6 +227,12 @@ public class ImovelService {
                 specs = specs.and(ImovelSpecs.qtdQuartosEqualOrGratherThan(qtdQuartos));
             }
 
+        }
+        if(destaque != null && destaque){
+            specs = specs.and(ImovelSpecs.permitirDestaqueEqual(destaque));
+        }
+        if (condicoesEspeciais != null && condicoesEspeciais) {
+            specs = specs.and(ImovelSpecs.condicoesEspeciais(condicoesEspeciais));
         }
         if (tamanhoMinimo != null && tamanhoMinimo != 0 && tamanhoMaximo != null && tamanhoMaximo != 0) {
             specs = specs.and(ImovelSpecs.tamanhoBeetween(tamanhoMinimo, tamanhoMaximo));
