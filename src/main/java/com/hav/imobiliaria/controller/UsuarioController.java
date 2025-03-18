@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.ApresentacaoCorretorGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
@@ -37,6 +38,7 @@ public class UsuarioController implements GenericController{
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioListagemResponseMapper usuarioListagemResponseMapper;
     private final ImovelGetMapper imovelGetMapper;
+    private final ApresentacaoCorretorGetMapper apresentacaoCorretorGetMapper;
 
 
     @GetMapping
@@ -128,6 +130,15 @@ public class UsuarioController implements GenericController{
         this.service.remocarImovelFavorito(idImovel,idUsuario);
         return ResponseEntity.noContent().build();
 
+    }
+    @GetMapping("lista-id-usuarios")
+    public ResponseEntity<List<Long>> listarIdUsuario(){
+        return ResponseEntity.ok(service.buscarIdUsuarios());
+    }
+
+    @GetMapping("/corretorApresentacao/{role}")
+    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable String role) {
+        return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
 
 //    @PatchMapping("/alterarSenha/{id}")

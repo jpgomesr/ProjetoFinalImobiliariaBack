@@ -30,9 +30,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByAtivoTrue();
 
-    List<Usuario> findByRole(RoleEnum role);
+    List<Usuario> findByRoleAndAtivoTrue(RoleEnum role);
 
     Page<Usuario> findAll(Specification<Usuario> specs, Pageable pageable);
 
-
+    @Query("SELECT u FROM Usuario u WHERE u.role = :role")
+    List<Usuario> buscarPorRole(@Param("role") String role);
 }

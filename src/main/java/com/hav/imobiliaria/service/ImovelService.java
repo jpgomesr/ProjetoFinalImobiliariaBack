@@ -19,6 +19,7 @@ import com.hav.imobiliaria.repository.specs.ImovelSpecs;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -47,7 +49,6 @@ public class ImovelService {
     private EnderecoPutMapper enderecoPutMapper;
 
 
-
     public Imovel salvar(ImovelPostDTO dto, MultipartFile imagemPrincipal, List<MultipartFile> imagens) throws IOException {
         ImagemImovel imagemPrincipalEntidade = salvarImagemPrincipal(imagemPrincipal);
         List<ImagemImovel> imagensImovel = salvarImagens(imagens);
@@ -58,7 +59,7 @@ public class ImovelService {
 
         entity.setImagens(imagensImovel);
 
-        return  repository.save(entity);
+        return repository.save(entity);
     }
 
 
@@ -71,7 +72,7 @@ public class ImovelService {
                             ImovelPutDTO dto,
                             MultipartFile imagemPrincipal,
                             List<MultipartFile> imagens,
-                            List<String> refImagensExcluidas) throws IOException  {
+                            List<String> refImagensExcluidas) throws IOException {
 
         Imovel imovelExistente = repository.findById(id).get();
         Imovel entity = imovelPutMapper.toEntity(dto);
@@ -84,14 +85,15 @@ public class ImovelService {
         entity.setImagens(imovelExistente.getImagens());
         entity.setAtivo(dto.ativo());
 
-        if(imagemPrincipal != null) {
+        if (imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
-        if(imagens != null) {
+        if (imagens != null) {
             atualizarImagens(entity, imagens);
         }
         return repository.save(entity);
     }
+
     public void removerPorId(Long id) {
         Imovel imovel = this.repository.findById(id).get();
         imovel.setAtivo(false);
@@ -99,6 +101,7 @@ public class ImovelService {
 
         this.repository.save(imovel);
     }
+
     public void removerImagemPorIdImagem(Long idImagem) {
 
         ImagemImovel imagemImovel = this.imagemImovelRepository.findById(idImagem).get();
@@ -106,15 +109,17 @@ public class ImovelService {
         this.imagemImovelRepository.deleteById(idImagem);
 
     }
+
     private void removerImagemPorReferencia(String referencia) {
         s3Service.excluirObjeto(referencia);
 
     }
+
     private void removerImagensImovel(List<String> referencia, Imovel imovel) {
-        if(referencia != null && !referencia.isEmpty()) {
-            for(String referenciaImovel : referencia) {
+        if (referencia != null && !referencia.isEmpty()) {
+            for (String referenciaImovel : referencia) {
                 for (int i = 0; i < imovel.getImagens().size(); i++) {
-                    if(imovel.getImagens().get(i).getReferencia().equals(referenciaImovel)) {
+                    if (imovel.getImagens().get(i).getReferencia().equals(referenciaImovel)) {
                         imovel.removeImagem(imovel.getImagens().get(i));
                         s3Service.excluirObjeto(referencia);
                     }
@@ -135,6 +140,7 @@ public class ImovelService {
 
         return imagemImovelRepository.save(imagemPrincipalEntidade);
     }
+
     private List<ImagemImovel> salvarImagens(List<MultipartFile> imagens) throws IOException {
         List<ImagemImovel> imagensImovel = new ArrayList<>();
         for (MultipartFile arquivo : imagens) {
@@ -151,7 +157,7 @@ public class ImovelService {
     private void atualizarImagemPrincipalImovel(Imovel imovel, MultipartFile imagemPrincipal) throws IOException {
 
         for (ImagemImovel imagem : imovel.getImagens()) {
-            if(imagem.getImagemCapa()){
+            if (imagem.getImagemCapa()) {
                 removerImagemPorReferencia(imagem.getReferencia());
             }
         }
@@ -160,13 +166,14 @@ public class ImovelService {
 
 
     }
+
     private void atualizarImagens(Imovel imovel, List<MultipartFile> imagens) throws IOException {
 
 
-        if(imovel.getImagens().size() + imagens.size() <= 4){
+
             List<ImagemImovel> imagensImovel = salvarImagens(imagens);
             imagensImovel.forEach(imovel::addImagem);
-        }
+
 
 
     }
@@ -180,62 +187,100 @@ public class ImovelService {
 
         this.repository.save(imovel);
     }
-    public Page<Imovel> pesquisa(String descricao,
-                                       Integer tamanho,
-                                       String titulo,
-                                       TipoImovelEnum tipoResidencia,
-                                       Integer qtdBanheiros,
-                                       Integer qtdQuartos,
-                                       Integer qtdGaragens,
-                                       Double precoMin,
-                                       Double precoMax,
-                                       TipoFinalidadeEnum finalidade,
-                                       String cidade,
-                                       String bairro,
-                                       Boolean ativo,
 
-                                       Pageable pageable) {
+    public Page<Imovel> pesquisa(String descricao,
+                                 Integer tamanhoMinimo,
+                                 Integer tamanhoMaximo,
+                                 String titulo,
+                                 TipoImovelEnum tipoResidencia,
+                                 Integer qtdBanheiros,
+                                 Integer qtdQuartos,
+                                 Integer qtdGaragens,
+                                 Double precoMin,
+                                 Double precoMax,
+                                 TipoFinalidadeEnum finalidade,
+                                 String cidade,
+                                 String bairro,
+                                 Boolean ativo,
+                                 Boolean destaque,
+                                 Boolean condicoesEspeciais,
+                                 Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
-        if (titulo != null) {
+        cidade = cidade.replace("-", " ");
+        bairro = bairro.replace("-", " ");
+
+        if (StringUtils.isNotBlank(titulo)) {
             specs = specs.and(ImovelSpecs.tituloLike(titulo));
         }
-        if (descricao != null) {
+        if (StringUtils.isNotBlank(descricao)) {
             specs = specs.and(ImovelSpecs.descricaoLike(descricao));
         }
         if (tipoResidencia != null) {
             specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
         }
-        if (qtdQuartos != null) {
-            specs = specs.and(ImovelSpecs.qtdQuartosEqual(qtdQuartos));
+        if (qtdQuartos != null && qtdQuartos != 0) {
+            if(qtdQuartos < 4){
+                specs = specs.and(ImovelSpecs.qtdQuartosEqual(qtdQuartos));
+            }else {
+                specs = specs.and(ImovelSpecs.qtdQuartosEqualOrGratherThan(qtdQuartos));
+            }
+
         }
-        if (tamanho != null) {
-            specs = specs.and(ImovelSpecs.tamanhoEqual(tamanho));
+        if(destaque != null && destaque){
+            specs = specs.and(ImovelSpecs.permitirDestaqueEqual(destaque));
         }
-        if (qtdGaragens != null) {
-            specs = specs.and(ImovelSpecs.qtdGaragensEqual(qtdGaragens));
+        if (condicoesEspeciais != null && condicoesEspeciais) {
+            specs = specs.and(ImovelSpecs.condicoesEspeciais(condicoesEspeciais));
         }
-        if (qtdBanheiros != null) {
+        if (tamanhoMinimo != null && tamanhoMinimo != 0 && tamanhoMaximo != null && tamanhoMaximo != 0) {
+            specs = specs.and(ImovelSpecs.tamanhoBeetween(tamanhoMinimo, tamanhoMaximo));
+        }
+        else if (tamanhoMinimo != null && tamanhoMinimo != 0) {
+            specs = specs.and(ImovelSpecs.tamanhoMin(tamanhoMinimo));
+        }
+        else if (tamanhoMaximo != null && tamanhoMaximo != 0) {
+            specs = specs.and(ImovelSpecs.tamanhoMax(tamanhoMaximo));
+        }
+
+        if (qtdGaragens != null && qtdGaragens != 0) {
+            if(qtdGaragens < 4){
+                specs = specs.and(ImovelSpecs.qtdGaragensEqual(qtdGaragens));
+            }
+            else {
+                specs = specs.and(ImovelSpecs.qtdGaragemEqualOrGratherThan(qtdGaragens));
+            }
+        }
+        if (qtdBanheiros != null && qtdBanheiros != 0) {
             specs = specs.and(ImovelSpecs.qtdBanheirosEqual(qtdBanheiros));
         }
-        if (precoMin != null && precoMax != null) {
+        if (precoMin != null && precoMin != 0 && precoMax != null && precoMax != 0) {
             specs = specs.and(ImovelSpecs.precoBetween(precoMin, precoMax));
+        }
+        else if (precoMin != null && precoMin != 0) {
+            specs = specs.and(ImovelSpecs.precoMin(precoMin));
+        }
+        else if (precoMax != null && precoMax != 0) {
+            specs = specs.and(ImovelSpecs.precoMax(precoMax));
         }
         if (finalidade != null) {
             specs = specs.and(ImovelSpecs.finalidadeEqual(finalidade));
         }
-        if (bairro != null) {
+        if (StringUtils.isNotBlank(bairro)) {
             specs = specs.and(ImovelSpecs.enderecoBairroEqual(bairro));
         }
-        if (cidade != null) {
+        if (StringUtils.isNotBlank(cidade)) {
             specs = specs.and(ImovelSpecs.enderecoCidadeEqual(cidade));
         }
-        if(ativo != null){
+        if (ativo != null) {
             specs = specs.and(ImovelSpecs.ativo(ativo));
         }
 
-        return repository.findAll(specs,pageable );
+        return repository.findAll(specs, pageable);
+    }
 
+    public List<Long> buscarTodosIds() {
+        return repository.findAll().stream().map(Imovel::getId).collect(Collectors.toList());
     }
 }
