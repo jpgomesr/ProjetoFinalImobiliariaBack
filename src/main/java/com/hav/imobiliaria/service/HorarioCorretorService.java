@@ -24,11 +24,14 @@ public class HorarioCorretorService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+
     public void atualizar(HorarioCorretorPatchDTO horarioCorretorPatchDTO, Long id) {
         HorarioCorretor horarioCorretor = repository.findById(id).get();
         horarioCorretor.setDataHora(horarioCorretorPatchDTO.horario());
         repository.save(horarioCorretor);
     }
+
 
 
 }
