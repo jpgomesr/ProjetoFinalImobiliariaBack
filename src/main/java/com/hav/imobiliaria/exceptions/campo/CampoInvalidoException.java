@@ -1,4 +1,4 @@
-package com.hav.imobiliaria.exceptions;
+package com.hav.imobiliaria.exceptions.campo;
 
 import lombok.Getter;
 
