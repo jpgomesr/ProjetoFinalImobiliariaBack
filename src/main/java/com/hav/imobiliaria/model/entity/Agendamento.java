@@ -1,11 +1,13 @@
 package com.hav.imobiliaria.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "agendamento")
+@Data
 public class Agendamento {
 
     @Id
@@ -15,7 +17,7 @@ public class Agendamento {
     @Column
     private LocalDateTime dataHora;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_imovel")
     private Imovel imovel;
 
