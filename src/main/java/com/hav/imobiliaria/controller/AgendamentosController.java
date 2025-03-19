@@ -14,9 +14,12 @@ public class AgendamentosController {
     @PostMapping("horarios")
     public ResponseEntity<Void> agendarHorario(HorarioCorretorPostDTO horarioCorretorPostDTO) {
 
-
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
+    @PostMapping()
+    public ResponseEntity<Void> agendarVisita(){
+        
+    }
+
 
 }

@@ -17,7 +17,7 @@ public class Corretor extends Usuario{
     private List<Imovel> imoveis;
 
     @OneToMany(mappedBy = "corretor")
-    private List<HorarioCorretor> horariosCorretor;
+    private List<HorarioCorretor> horarios;
 
     @OneToMany(mappedBy = "corretor")
     private List<Agendamento> agendamentos;
