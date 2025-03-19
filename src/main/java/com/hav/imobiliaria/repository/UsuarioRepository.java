@@ -35,5 +35,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Page<Usuario> findAll(Specification<Usuario> specs, Pageable pageable);
 
     @Query("SELECT u FROM Usuario u WHERE u.role = :role")
-    List<Usuario> buscarPorRole(@Param("role") String role);
+    List<Usuario> buscarPorRole(@Param("role") RoleEnum role);
 }

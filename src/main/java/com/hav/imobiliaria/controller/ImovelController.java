@@ -5,7 +5,10 @@ import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
+import com.hav.imobiliaria.controller.dto.usuario.CorretorResponseDto;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.model.entity.Corretor;
+import com.hav.imobiliaria.model.entity.HorarioCorretor;
 import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
@@ -122,4 +125,7 @@ public class ImovelController implements GenericController {
     public ResponseEntity<List<Long>> listarImoveis(){
         return  ResponseEntity.ok(service.buscarTodosIds());
     }
+
+
+
 }

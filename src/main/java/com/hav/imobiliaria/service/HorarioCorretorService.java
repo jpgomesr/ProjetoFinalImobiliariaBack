@@ -7,6 +7,8 @@ import com.hav.imobiliaria.repository.HorarioCorretorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class HorarioCorretorService {
@@ -27,6 +29,8 @@ public class HorarioCorretorService {
 
 
     public void atualizar(HorarioCorretorPatchDTO horarioCorretorPatchDTO, Long id) {
+
+
         HorarioCorretor horarioCorretor = repository.findById(id).get();
         horarioCorretor.setDataHora(horarioCorretorPatchDTO.horario());
         repository.save(horarioCorretor);

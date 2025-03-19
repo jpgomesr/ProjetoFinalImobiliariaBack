@@ -137,9 +137,10 @@ public class UsuarioController implements GenericController{
     }
 
     @GetMapping("/corretorApresentacao/{role}")
-    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable String role) {
+    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
+
 
 //    @PatchMapping("/alterarSenha/{id}")
 //    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
