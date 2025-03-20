@@ -36,7 +36,7 @@ public class AgendamentosController {
     @GetMapping("/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(
             @PathVariable Long id,
-            @RequestParam(required = false) StatusAgendamentoEnum status,
+            @RequestParam(required = false, name = "status") StatusAgendamentoEnum status,
             @RequestParam(required = false) LocalDate data,
             Pageable pageable) {
 
