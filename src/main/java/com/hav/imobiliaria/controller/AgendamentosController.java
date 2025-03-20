@@ -5,6 +5,7 @@ import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPostDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.model.entity.Agendamento;
+import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.service.AgendamentoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,16 +38,30 @@ public class AgendamentosController {
         Page<Agendamento> agendamentos = service.listarAgendamentosCorretorId(pageable,id);
 
         Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
-            return  new AgendamentoListagemDTO(agendamento.getDataHora(),
+            return  new AgendamentoListagemDTO(
+                    agendamento.getId(),
+                    agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
                     agendamento.getCorretor().getNome(),
                     agendamento.getImovel().getId(),
-                    agendamento.getImovel().getImagens().getFirst().getReferencia());
+                    agendamento.getImovel().getImagens().getFirst().getReferencia(),
+                    agendamento.getStatus());
         });
 
         return  ResponseEntity.ok(agendamentoListagemDTOS);
+    }
+    @PatchMapping("{id}")
+    public ResponseEntity<Void> alterarStatus(@PathVariable Long id,
+                                              @RequestParam StatusAgendamentoEnum status){
+
+        this.service.atualizarStatus(id, status);
+
+        return ResponseEntity.noContent().build();
 
     }
+
+
+
 
 
 }

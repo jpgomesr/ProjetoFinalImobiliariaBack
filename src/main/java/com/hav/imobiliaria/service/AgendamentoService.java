@@ -1,12 +1,14 @@
 package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
-import com.hav.imobiliaria.exceptions.TipoUsuarioIncorretoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.AgendamentoInexistenteException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.TipoUsuarioIncorretoException;
 import com.hav.imobiliaria.model.entity.Agendamento;
 import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.entity.UsuarioComum;
 import com.hav.imobiliaria.model.enums.RoleEnum;
+import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -52,8 +54,20 @@ public class AgendamentoService {
     public Page<Agendamento> listarAgendamentosCorretorId(Pageable pageable, Long idCorretor) {
 
        return repository.findByCorretorId(idCorretor, pageable);
-
     }
 
 
+    public void atualizarStatus(Long id, StatusAgendamentoEnum status) {
+
+        if(!this.repository.existsById(id)){
+            throw new AgendamentoInexistenteException();
+        }
+        repository.findById(id).ifPresent(agendamento -> {
+            agendamento.setStatus(status);
+            repository.save(agendamento);
+        });
+
+
+
+    }
 }
