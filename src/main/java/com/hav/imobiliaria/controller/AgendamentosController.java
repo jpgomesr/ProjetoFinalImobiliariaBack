@@ -3,8 +3,12 @@ package com.hav.imobiliaria.controller;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoListagemDTO;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPostDTO;
+import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
+import com.hav.imobiliaria.model.entity.Agendamento;
 import com.hav.imobiliaria.service.AgendamentoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +21,10 @@ import java.util.List;
 public class AgendamentosController {
 
     private final AgendamentoService service;
+    private final EnderecoGetMapper enderecoGetMapper;
 
 
-    @PostMapping("horarios")
-    public ResponseEntity<Void> agendarHorario(HorarioCorretorPostDTO horarioCorretorPostDTO) {
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
     @PostMapping
     public ResponseEntity<Void> agendarVisita(@RequestBody AgendamentoPostDto agendamentoPostDto) {
         this.service.salvarAgendamento(agendamentoPostDto);
@@ -31,9 +32,19 @@ public class AgendamentosController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public List<AgendamentoListagemDTO> buscarAgendamentosCorretor(@PathVariable Long id){
+    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(@PathVariable Long id, Pageable pageable) {
 
+        Page<Agendamento> agendamentos = service.listarAgendamentosCorretorId(pageable,id);
 
+        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
+            return  new AgendamentoListagemDTO(agendamento.getDataHora(),
+                    enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
+                    agendamento.getCorretor().getNome(),
+                    agendamento.getImovel().getId(),
+                    agendamento.getImovel().getImagens().getFirst().getReferencia());
+        });
+
+        return  ResponseEntity.ok(agendamentoListagemDTOS);
 
     }
 

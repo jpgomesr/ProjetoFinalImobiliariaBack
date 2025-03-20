@@ -10,6 +10,8 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,6 +47,11 @@ public class AgendamentoService {
         agendamento.setDataHora(agendamentoPostDto.dataHora());
 
         repository.save(agendamento);
+    }
+
+    public Page<Agendamento> listarAgendamentosCorretorId(Pageable pageable, Long idCorretor) {
+
+       return repository.findByCorretorId(idCorretor, pageable);
 
     }
 
