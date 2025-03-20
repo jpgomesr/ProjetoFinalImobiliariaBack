@@ -1,15 +1,15 @@
 package com.hav.imobiliaria.controller;
 
+import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoListagemDTO;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPostDTO;
 import com.hav.imobiliaria.service.AgendamentoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -29,6 +29,12 @@ public class AgendamentosController {
         this.service.salvarAgendamento(agendamentoPostDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @GetMapping("/{id}")
+    public List<AgendamentoListagemDTO> buscarAgendamentosCorretor(@PathVariable Long id){
+
+
+
     }
 
 
