@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
-import com.hav.imobiliaria.exceptions.HorarioCorretorInvalidoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.HorarioCorretorInvalidoException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

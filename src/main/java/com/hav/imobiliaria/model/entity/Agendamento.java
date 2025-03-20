@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,5 +30,14 @@ public class Agendamento {
     @JoinColumn(name = "id_usuario")
     private UsuarioComum usuarioComum;
 
-    
+
+    private StatusAgendamentoEnum status;
+
+
+    @PrePersist
+    public void prePersist(){
+        if(status == null){
+            status = StatusAgendamentoEnum.PENDENTE;
+        }
+    }
 }
