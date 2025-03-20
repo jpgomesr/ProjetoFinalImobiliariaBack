@@ -10,11 +10,15 @@ import com.hav.imobiliaria.model.entity.UsuarioComum;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
+import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 @AllArgsConstructor
@@ -51,9 +55,24 @@ public class AgendamentoService {
         repository.save(agendamento);
     }
 
-    public Page<Agendamento> listarAgendamentosCorretorId(Pageable pageable, Long idCorretor) {
+    public Page<Agendamento> listarAgendamentosCorretorId(Pageable pageable,
+                                                          Long idCorretor,
+                                                          StatusAgendamentoEnum statusAgendamento,
+                                                          LocalDate data) {
 
-       return repository.findByCorretorId(idCorretor, pageable);
+        Specification<Agendamento> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+
+        specs = specs.and(AgendamentoSpecs.idCorretorEquals(idCorretor));
+
+       if(statusAgendamento != null){
+           specs = specs.and(AgendamentoSpecs.statusEquals(statusAgendamento));
+       }
+       if(data != null){
+           specs = specs.and(AgendamentoSpecs.dataEquals(data));
+       }
+
+
+       return repository.findAll(specs,pageable);
     }
 
 
