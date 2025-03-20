@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -33,9 +34,14 @@ public class AgendamentosController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(@PathVariable Long id, Pageable pageable) {
+    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(
+            @PathVariable Long id,
+            @RequestParam(required = false) StatusAgendamentoEnum status,
+            @RequestParam(required = false) LocalDate data,
+            Pageable pageable) {
 
-        Page<Agendamento> agendamentos = service.listarAgendamentosCorretorId(pageable,id);
+        Page<Agendamento> agendamentos = service.listarAgendamentosCorretorId(
+                pageable,id, status, data);
 
         Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
             return  new AgendamentoListagemDTO(

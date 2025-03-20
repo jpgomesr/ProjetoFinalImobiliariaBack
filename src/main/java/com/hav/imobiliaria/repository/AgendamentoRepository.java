@@ -3,16 +3,19 @@ package com.hav.imobiliaria.repository;
 import com.hav.imobiliaria.model.entity.Agendamento;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
+public interface AgendamentoRepository extends JpaRepository<Agendamento, Long>
+, JpaSpecificationExecutor<Agendamento> {
 
 
 
-    Page<Agendamento> findByCorretorId(Long id, Pageable pageable);
+    Page<Agendamento> findAll(Specification<Agendamento> spec, Pageable pageable);
 
 
     @Query("SELECT c.nome, e.bairro, e.rua, e.numeroCasaPredio, a.dataHora, i.id, img.referencia " +

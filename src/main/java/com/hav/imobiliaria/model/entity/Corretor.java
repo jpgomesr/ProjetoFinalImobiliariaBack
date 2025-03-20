@@ -15,13 +15,12 @@ import java.util.List;
 public class Corretor extends Usuario{
 
     @ManyToMany(mappedBy = "corretores")
-    // Refere-se ao atributo 'corretores' na classe Imovel
     private List<Imovel> imoveis;
 
-    @OneToMany(mappedBy = "corretor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "corretor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HorarioCorretor> horarios;
 
-    @OneToMany(mappedBy = "corretor")
+    @OneToMany(mappedBy = "corretor", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Agendamento> agendamentos;
 
 
