@@ -1,8 +1,8 @@
 package com.hav.imobiliaria.validator;
 
-import com.hav.imobiliaria.exceptions.CPFJaCadastradoException;
-import com.hav.imobiliaria.exceptions.EmailJaCadastradoException;
-import com.hav.imobiliaria.exceptions.TelefoneJaCadastradoException;
+import com.hav.imobiliaria.exceptions.campo.CPFJaCadastradoException;
+import com.hav.imobiliaria.exceptions.campo.EmailJaCadastradoException;
+import com.hav.imobiliaria.exceptions.campo.TelefoneJaCadastradoException;
 import com.hav.imobiliaria.model.entity.Proprietario;
 import com.hav.imobiliaria.repository.ProprietarioRepository;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,6 @@
 package com.hav.imobiliaria.validator;
 
-import com.hav.imobiliaria.exceptions.EmailJaCadastradoException;
-import com.hav.imobiliaria.exceptions.TelefoneJaCadastradoException;
+import com.hav.imobiliaria.exceptions.campo.EmailJaCadastradoException;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import jakarta.validation.constraints.Email;

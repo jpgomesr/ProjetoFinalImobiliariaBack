@@ -3,6 +3,7 @@ package com.hav.imobiliaria.controller.mapper.endereco;
 
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoGetDTO;
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoListagemImovelDTO;
+import com.hav.imobiliaria.controller.dto.endereco.EnderecoVisitaDTO;
 import com.hav.imobiliaria.model.entity.Endereco;
 import org.mapstruct.Mapper;
 
@@ -14,4 +15,7 @@ public interface EnderecoGetMapper {
     EnderecoGetDTO toDto(Endereco endereco);
 
     EnderecoListagemImovelDTO toEnderecoListagemImovelDTO(Endereco endereco);
+
+
+    EnderecoVisitaDTO toEnderecoVisitaDTO(Endereco endereco);
 }
