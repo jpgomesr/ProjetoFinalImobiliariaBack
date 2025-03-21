@@ -1,6 +1,6 @@
 package com.hav.imobiliaria.repository.specs;
 
-import com.hav.imobiliaria.model.Proprietario;
+import com.hav.imobiliaria.model.entity.Proprietario;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProprietarioSpecs {
@@ -17,8 +17,9 @@ public class ProprietarioSpecs {
     public static Specification<Proprietario> emailLike(String email) {
         return (root, query, cb) -> cb.like(cb.upper(root.get("email")), "%" + email.toUpperCase() + "%");
     }
-    public static Specification<Proprietario> deletadoFalse() {
-        return (root, query, cb) -> cb.equal(root.get("deletado"), false);
+    public static Specification<Proprietario> ativo(Boolean ativo) {
+        return (root, query, cb) -> cb.equal(root.get("ativo"), ativo );
     }
+
 
 }

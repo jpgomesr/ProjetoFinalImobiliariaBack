@@ -2,13 +2,12 @@ package com.hav.imobiliaria.controller.dto.usuario;
 
 import com.hav.imobiliaria.model.enums.RoleEnum;
 
-public record UsuarioListagemResponseDTO(
+public record CorretorRespostaImovelDto (
         Long id,
-        String role,
         String nome,
+        String telefone,
         String email,
-        String foto,
-        Boolean ativo
-)
-{
+        String descricao,
+        String foto
+){
 }

@@ -1,4 +1,4 @@
-package com.hav.imobiliaria.model;
+package com.hav.imobiliaria.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -29,12 +29,12 @@ public class Proprietario {
     private String email;
 
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true )
     @JoinColumn(name = "id_endereco", nullable = false)
     private Endereco endereco;
 
     @Column
-    private Boolean deletado;
+    private Boolean ativo;
 
     @Column
     private LocalDateTime dataDelecao;
@@ -42,10 +42,4 @@ public class Proprietario {
     @Column(length = 150)
     private String imagemUrl;
 
-    @PrePersist
-    public void prePersist() {
-        if(this.deletado == null) {
-            deletado = false;
-        }
-    }
 }

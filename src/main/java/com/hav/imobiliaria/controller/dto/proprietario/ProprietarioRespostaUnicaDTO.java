@@ -10,6 +10,7 @@ public record ProprietarioRespostaUnicaDTO(
         String email,
         String imagemUrl,
         String celular,
+        Boolean ativo,
         EnderecoGetDTO endereco
 ){
 }

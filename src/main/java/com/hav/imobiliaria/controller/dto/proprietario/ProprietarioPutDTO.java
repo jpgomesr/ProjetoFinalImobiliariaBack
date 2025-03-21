@@ -20,6 +20,7 @@ public record ProprietarioPutDTO (
         @Email(message = "Insira um e-mail válido")
         @NotNull(message = "O e-mail é obrigatório")
         String email,
+        Boolean ativo,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPutDTO enderecoPutDTO
 ){

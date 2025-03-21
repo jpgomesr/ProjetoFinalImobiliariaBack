@@ -6,47 +6,36 @@ import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPostMapper;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
-import com.hav.imobiliaria.model.Endereco;
+import com.hav.imobiliaria.model.entity.Endereco;
 import com.hav.imobiliaria.repository.EnderecoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class EnderecoService {
 
-    private EnderecoRepository repository;
-    private EnderecoGetMapper enderecoGetMapper;
-    private EnderecoPostMapper enderecoPostMapper;
-    private EnderecoPutMapper enderecoPutMapper;
+
+    public final EnderecoRepository enderecoRepository;
 
 
-    public Page<EnderecoGetDTO> buscarTodos(Pageable pageable) {
-        return repository.findAll(pageable).map(enderecoGetMapper::toDto);
+    public Set<String> buscarCidades(String estado){
+        System.out.println(enderecoRepository.buscarCidadesDeUmEstado("Santa Catarina"));
+        return enderecoRepository.buscarCidadesDeUmEstado(estado.toLowerCase());
     }
 
-    public EnderecoGetDTO buscarPorId(Long id) {
-        EnderecoGetDTO dto = enderecoGetMapper.toDto(repository.findById(id).get());
-        return dto;
+    public Set<String> buscarBarrosPorCidade(String cidade){
+
+        return enderecoRepository.buscarBairrosDeUmaCidade(cidade.toLowerCase());
+    }
+    public Set<String> buscarEstados(){
+        return enderecoRepository.findAll().stream().map(Endereco::getEstado).collect(Collectors.toSet());
     }
 
-    public Endereco salvar(EnderecoPostDTO dto) {
-        Endereco entity = enderecoPostMapper.toEntity(dto);
-
-        entity = repository.save(entity);
-        return entity;
-    }
-
-    public Endereco atualizar(EnderecoPutDTO dto, Long id) {
-        Endereco entity = enderecoPutMapper.toEntity(dto);
-        entity.setId(id);
-        entity = repository.save(entity);
-        return entity;
-    }
-
-    public void removerPorId(Long id) {
-        repository.deleteById(id);
-    }
 }

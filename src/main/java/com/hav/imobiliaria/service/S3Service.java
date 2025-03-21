@@ -50,20 +50,17 @@ public class S3Service {
     }
 
     public String uploadArquivo(MultipartFile file) throws IOException {
-        // Gerar um nome único para evitar sobrescrever arquivos
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        // Criar a requisição de upload
+
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
-                .contentType(file.getContentType()) // Define o tipo do arquivo
+                .contentType(file.getContentType())
                 .build();
 
-        // Enviar o arquivo para o S3
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
-        // Retornar a URL do arquivo salvo
         return urlDoArquivo(fileName);
     }
 

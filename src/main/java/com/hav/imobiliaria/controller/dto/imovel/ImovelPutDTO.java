@@ -1,10 +1,12 @@
 package com.hav.imobiliaria.controller.dto.imovel;
 
-import com.hav.imobiliaria.controller.dto.endereco.EnderecoPostDTO;
 import com.hav.imobiliaria.controller.dto.endereco.EnderecoPutDTO;
-import com.hav.imobiliaria.model.TipoBunnerEnum;
-import com.hav.imobiliaria.model.TipoFinalidadeEnum;
+import com.hav.imobiliaria.model.entity.Corretor;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
+import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 //a
 public record ImovelPutDTO(
@@ -50,6 +52,10 @@ public record ImovelPutDTO(
         @NotNull(message = "O id é obrigatório")
         @Positive(message = "O id deve ser positivo")
         Long idProprietario,
-        EnderecoPutDTO enderecoPutDTO
+        @NotNull
+        List<Corretor> corretores,
+        Boolean ativo,
+        @NotNull
+        EnderecoPutDTO endereco
 ) {
 }
