@@ -13,13 +13,15 @@ import java.util.List;
 public interface CorretorRepository extends JpaRepository<Corretor, Long> {
 
     @Query("SELECT h FROM HorarioCorretor h " +
-            "JOIN h.corretor c " + // Join com a entidade Corretor
-            "JOIN c.imoveis i " +  // Join com a entidade Imovel
-            "WHERE i.id = :idImovel " + // Filtra pelo ID do imóvel
-            "AND FUNCTION('MONTH', h.dataHora) = :mes " + // Filtra pelo mês
-            "AND FUNCTION('DAY', h.dataHora) = :dia") // Filtra pelo dia
+            "JOIN h.corretor c " +
+            "JOIN c.imoveis i " +
+            "WHERE i.id = :idImovel " +
+            "AND (:mes IS NULL OR FUNCTION('MONTH', h.dataHora) = :mes) " +
+            "AND (:dia IS NULL OR FUNCTION('DAY', h.dataHora) = :dia) "+
+            "ORDER BY h.dataHora asc")
+
     List<HorarioCorretor> findHorariosByImovelAndData(
             @Param("idImovel") Long idImovel,
-            @Param("mes") int mes,
-            @Param("dia") int dia);
+            @Param("mes") Integer mes,
+            @Param("dia") Integer dia);
 }
