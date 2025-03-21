@@ -22,8 +22,8 @@ public class CorretorController {
 
     @GetMapping("/horarios/{id}")
     public ResponseEntity<List<HorarioCorretorGetDTO>> getHorarios(@PathVariable Long id,
-                                                                   @RequestParam Integer mes,
-                                                                   @RequestParam Integer dia) {
+                                                                   @RequestParam(required = false) Integer mes,
+                                                                   @RequestParam(required = false) Integer dia) {
 
         return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorIdImovel(id, mes, dia)
                 .stream().map(horarioCorretorGetMapper::toDTO).toList());
