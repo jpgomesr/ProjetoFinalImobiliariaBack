@@ -8,6 +8,7 @@ import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
+import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.Endereco;
 import com.hav.imobiliaria.model.entity.ImagemImovel;
 import com.hav.imobiliaria.model.entity.Imovel;
@@ -279,6 +280,9 @@ public class ImovelService {
 
         return repository.findAll(specs, pageable);
     }
+
+
+
 
     public List<Long> buscarTodosIds() {
         return repository.findAll().stream().map(Imovel::getId).collect(Collectors.toList());
