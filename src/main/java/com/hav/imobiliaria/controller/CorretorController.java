@@ -28,5 +28,15 @@ public class CorretorController {
         return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorIdImovel(id, mes, dia)
                 .stream().map(horarioCorretorGetMapper::toDTO).toList());
     }
+    @GetMapping("/horarios/corretor/{id}")
+    public ResponseEntity<List<HorarioCorretorGetDTO>> getHorarios(
+            @PathVariable Long id
+    ){
+
+
+        return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorId(id).stream().map(horarioCorretorGetMapper::toDTO).toList());
+
+
+    }
 
 }
