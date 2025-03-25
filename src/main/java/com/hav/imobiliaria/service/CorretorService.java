@@ -20,6 +20,9 @@ public class CorretorService {
         return this.repository.findHorariosByImovelAndData(idImovel, mes, dia);
 
     }
+    public List<HorarioCorretor> buscarHorariosCorretoresPorId(Long id) {
 
+        return this.repository.findById(id).map(Corretor::getHorarios).orElse(null);
+    }
 
 }
