@@ -4,11 +4,14 @@ import com.hav.imobiliaria.model.entity.Chats;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ChatsRepository extends JpaRepository<Chats, Long> {
     Optional<Chats> findByIdChat(Long idChat);
+
+    List<Chats> findAllByIdUsuario1OrUsuario2(Long idUsuario1);
     
     boolean existsByUsuario1IdAndUsuario2IdOrUsuario1IdAndUsuario2Id(
             Long usuario1Id1, Long usuario2Id1,
