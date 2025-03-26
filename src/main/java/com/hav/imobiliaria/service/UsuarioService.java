@@ -191,6 +191,11 @@ public class UsuarioService {
         }
         throw new RuntimeException("O usuário informado não é um corretor");
     }
+
+    public Usuario buscarPorEmail(String email){
+        return this.repository.findByEmail(email).get();
+    }
+
     public void excluirReferenciaImovelCorretor(Long id) {
         Usuario usuario = this.repository.findById(id).get();
 
