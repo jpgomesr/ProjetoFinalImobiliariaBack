@@ -1,8 +1,8 @@
-package com.hav.imobiliaria.controller.dto.faq;
+package com.hav.imobiliaria.controller.dto.pergunta;
 
 import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
 
-public record FAQGetDTO(
+public record PerguntaGetDTO(
         Long id,
         TipoPerguntaEnum tipoPergunta,
         String email,
