@@ -84,4 +84,9 @@ public class ChatRoomController {
         List<ChatMessage> pageableMessages = messages.subList(start, end);
         return ResponseEntity.ok(pageableMessages);
     }
+
+    @GetMapping("/list/{idUsuario}")
+    public ResponseEntity<List<Chats>> getChats(@PathVariable Long idUsuario) {
+        return ResponseEntity.ok(repository.findAllByIdUsuario1OrUsuario2(idUsuario));
+    }
 }
