@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("FAQs")
+@RequestMapping("perguntas")
 @AllArgsConstructor
 public class PerguntaController {
     private final PerguntaService service;
@@ -23,7 +23,6 @@ public class PerguntaController {
 
     @PostMapping
     public ResponseEntity<Pergunta> cadastrar(@RequestBody PerguntaPostDTO perguntaPostDTO){
-
         return ResponseEntity.ok(service.cadastrar(perguntaPostDTO));
     }
 
