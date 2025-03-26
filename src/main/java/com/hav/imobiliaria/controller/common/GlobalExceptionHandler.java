@@ -57,6 +57,18 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
     }
 
+    @ExceptionHandler(ChatJaCadastradoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErroResposta handleChatJaCadastradoException(ChatJaCadastradoException e) {
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(ChatNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResposta handleChatNaoEncontradoException(ChatNaoEncontradoException e) {
+        return new ErroResposta(HttpStatus.NOT_FOUND.value(), e.getMessage(), List.of());
+    }
+
 //    @ExceptionHandler(EmailJaCadastradoException.class)
 //    @ResponseStatus(HttpStatus.CONFLICT)
 //    public ErroResposta handelEmailJaCadastradoException(EmailJaCadastradoException e){
