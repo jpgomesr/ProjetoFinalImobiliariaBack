@@ -1,46 +1,53 @@
 package com.hav.imobiliaria.controller;
 
+import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.ChatMessage;
-import com.hav.imobiliaria.model.enums.TipoMensagem;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
+import com.hav.imobiliaria.model.entity.Chats;
+import com.hav.imobiliaria.payload.MessageRequest;
+import com.hav.imobiliaria.repository.ChatsRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@RestController
+import java.time.LocalDateTime;
+
+@Controller
+@AllArgsConstructor
+@CrossOrigin("*")
 public class ChatController {
+    private ChatsRepository repository;
 
-    @Autowired
-    private SimpMessageSendingOperations messageTemplate;
-
-    @MessageMapping("/chat.sendMessage.{chatId}")
-    @SendTo("/topic/chat.{chatId}")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage, @DestinationVariable String chatId) {
-        return chatMessage;
-    }
-
-    @MessageMapping("/chat.addUser.{chatId}")
-    @SendTo("/topic/chat.{chatId}")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor,
-                               @DestinationVariable String chatId) {
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getRemetente());
-        return chatMessage;
-    }
-
-    @PostMapping("/test/sendMessage")
-    public void sendTestMessage(@RequestParam String chatId, @RequestParam String message) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setConteudo(message);
-        chatMessage.setRemetente("UsuárioTeste");
-        chatMessage.setTipoMensagem(TipoMensagem.MENSAGEM);
-        messageTemplate.convertAndSend("/topic/chat." + chatId, chatMessage);
-        System.out.println("Mensagem enviada para /topic/chat.1\n" + message);
+    @MessageMapping("/sendMessage/{idChat}")
+    @SendTo("/topic/chat/{idChat}")
+    @Transactional
+    public ChatMessage sendMessage(
+            @DestinationVariable Long idChat,
+            @RequestBody MessageRequest request
+    ) {
+        System.out.println(request);
+        
+        Chats chat = repository.findByIdChat(request.getIdChat())
+                .orElseThrow(() -> new ChatNaoEncontradoException("Chat não encontrado"));
+        
+        // Verifica se o remetente é participante do chat
+        if (!chat.getUsuario1().getId().toString().equals(request.getRemetente()) && 
+            !chat.getUsuario2().getId().toString().equals(request.getRemetente())) {
+            throw new RuntimeException("Usuário não autorizado para enviar mensagens neste chat");
+        }
+        
+        ChatMessage message = new ChatMessage();
+        message.setConteudo(request.getConteudo());
+        message.setRemetente(request.getRemetente());
+        message.setTimeStamp(LocalDateTime.now());
+        
+        chat.getMessages().add(message);
+        repository.save(chat);
+        
+        return message;
     }
 }
