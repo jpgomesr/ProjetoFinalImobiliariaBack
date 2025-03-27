@@ -89,6 +89,7 @@ public class ProprietarioService {
 
         this.repository.save(proprietario);
     }
+
     public Page<Proprietario> pesquisa(String nome, String cpf, String email, Boolean ativo, Pageable pageable) {
 
         Specification<Proprietario> specs = Specification.where((root, query, cb) -> cb.conjunction());
