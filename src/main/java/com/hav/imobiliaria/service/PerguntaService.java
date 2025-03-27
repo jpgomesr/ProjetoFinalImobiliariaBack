@@ -5,6 +5,7 @@ import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaPostMapper;
 import com.hav.imobiliaria.model.entity.Pergunta;
 import com.hav.imobiliaria.repository.PerguntaRepositry;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,5 +24,9 @@ public class PerguntaService {
 
         System.out.println(entity);
         return repositry.save(entity);
+    }
+
+    public Pergunta buscarTodasPerguntas(Pageable pageable) {
+        return repositry.findAll(pageable);
     }
 }
