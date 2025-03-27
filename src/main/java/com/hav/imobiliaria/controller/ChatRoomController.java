@@ -1,5 +1,7 @@
 package com.hav.imobiliaria.controller;
 
+import com.hav.imobiliaria.controller.dto.chat.ChatGetDTO;
+import com.hav.imobiliaria.controller.mapper.chat.ChatGetMapper;
 import com.hav.imobiliaria.exceptions.ChatJaCadastradoException;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
 import com.hav.imobiliaria.exceptions.UsuarioNaoEncontradoException;
@@ -13,14 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/chat")
 @CrossOrigin("http://localhost:3000")
 public class ChatRoomController {
+
     ChatsRepository repository;
     UsuarioRepository usuarioRepository;
+    ChatGetMapper chatGetMapper;
 
     @PostMapping("/{idUsuario1}/{idUsuario2}")
     public ResponseEntity<?> createChat(
@@ -50,7 +55,7 @@ public class ChatRoomController {
     public ResponseEntity<?> joinChat(
             @PathVariable Long idChat,
             @RequestParam Long idUsuario) {
-        Chats chat = repository.findByIdChat(idChat)
+        Chats chat = repository.findByIdChatWithUsersAndMessages(idChat)
                 .orElseThrow(() -> new ChatNaoEncontradoException("Chat não encontrado"));
 
         // Verifica se o usuário é participante do chat
@@ -69,7 +74,7 @@ public class ChatRoomController {
             @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(value = "size", defaultValue = "20", required = false) Integer size
     ) {
-        Chats chat = repository.findByIdChat(idChat)
+        Chats chat = repository.findByIdChatWithUsersAndMessages(idChat)
                 .orElseThrow(() -> new RuntimeException("Chat não encontrado"));
 
         // Verifica se o usuário é participante do chat
@@ -86,7 +91,12 @@ public class ChatRoomController {
     }
 
     @GetMapping("/list/{idUsuario}")
-    public ResponseEntity<List<Chats>> getChats(@PathVariable Long idUsuario) {
-        return ResponseEntity.ok(repository.findAllByIdUsuario1OrUsuario2(idUsuario));
+    public ResponseEntity<List<ChatGetDTO>> getChats(@PathVariable Long idUsuario) {
+        List<Chats> chat = repository.findAllByUsuario1IdOrUsuario2IdOrderByMessagesTimeStamp(idUsuario, idUsuario);
+        if (chat.isEmpty()) {
+            throw new ChatNaoEncontradoException("Nenhum chat encontrado");
+        }
+        List<ChatGetDTO> dto = chat.stream().map(chatGetMapper::toDto).toList();
+        return ResponseEntity.ok(dto);
     }
 }

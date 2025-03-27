@@ -25,6 +25,6 @@ public class Chats {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario2_id", nullable = false)
     private Usuario usuario2;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ChatMessage> messages;
 }
