@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.controller;
 
+import com.hav.imobiliaria.controller.mapper.chat.ChatGetMapper;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.ChatMessage;
 import com.hav.imobiliaria.model.entity.Chats;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @CrossOrigin("*")
 public class ChatController {
     private ChatsRepository repository;
+    private final ChatGetMapper chatGetMapper;
 
     @MessageMapping("/sendMessage/{idChat}")
     @SendTo("/topic/chat/{idChat}")
@@ -44,6 +46,7 @@ public class ChatController {
         message.setConteudo(request.getConteudo());
         message.setRemetente(request.getRemetente());
         message.setTimeStamp(LocalDateTime.now());
+        message.setChat(chat);
         
         chat.getMessages().add(message);
         repository.save(chat);

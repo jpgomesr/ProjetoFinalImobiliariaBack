@@ -1,7 +1,10 @@
 package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.chat.ChatGetDTO;
+import com.hav.imobiliaria.controller.dto.chat.ChatResponseDTO;
 import com.hav.imobiliaria.controller.mapper.chat.ChatGetMapper;
+import com.hav.imobiliaria.controller.mapper.chat.ChatResponseMapper;
+import com.hav.imobiliaria.controller.mapper.mensagem.MensagemResponseMapper;
 import com.hav.imobiliaria.exceptions.ChatJaCadastradoException;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
 import com.hav.imobiliaria.exceptions.UsuarioNaoEncontradoException;
@@ -26,6 +29,7 @@ public class ChatRoomController {
     ChatsRepository repository;
     UsuarioRepository usuarioRepository;
     ChatGetMapper chatGetMapper;
+    ChatResponseMapper chatResponseMapper;
 
     @PostMapping("/{idUsuario1}/{idUsuario2}")
     public ResponseEntity<?> createChat(
@@ -64,7 +68,7 @@ public class ChatRoomController {
             return ResponseEntity.badRequest().body("Usuário não autorizado para este chat");
         }
 
-        return ResponseEntity.ok(chat);
+        return ResponseEntity.ok(chatResponseMapper.toDto(chat));
     }
 
     @GetMapping("/{idChat}/mensagens")
@@ -93,6 +97,7 @@ public class ChatRoomController {
     @GetMapping("/list/{idUsuario}")
     public ResponseEntity<List<ChatGetDTO>> getChats(@PathVariable Long idUsuario) {
         List<Chats> chat = repository.findAllByUsuario1IdOrUsuario2IdOrderByMessagesTimeStamp(idUsuario, idUsuario);
+        System.out.println(chat);
         if (chat.isEmpty()) {
             throw new ChatNaoEncontradoException("Nenhum chat encontrado");
         }

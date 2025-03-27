@@ -1,10 +1,8 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +21,8 @@ public class ChatMessage {
     private Boolean lida;
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
+    @ToString.Exclude
+    @JsonIgnore
     private Chats chat;
 
     public ChatMessage(String conteudo, String remetente, Chats chat) {
