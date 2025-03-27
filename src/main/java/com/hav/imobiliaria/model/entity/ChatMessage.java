@@ -1,10 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
-import com.hav.imobiliaria.model.enums.TipoMensagem;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,13 +19,17 @@ public class ChatMessage {
     private Long id;
     private String conteudo;
     private String remetente;
-    private TipoMensagem tipoMensagem;
     private LocalDateTime timeStamp;
+    private Boolean lida;
+    @ManyToOne
+    @JoinColumn(name = "chat_id", nullable = false)
+    private Chats chat;
 
-    public ChatMessage(String conteudo, String remetente, TipoMensagem tipoMensagem) {
+    public ChatMessage(String conteudo, String remetente, Chats chat) {
         this.conteudo = conteudo;
         this.remetente = remetente;
-        this.tipoMensagem = tipoMensagem;
         this.timeStamp = LocalDateTime.now();
+        this.lida = false;
+        this.chat = chat;
     }
 }
