@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.controller.mapper.usuario.ApresentacaoCorretorGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
@@ -37,6 +38,7 @@ public class UsuarioController implements GenericController{
     private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioListagemResponseMapper usuarioListagemResponseMapper;
     private final ImovelGetMapper imovelGetMapper;
+    private final ApresentacaoCorretorGetMapper apresentacaoCorretorGetMapper;
 
 
     @GetMapping
@@ -47,6 +49,11 @@ public class UsuarioController implements GenericController{
             Pageable pageable) {
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> buscarTotalUsuarios() {
+        return ResponseEntity.ok(service.buscarTotalUsuarios());
     }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
@@ -133,6 +140,12 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<List<Long>> listarIdUsuario(){
         return ResponseEntity.ok(service.buscarIdUsuarios());
     }
+
+    @GetMapping("/corretorApresentacao/{role}")
+    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
+        return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
+    }
+
 
 //    @PatchMapping("/alterarSenha/{id}")
 //    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
