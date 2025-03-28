@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class ChatController {
     private ChatsRepository repository;
     private UsuarioRepository usuarioRepository;
     private final ChatGetMapper chatGetMapper;
+    private final SimpMessageSendingOperations messageTemplate;
 
     @MessageMapping("/sendMessage/{idChat}")
     @SendTo("/topic/chat/{idChat}")
@@ -65,6 +67,14 @@ public class ChatController {
         response.put("nomeRemetente", request.getNomeRemetente());
         response.put("lida", message.getLida());
         
+        // Enviar notificação global com o ID do chat atualizado
+        Map<String, Object> globalNotification = new HashMap<>();
+        globalNotification.put("chatId", idChat);
+        globalNotification.put("timestamp", LocalDateTime.now());
+        messageTemplate.convertAndSend("/topic/chat/global", globalNotification);
+        
         return response;
     }
+
+    @Notifica
 }
