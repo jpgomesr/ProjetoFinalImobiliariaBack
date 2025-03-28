@@ -60,19 +60,38 @@ public class AgendamentoService {
                                                           StatusAgendamentoEnum statusAgendamento,
                                                           LocalDate data) {
 
-        Specification<Agendamento> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
-
+        Specification<Agendamento> specs = criandoSpecs(statusAgendamento,data);
         specs = specs.and(AgendamentoSpecs.idCorretorEquals(idCorretor));
 
-       if(statusAgendamento != null){
-           specs = specs.and(AgendamentoSpecs.statusEquals(statusAgendamento));
-       }
-       if(data != null){
-           specs = specs.and(AgendamentoSpecs.dataEquals(data));
-       }
+
 
 
        return repository.findAll(specs,pageable);
+    }
+    public Page<Agendamento> listarAgendamentosUsuarioId(Pageable pageable,
+                                                          Long idUsuario,
+                                                          StatusAgendamentoEnum statusAgendamento,
+                                                          LocalDate data) {
+
+        Specification<Agendamento> specs = criandoSpecs(statusAgendamento,data);
+
+        specs = specs.and(AgendamentoSpecs.idUsuarioEquals(idUsuario));
+
+        return repository.findAll(specs,pageable);
+    }
+    private Specification<Agendamento> criandoSpecs(StatusAgendamentoEnum status, LocalDate data) {
+
+        Specification<Agendamento> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+
+
+        if(status != null){
+            specs = specs.and(AgendamentoSpecs.statusEquals(status));
+        }
+        if(data != null){
+            specs = specs.and(AgendamentoSpecs.dataEquals(data));
+        }
+
+        return  specs;
     }
 
 
