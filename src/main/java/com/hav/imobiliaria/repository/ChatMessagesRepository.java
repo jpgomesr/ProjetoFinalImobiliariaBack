@@ -10,6 +10,9 @@ import java.util.List;
 
 @Repository
 public interface ChatMessagesRepository extends JpaRepository<ChatMessage, Long> {
-    @Query("SELECT m FROM ChatMessage m WHERE m.chat.idChat = :idChat AND m.lida = false AND m.remetente != :usuarioId")
+    @Query("SELECT m FROM ChatMessage m WHERE m.chat.idChat = :idChat AND m.lida = false AND m.remetente <> :usuarioId")
     List<ChatMessage> findByIdChatAndLidaFalseAndRemetenteIdNot(@Param("idChat") Long idChat, @Param("usuarioId") Long usuarioId);
+    
+    @Query("SELECT m FROM ChatMessage m WHERE m.chat.idChat = :idChat ORDER BY m.timeStamp ASC")
+    List<ChatMessage> findByChatIdChat(@Param("idChat") Long idChat);
 }

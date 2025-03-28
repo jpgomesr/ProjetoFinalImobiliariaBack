@@ -14,4 +14,5 @@ public class MessageRequest {
     private String remetente;
     private Long idChat;
     private LocalDateTime timestamp;
+    private String nomeRemetente;
 }

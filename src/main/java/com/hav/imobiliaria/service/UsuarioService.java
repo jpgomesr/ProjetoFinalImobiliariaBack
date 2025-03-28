@@ -204,9 +204,8 @@ public class UsuarioService {
         return  this.repository.findByRoleAndAtivoTrue(RoleEnum.CORRETOR);
     }
 
-    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable ) {
-        Usuario usuario = this.buscarPorId(id);
-        return  usuario.getImoveisFavoritosPaginados(pageable);
+    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable) {
+        return repository.findImoveisFavoritadosByUsuarioId(id, pageable);
     }
 
     public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {

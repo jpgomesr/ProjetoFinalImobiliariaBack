@@ -6,7 +6,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,5 +22,20 @@ public class MessageService {
             mensagem.setLida(true);
         }
         repository.saveAll(mensagensNaoLidas);
+    }
+    
+    public boolean temMensagensNaoLidas(Long chatId, Long usuarioId) {
+        List<ChatMessage> mensagensNaoLidas = repository.findByIdChatAndLidaFalseAndRemetenteIdNot(chatId, usuarioId);
+        return !mensagensNaoLidas.isEmpty();
+    }
+    
+    public Optional<ChatMessage> getUltimaMensagem(List<ChatMessage> mensagens) {
+        if (mensagens == null || mensagens.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        return mensagens.stream()
+                .sorted(Comparator.comparing(ChatMessage::getTimeStamp).reversed())
+                .findFirst();
     }
 }
