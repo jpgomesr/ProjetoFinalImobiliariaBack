@@ -18,13 +18,16 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        Usuario usuario = new Administrador();
-        usuario.setEmail("adm@adm.com");
-        usuario.setSenha(passwordEncoder.encode("adm"));
-        usuario.setNome("Adm");
-        usuario.setAtivo(true);
-        usuario.setRole(RoleEnum.ADMINISTRADOR);
-        usuarioRepository.save(usuario);
+        if(usuarioRepository.findByEmail("adm@adm.com").isEmpty()) {
+            Usuario usuario = new Administrador();
+            usuario.setEmail("adm@adm.com");
+            usuario.setSenha(passwordEncoder.encode("adm"));
+            usuario.setNome("Adm");
+            usuario.setAtivo(true);
+            usuario.setRole(RoleEnum.ADMINISTRADOR);
+            usuarioRepository.save(usuario);
+        }
+
     }
 
 }
