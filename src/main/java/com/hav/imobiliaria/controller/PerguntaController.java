@@ -31,9 +31,10 @@ public class PerguntaController {
             @RequestParam(value = "telefone") String telefone,
             @RequestParam(value = "nome") String nome,
             @RequestParam(value = "mensagem") String mensagem,
-            Pageable pageable){
-        Page<PerguntaGetDTO> paginaResultado = service.
-        return ResponseEntity.ok(perguntaGetMapper.toDto(service.buscarTodasPerguntas(pageable)));
+            Pageable pageable
+    ){
+        Page<Pergunta> paginaResultadoDTO = service.pesquisar(tipoPergunta, email, telefone, nome, mensagem, pageable);
+        return ResponseEntity.ok(paginaResultadoDTO.map(perguntaGetMapper::toDto));
     }
 
     @PostMapping
