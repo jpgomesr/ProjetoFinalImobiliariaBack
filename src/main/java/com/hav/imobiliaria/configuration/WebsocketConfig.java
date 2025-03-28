@@ -22,7 +22,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic/chat", "/topic/notificacoes");
+        registry.enableSimpleBroker("/topic/chat", "/topic/notificacoes", "/topic/chat/global");
         registry.setApplicationDestinationPrefixes("/app");
     }
 }
