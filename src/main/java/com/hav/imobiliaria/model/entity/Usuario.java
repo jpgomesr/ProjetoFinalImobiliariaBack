@@ -52,7 +52,7 @@ public class Usuario implements UserDetails {
     @Column
     private LocalDateTime dataDelecao;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "imovel_favorito_usuario",
             joinColumns = @JoinColumn(name = "id_usuario"),
@@ -67,7 +67,8 @@ public class Usuario implements UserDetails {
         }
     }
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
-        return  new PageImpl<>(this.getImoveisFavoritados(), pageable, this.getImoveisFavoritados().size());
+        List<Imovel> imoveis = this.getImoveisFavoritados();
+        return new PageImpl<>(imoveis, pageable, imoveis.size());
     }
     public void  adicionarImovelFavorito(Imovel imovel) {
         if(this.imoveisFavoritados.contains(imovel)) {
