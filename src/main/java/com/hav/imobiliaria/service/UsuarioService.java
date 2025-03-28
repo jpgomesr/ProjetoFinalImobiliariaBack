@@ -224,4 +224,7 @@ public class UsuarioService {
     public List<Usuario> buscarPorRole(RoleEnum role) {
         return repository.buscarPorRole(role);
     }
+    public Long buscarTotalUsuarios() {
+        return repository.count();
+    }
 }
