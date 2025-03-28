@@ -10,6 +10,7 @@ public record AgendamentoListagemDTO(
         Long id,
         LocalDateTime horario,
         EnderecoVisitaDTO endereco,
+        String nomeCorretor,
         String nomeUsuario,
         Long idImovel,
         String referenciaImagemPrincipal,
