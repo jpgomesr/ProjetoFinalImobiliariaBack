@@ -17,9 +17,13 @@ import com.hav.imobiliaria.validator.UsuarioValidator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,11 +39,11 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
     private final S3Service s3Service;
-    private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
     private final ImovelService imovelService;
+    private  PasswordEncoder passwordEncoder;
 
     public Page<Usuario> buscarTodos(
             String nome,
@@ -83,6 +87,7 @@ public class UsuarioService {
             url = s3Service.uploadArquivo(foto);
         }
         entity.setFoto(url);
+        entity.setSenha(passwordEncoder.encode(entity.getSenha()));
         return repository.save(entity);
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
@@ -105,6 +110,8 @@ public class UsuarioService {
         }
         if(usuarioAtualizado.getSenha() == null){
             usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
+        }else {
+            usuarioAtualizado.setSenha(passwordEncoder.encode(usuarioAtualizado.getSenha()));
         }
 
         if(usuarioAtualizado.getId() == null){
@@ -149,7 +156,7 @@ public class UsuarioService {
             String senha) {
 
         Usuario usuario = this.buscarPorId(id);
-        usuario.setSenha(senha);
+        usuario.setSenha(passwordEncoder.encode(senha));
 
         this.repository.save(usuario);
 
@@ -191,6 +198,11 @@ public class UsuarioService {
         }
         throw new RuntimeException("O usuário informado não é um corretor");
     }
+
+    public Usuario buscarPorEmail(String email){
+        return this.repository.findByEmail(email).get();
+    }
+
     public void excluirReferenciaImovelCorretor(Long id) {
         Usuario usuario = this.repository.findById(id).get();
 
@@ -219,5 +231,11 @@ public class UsuarioService {
     public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
         Usuario usuario = this.buscarPorId(idUsuario);
         usuario.removerImovelFavorito(idImovel);
+    }
+    public List<Usuario> buscarPorRole(RoleEnum role) {
+        return repository.buscarPorRole(role);
+    }
+    public Long buscarTotalUsuarios() {
+        return repository.count();
     }
 }

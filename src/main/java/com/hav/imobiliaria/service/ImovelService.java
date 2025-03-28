@@ -8,6 +8,7 @@ import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
+import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.Endereco;
 import com.hav.imobiliaria.model.entity.ImagemImovel;
 import com.hav.imobiliaria.model.entity.Imovel;
@@ -170,10 +171,10 @@ public class ImovelService {
     private void atualizarImagens(Imovel imovel, List<MultipartFile> imagens) throws IOException {
 
 
-        if (imovel.getImagens().size() + imagens.size() <= 4) {
+
             List<ImagemImovel> imagensImovel = salvarImagens(imagens);
             imagensImovel.forEach(imovel::addImagem);
-        }
+
 
 
     }
@@ -202,7 +203,8 @@ public class ImovelService {
                                  String cidade,
                                  String bairro,
                                  Boolean ativo,
-
+                                 Boolean destaque,
+                                 Boolean condicoesEspeciais,
                                  Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -226,6 +228,12 @@ public class ImovelService {
                 specs = specs.and(ImovelSpecs.qtdQuartosEqualOrGratherThan(qtdQuartos));
             }
 
+        }
+        if(destaque != null && destaque){
+            specs = specs.and(ImovelSpecs.permitirDestaqueEqual(destaque));
+        }
+        if (condicoesEspeciais != null && condicoesEspeciais) {
+            specs = specs.and(ImovelSpecs.condicoesEspeciais(condicoesEspeciais));
         }
         if (tamanhoMinimo != null && tamanhoMinimo != 0 && tamanhoMaximo != null && tamanhoMaximo != 0) {
             specs = specs.and(ImovelSpecs.tamanhoBeetween(tamanhoMinimo, tamanhoMaximo));
@@ -272,6 +280,9 @@ public class ImovelService {
 
         return repository.findAll(specs, pageable);
     }
+
+
+
 
     public List<Long> buscarTodosIds() {
         return repository.findAll().stream().map(Imovel::getId).collect(Collectors.toList());

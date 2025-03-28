@@ -83,4 +83,8 @@ public class ImovelSpecs {
     }
 
 
+    public static Specification<Imovel> condicoesEspeciais(Boolean condicoesEspeciais) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("banner"), condicoesEspeciais);
+
+    }
 }
