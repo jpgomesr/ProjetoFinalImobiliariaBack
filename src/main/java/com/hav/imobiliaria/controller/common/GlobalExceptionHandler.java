@@ -3,6 +3,10 @@ package com.hav.imobiliaria.controller.common;
 import com.hav.imobiliaria.controller.dto.exception.ErroCampo;
 import com.hav.imobiliaria.controller.dto.exception.ErroResposta;
 import com.hav.imobiliaria.exceptions.*;
+import com.hav.imobiliaria.exceptions.campo.CampoInvalidoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.RequisicaoPadraoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioJaCadastradoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +30,11 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Erro de validação", listaDeErros);
     }
+    @ExceptionHandler(RequisicaoPadraoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErroResposta handleRequisicaoPadraoException(RequisicaoPadraoException e){
+        return new ErroResposta(HttpStatus.BAD_REQUEST.value(), e.getMessage(), List.of());
+    }
 
     @ExceptionHandler(CampoInvalidoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -33,6 +42,7 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
                 List.of(new ErroCampo(e.getMessage(), e.getCampo())));
     }
+
     @ExceptionHandler(ProprietarioNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErroResposta handleProprietarioNaoEncontradoException(ProprietarioNaoEncontradoException e){

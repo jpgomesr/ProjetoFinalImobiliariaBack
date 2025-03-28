@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.controller.dto.usuario;
 
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
+import com.hav.imobiliaria.model.entity.HorarioCorretor;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public record CorretorResponseDto (
         String descricao,
         Boolean ativo,
         String foto,
-        List<ImovelListagemDTO> imoveis
+        List<ImovelListagemDTO> imoveis,
+        List<HorarioCorretor> horarios
 ){
 }

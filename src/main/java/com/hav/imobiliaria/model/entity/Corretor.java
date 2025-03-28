@@ -1,10 +1,11 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.hav.imobiliaria.exceptions.requisicao_padrao.HorarioCorretorInvalidoException;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -14,8 +15,24 @@ import java.util.List;
 public class Corretor extends Usuario{
 
     @ManyToMany(mappedBy = "corretores")
-    // Refere-se ao atributo 'corretores' na classe Imovel
     private List<Imovel> imoveis;
 
+    @OneToMany(mappedBy = "corretor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorarioCorretor> horarios;
+
+    @OneToMany(mappedBy = "corretor", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Agendamento> agendamentos;
+
+
+    public void removerHorarioPorDatahora(LocalDateTime datahora) {
+
+        for(int i = 0 ; i < horarios.size() ; i++){
+            if(horarios.get(i).getDataHora().equals(datahora)){
+                horarios.remove(i);
+                return;
+            }
+        }
+        throw new HorarioCorretorInvalidoException("O horario informado é inválido");
+    }
 
 }
