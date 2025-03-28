@@ -75,6 +75,4 @@ public class ChatController {
         
         return response;
     }
-
-    @Notifica
 }
