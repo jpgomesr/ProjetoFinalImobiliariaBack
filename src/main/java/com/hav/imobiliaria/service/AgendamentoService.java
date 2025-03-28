@@ -11,6 +11,7 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
+import com.hav.imobiliaria.validator.AgendamentoValidator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class AgendamentoService {
     private final AgendamentoRepository repository;
     private final UsuarioService usuarioService;
     private final ImovelService imovelService;
+    private final AgendamentoValidator validator;
 
     @Transactional
     public void salvarAgendamento(AgendamentoPostDto agendamentoPostDto) {
@@ -47,6 +49,8 @@ public class AgendamentoService {
             System.out.println(usuarioComum.getRole());
             throw  new TipoUsuarioIncorretoException("usuario");
         }
+
+
         agendamento.setImovel(imovelService.buscarPorId(agendamentoPostDto.idImovel()));
 
         agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPostDto.dataHora());
