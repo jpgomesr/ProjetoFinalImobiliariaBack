@@ -10,6 +10,7 @@ public record ChatGetDTO(
         Long idChat,
         UsuarioListaChatDTO usuario1,
         UsuarioListaChatDTO usuario2,
-        List<ChatMessageDTO> messages
+        Boolean naoLido,
+        ChatMessageDTO ultimaMensagem
 ) {
 }

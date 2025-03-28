@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 
 public record ChatMessageDTO(
     Long id,
-    String content,
+    String conteudo,
     LocalDateTime timeStamp,
-    Long senderId
+    String remetente,
+    Boolean lida
 ) {
 
 }
