@@ -50,6 +50,8 @@ public class AgendamentoService {
             throw  new TipoUsuarioIncorretoException("usuario");
         }
 
+        validator.validarAgendamento(agendamentoPostDto, agendamento.getUsuarioComum());
+
 
         agendamento.setImovel(imovelService.buscarPorId(agendamentoPostDto.idImovel()));
 
