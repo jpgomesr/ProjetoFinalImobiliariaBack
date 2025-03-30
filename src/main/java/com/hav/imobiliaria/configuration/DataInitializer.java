@@ -1,9 +1,6 @@
 package com.hav.imobiliaria.configuration;
 
-import com.hav.imobiliaria.model.entity.Administrador;
-import com.hav.imobiliaria.model.entity.Corretor;
-import com.hav.imobiliaria.model.entity.Editor;
-import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
@@ -20,37 +17,37 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        if(usuarioRepository.findByEmail("adm").isEmpty()) {
+        if(usuarioRepository.findByEmail("a").isEmpty()) {
             Usuario usuario = new Administrador();
-            usuario.setEmail("adm");
-            usuario.setSenha(passwordEncoder.encode("adm"));
+            usuario.setEmail("a");
+            usuario.setSenha(passwordEncoder.encode("a"));
             usuario.setNome("Adm");
             usuario.setAtivo(true);
             usuario.setRole(RoleEnum.ADMINISTRADOR);
             usuarioRepository.save(usuario);
         }
-        if(usuarioRepository.findByEmail("usu").isEmpty()) {
-            Usuario usuario = new Usuario();
-            usuario.setEmail("usu");
-            usuario.setSenha(passwordEncoder.encode("usu"));
+        if(usuarioRepository.findByEmail("u").isEmpty()) {
+            Usuario usuario = new UsuarioComum();
+            usuario.setEmail("u");
+            usuario.setSenha(passwordEncoder.encode("u"));
             usuario.setNome("Usu");
             usuario.setAtivo(true);
             usuario.setRole(RoleEnum.USUARIO);
             usuarioRepository.save(usuario);
         }
-        if(usuarioRepository.findByEmail("cor").isEmpty()) {
+        if(usuarioRepository.findByEmail("c").isEmpty()) {
             Usuario usuario = new Corretor();
-            usuario.setEmail("cor");
-            usuario.setSenha(passwordEncoder.encode("cor"));
-            usuario.setNome("Cor");
+            usuario.setEmail("c");
+            usuario.setSenha(passwordEncoder.encode("c"));
+            usuario.setNome("C");
             usuario.setAtivo(true);
             usuario.setRole(RoleEnum.CORRETOR);
             usuarioRepository.save(usuario);
         }
-        if(usuarioRepository.findByEmail("edi").isEmpty()) {
+        if(usuarioRepository.findByEmail("e").isEmpty()) {
             Usuario usuario = new Editor();
-            usuario.setEmail("edi");
-            usuario.setSenha(passwordEncoder.encode("edi"));
+            usuario.setEmail("e");
+            usuario.setSenha(passwordEncoder.encode("e"));
             usuario.setNome("Edi");
             usuario.setAtivo(true);
             usuario.setRole(RoleEnum.USUARIO);
