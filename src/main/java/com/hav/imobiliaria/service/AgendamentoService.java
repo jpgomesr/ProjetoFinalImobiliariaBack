@@ -11,6 +11,7 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
+import com.hav.imobiliaria.validator.AgendamentoValidator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class AgendamentoService {
     private final AgendamentoRepository repository;
     private final UsuarioService usuarioService;
     private final ImovelService imovelService;
+    private final AgendamentoValidator validator;
 
     @Transactional
     public void salvarAgendamento(AgendamentoPostDto agendamentoPostDto) {
@@ -47,6 +49,10 @@ public class AgendamentoService {
             System.out.println(usuarioComum.getRole());
             throw  new TipoUsuarioIncorretoException("usuario");
         }
+
+        validator.validarAgendamento(agendamentoPostDto, agendamento.getUsuarioComum());
+
+
         agendamento.setImovel(imovelService.buscarPorId(agendamentoPostDto.idImovel()));
 
         agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPostDto.dataHora());
@@ -60,19 +66,38 @@ public class AgendamentoService {
                                                           StatusAgendamentoEnum statusAgendamento,
                                                           LocalDate data) {
 
-        Specification<Agendamento> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
-
+        Specification<Agendamento> specs = criandoSpecs(statusAgendamento,data);
         specs = specs.and(AgendamentoSpecs.idCorretorEquals(idCorretor));
 
-       if(statusAgendamento != null){
-           specs = specs.and(AgendamentoSpecs.statusEquals(statusAgendamento));
-       }
-       if(data != null){
-           specs = specs.and(AgendamentoSpecs.dataEquals(data));
-       }
+
 
 
        return repository.findAll(specs,pageable);
+    }
+    public Page<Agendamento> listarAgendamentosUsuarioId(Pageable pageable,
+                                                          Long idUsuario,
+                                                          StatusAgendamentoEnum statusAgendamento,
+                                                          LocalDate data) {
+
+        Specification<Agendamento> specs = criandoSpecs(statusAgendamento,data);
+
+        specs = specs.and(AgendamentoSpecs.idUsuarioEquals(idUsuario));
+
+        return repository.findAll(specs,pageable);
+    }
+    private Specification<Agendamento> criandoSpecs(StatusAgendamentoEnum status, LocalDate data) {
+
+        Specification<Agendamento> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+
+
+        if(status != null){
+            specs = specs.and(AgendamentoSpecs.statusEquals(status));
+        }
+        if(data != null){
+            specs = specs.and(AgendamentoSpecs.dataEquals(data));
+        }
+
+        return  specs;
     }
 
 

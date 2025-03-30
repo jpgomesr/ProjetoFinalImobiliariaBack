@@ -50,6 +50,11 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> buscarTotalUsuarios() {
+        return ResponseEntity.ok(service.buscarTotalUsuarios());
+    }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));

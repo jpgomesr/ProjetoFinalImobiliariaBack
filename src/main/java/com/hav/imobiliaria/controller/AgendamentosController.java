@@ -33,7 +33,7 @@ public class AgendamentosController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/corretor/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(
             @PathVariable Long id,
             @RequestParam(required = false, name = "status") StatusAgendamentoEnum status,
@@ -49,6 +49,31 @@ public class AgendamentosController {
                     agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
                     agendamento.getCorretor().getNome(),
+                    agendamento.getUsuarioComum().getNome(),
+                    agendamento.getImovel().getId(),
+                    agendamento.getImovel().getImagens().getFirst().getReferencia(),
+                    agendamento.getStatus());
+        });
+
+        return  ResponseEntity.ok(agendamentoListagemDTOS);
+    }
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosUsuario(
+            @PathVariable Long id,
+            @RequestParam(required = false, name = "status") StatusAgendamentoEnum status,
+            @RequestParam(required = false) LocalDate data,
+            Pageable pageable) {
+
+        Page<Agendamento> agendamentos = service.listarAgendamentosUsuarioId(
+                pageable,id, status, data);
+
+        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
+            return  new AgendamentoListagemDTO(
+                    agendamento.getId(),
+                    agendamento.getDataHora(),
+                    enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
+                    agendamento.getCorretor().getNome(),
+                    agendamento.getUsuarioComum().getNome(),
                     agendamento.getImovel().getId(),
                     agendamento.getImovel().getImagens().getFirst().getReferencia(),
                     agendamento.getStatus());
@@ -65,6 +90,8 @@ public class AgendamentosController {
         return ResponseEntity.noContent().build();
 
     }
+
+
 
 
 
