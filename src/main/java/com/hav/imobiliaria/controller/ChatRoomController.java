@@ -8,7 +8,7 @@ import com.hav.imobiliaria.controller.mapper.chat.ChatResponseMapper;
 import com.hav.imobiliaria.controller.mapper.mensagem.MensagemResponseMapper;
 import com.hav.imobiliaria.exceptions.ChatJaCadastradoException;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
-import com.hav.imobiliaria.exceptions.UsuarioNaoEncontradoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.ChatMessage;
 import com.hav.imobiliaria.model.entity.Chats;
 import com.hav.imobiliaria.model.entity.Usuario;
