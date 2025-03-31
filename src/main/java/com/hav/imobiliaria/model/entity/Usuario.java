@@ -71,7 +71,7 @@ public class Usuario implements UserDetails {
         return new PageImpl<>(imoveis, pageable, imoveis.size());
     }
     public void  adicionarImovelFavorito(Imovel imovel) {
-        if(this.imoveisFavoritados.contains(imovel)) {
+        if(!this.imoveisFavoritados.contains(imovel)) {
             this.imoveisFavoritados.add(imovel);
         }
     }
