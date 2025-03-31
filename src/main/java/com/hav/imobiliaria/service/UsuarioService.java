@@ -14,6 +14,7 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import com.hav.imobiliaria.validator.UsuarioValidator;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -219,7 +221,11 @@ public class UsuarioService {
     public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable) {
         return repository.findImoveisFavoritadosByUsuarioId(id, pageable);
     }
+    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(Long idUsuario){
+        return this.repository.findIdImoveisFavoritadosByUsuarioId(idUsuario);
+    }
 
+    @Transactional
     public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {
         Usuario usuario = this.buscarPorId(idUsuario);
         Imovel imovel = this.imovelService.buscarPorId(idImovel);
@@ -228,6 +234,7 @@ public class UsuarioService {
         this.repository.save(usuario);
 
     }
+    @Transactional
     public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
         Usuario usuario = this.buscarPorId(idUsuario);
         usuario.removerImovelFavorito(idImovel);
