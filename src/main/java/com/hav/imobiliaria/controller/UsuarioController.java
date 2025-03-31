@@ -145,6 +145,10 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
+    @GetMapping("/ids-imoveis-favoritados/{idUsuario}")
+    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(@PathVariable Long idUsuario){
+        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario(idUsuario));
+    }
 
 
 //    @PatchMapping("/alterarSenha/{id}")

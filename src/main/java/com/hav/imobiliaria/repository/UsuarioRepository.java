@@ -40,4 +40,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
   
     @Query("SELECT u FROM Usuario u WHERE u.role = :role")
     List<Usuario> buscarPorRole(@Param("role") RoleEnum role);
+
+    @Query(value = "SELECT i.id FROM Imovel i JOIN i.usuariosFavoritos u WHERE u.id = :usuarioId")
+    List<Long> findIdImoveisFavoritadosByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+    Long id(Long id);
 }
