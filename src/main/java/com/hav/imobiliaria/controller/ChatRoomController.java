@@ -2,13 +2,11 @@ package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.chat.ChatGetDTO;
 import com.hav.imobiliaria.controller.dto.chat.ChatMessageDTO;
-import com.hav.imobiliaria.controller.dto.chat.ChatResponseDTO;
 import com.hav.imobiliaria.controller.mapper.chat.ChatGetMapper;
 import com.hav.imobiliaria.controller.mapper.chat.ChatResponseMapper;
-import com.hav.imobiliaria.controller.mapper.mensagem.MensagemResponseMapper;
 import com.hav.imobiliaria.exceptions.ChatJaCadastradoException;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
-import com.hav.imobiliaria.exceptions.UsuarioNaoEncontradoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.ChatMessage;
 import com.hav.imobiliaria.model.entity.Chats;
 import com.hav.imobiliaria.model.entity.Usuario;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
