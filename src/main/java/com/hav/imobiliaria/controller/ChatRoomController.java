@@ -3,6 +3,7 @@ package com.hav.imobiliaria.controller;
 import com.hav.imobiliaria.controller.dto.chat.ChatGetDTO;
 import com.hav.imobiliaria.controller.dto.chat.ChatMessageDTO;
 import com.hav.imobiliaria.controller.mapper.chat.ChatGetMapper;
+import com.hav.imobiliaria.controller.mapper.chat.ChatPostMapper;
 import com.hav.imobiliaria.controller.mapper.chat.ChatResponseMapper;
 import com.hav.imobiliaria.exceptions.ChatJaCadastradoException;
 import com.hav.imobiliaria.exceptions.ChatNaoEncontradoException;
@@ -33,6 +34,7 @@ public class ChatRoomController {
     ChatMessagesRepository chatMessagesRepository;
     ChatGetMapper chatGetMapper;
     ChatResponseMapper chatResponseMapper;
+    ChatPostMapper chatPostMapper;
     MessageService messageService;
 
     @PostMapping("/{idUsuario1}/{idUsuario2}")
@@ -55,7 +57,7 @@ public class ChatRoomController {
         chat.setIdChat(System.currentTimeMillis());
 
         Chats chatSalvo = repository.save(chat);
-        return ResponseEntity.ok(chatSalvo);
+        return ResponseEntity.ok(chatPostMapper.toDto(chatSalvo));
     }
 
     @GetMapping("/{idChat}")
