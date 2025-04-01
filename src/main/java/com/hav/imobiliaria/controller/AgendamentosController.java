@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class AgendamentosController {
 
 
 
+    @PreAuthorize("hasAnyRole('USUARIO')")
     @PostMapping
     public ResponseEntity<Void> agendarVisita(@RequestBody AgendamentoPostDto agendamentoPostDto) {
         this.service.salvarAgendamento(agendamentoPostDto);
@@ -57,6 +59,7 @@ public class AgendamentosController {
 
         return  ResponseEntity.ok(agendamentoListagemDTOS);
     }
+    @PreAuthorize("hasAnyRole('USUARIO')")
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosUsuario(
             @PathVariable Long id,

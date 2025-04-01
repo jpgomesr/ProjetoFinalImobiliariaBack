@@ -8,12 +8,14 @@ import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
+import com.hav.imobiliaria.exceptions.AcessoNegadoException;
 import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.repository.ImagemImovelRepository;
 import com.hav.imobiliaria.repository.ImovelRepository;
 import com.hav.imobiliaria.repository.specs.ImovelSpecs;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.ImovelValidator;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +221,7 @@ public class ImovelService {
             specs = specs.and(ImovelSpecs.tituloLike(titulo));
         }
         if(idUsuario != null && idUsuario != 0 ){
+            SecurityUtils.verificarUsuarioLogado(idUsuario);
             specs = specs.and(ImovelSpecs.buscandoFavoritos(idUsuario));
         }
         if (StringUtils.isNotBlank(descricao)) {
