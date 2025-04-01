@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -41,6 +42,12 @@ public class GlobalExceptionHandler {
     public ErroResposta handleCampoInvalidoException(CampoInvalidoException e){
         return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
                 List.of(new ErroCampo(e.getMessage(), e.getCampo())));
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroResposta handleAccessDeniedException(AccessDeniedException e){
+        e.printStackTrace();
+        return new ErroResposta(HttpStatus.UNAUTHORIZED.value(), e.getMessage(), List.of());
     }
 
     @ExceptionHandler(ProprietarioNaoEncontradoException.class)
