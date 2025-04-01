@@ -102,6 +102,8 @@ public class  Imovel {
     @Column
     private LocalDateTime dataDelecao;
 
+    @ManyToMany(mappedBy = "imoveisFavoritados", fetch = FetchType.LAZY)
+    private List<Usuario> usuariosFavoritos;
 
     public void addImagem(ImagemImovel imagem) {
         this.imagens.add(imagem);
