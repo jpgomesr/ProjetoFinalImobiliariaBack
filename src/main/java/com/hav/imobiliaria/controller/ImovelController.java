@@ -89,6 +89,7 @@ public class ImovelController implements GenericController {
         return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.salvar(imovelPostDTO,imagemPrincipal, imagens)));
 
     }
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @PutMapping("{id}")
     public ResponseEntity<ImovelGetDTO> atualizar(@RequestPart("imovel") String imovelPutDTOJSON,
                                                   @RequestParam(value = "refImagensDeletadas", required = false) List<String> refImagensDeletadas,                                                  @RequestPart(value = "imagemPrincipal", required = false) MultipartFile imagemCapa,
@@ -103,6 +104,7 @@ public class ImovelController implements GenericController {
         return ResponseEntity.ok(imovelGetMapper.toImovelGetDto(service.atualizar(id, imovelPutDTO, imagemCapa, imagens,refImagensDeletadas)));
 
     }
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @PostMapping("/restaurar/{id}")
     public ResponseEntity<Void> restaurarImagem(@PathVariable Long id){
         this.service.restaurarImagem(id);
@@ -110,12 +112,13 @@ public class ImovelController implements GenericController {
 
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id){
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @DeleteMapping("/imagem/{id}")
     public ResponseEntity<Void> removerImagemPorReferencia(
             @PathVariable Long id){
@@ -124,6 +127,7 @@ public class ImovelController implements GenericController {
 
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @GetMapping("/ids-imoveis")
     public ResponseEntity<List<Long>> listarImoveis(){
         return  ResponseEntity.ok(service.buscarTodosIds());

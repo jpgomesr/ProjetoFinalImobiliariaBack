@@ -43,12 +43,14 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
                 List.of(new ErroCampo(e.getMessage(), e.getCampo())));
     }
-    @ExceptionHandler(AccessDeniedException.class)
+
+    @ExceptionHandler(AcessoNegadoException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErroResposta handleAccessDeniedException(AccessDeniedException e){
-        e.printStackTrace();
-        return new ErroResposta(HttpStatus.UNAUTHORIZED.value(), e.getMessage(), List.of());
+    public ErroResposta handleAccessDeniedException(AcessoNegadoException e){
+        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
+                List.of());
     }
+
 
     @ExceptionHandler(ProprietarioNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
