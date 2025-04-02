@@ -8,9 +8,7 @@ import com.hav.imobiliaria.controller.mapper.endereco.EnderecoPutMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPostMapper;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelPutMapper;
-import com.hav.imobiliaria.model.entity.Endereco;
-import com.hav.imobiliaria.model.entity.ImagemImovel;
-import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import com.hav.imobiliaria.repository.ImagemImovelRepository;
@@ -24,6 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,7 +65,9 @@ public class ImovelService {
 
     public Imovel buscarPorId(Long id) {
 
-        return repository.findById(id).get();
+
+       return repository.findById(id).get();
+
     }
 
     public Imovel atualizar(@Positive(message = "O id deve ser positivo") Long id,
@@ -204,6 +206,7 @@ public class ImovelService {
                                  Boolean ativo,
                                  Boolean destaque,
                                  Boolean condicoesEspeciais,
+                                 Long idUsuario,
                                  Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -213,6 +216,9 @@ public class ImovelService {
 
         if (StringUtils.isNotBlank(titulo)) {
             specs = specs.and(ImovelSpecs.tituloLike(titulo));
+        }
+        if(idUsuario != null && idUsuario != 0 ){
+            specs = specs.and(ImovelSpecs.buscandoFavoritos(idUsuario));
         }
         if (StringUtils.isNotBlank(descricao)) {
             specs = specs.and(ImovelSpecs.descricaoLike(descricao));
@@ -279,6 +285,9 @@ public class ImovelService {
 
         return repository.findAll(specs, pageable);
     }
+
+
+
 
     public List<Long> buscarTodosIds() {
         return repository.findAll().stream().map(Imovel::getId).collect(Collectors.toList());

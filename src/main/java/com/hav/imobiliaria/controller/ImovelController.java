@@ -5,7 +5,10 @@ import com.hav.imobiliaria.controller.dto.imovel.ImovelGetDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPostDTO;
 import com.hav.imobiliaria.controller.dto.imovel.ImovelPutDTO;
+import com.hav.imobiliaria.controller.dto.usuario.CorretorResponseDto;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
+import com.hav.imobiliaria.model.entity.Corretor;
+import com.hav.imobiliaria.model.entity.HorarioCorretor;
 import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
@@ -48,6 +51,7 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "bairro", required = false) String bairro,
             @RequestParam(value = "destaque", required = false) Boolean destaque,
             @RequestParam(value = "condicoesEspeciais", required = false) Boolean condicoesEspecias,
+            @RequestParam(value = "idUsuario", required = false) Long idUsuario,
             @PageableDefault(page = 0, size = 10) Pageable pageable,
             @RequestParam(value = "ativo") Boolean ativo
     ) {
@@ -55,7 +59,7 @@ public class ImovelController implements GenericController {
 
         Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
 
-                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo,destaque,condicoesEspecias, pageable);
+                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo,destaque,condicoesEspecias,idUsuario, pageable);
 
 
 
@@ -122,4 +126,7 @@ public class ImovelController implements GenericController {
     public ResponseEntity<List<Long>> listarImoveis(){
         return  ResponseEntity.ok(service.buscarTodosIds());
     }
+
+
+
 }

@@ -9,7 +9,12 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("USUARIO")
+@Setter
+@Getter
 public class UsuarioComum extends Usuario {
+
+    @OneToMany(mappedBy = "usuarioComum")
+    List<Agendamento> agendamentos;
 
 
 

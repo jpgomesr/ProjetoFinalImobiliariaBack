@@ -14,15 +14,21 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import com.hav.imobiliaria.validator.UsuarioValidator;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,11 +41,11 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
     private final S3Service s3Service;
-    private final UsuarioGetMapper usuarioGetMapper;
     private final UsuarioPostMapper usuarioPostMapper;
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
     private final ImovelService imovelService;
+    private  PasswordEncoder passwordEncoder;
 
     public Page<Usuario> buscarTodos(
             String nome,
@@ -83,6 +89,7 @@ public class UsuarioService {
             url = s3Service.uploadArquivo(foto);
         }
         entity.setFoto(url);
+        entity.setSenha(passwordEncoder.encode(entity.getSenha()));
         return repository.save(entity);
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
@@ -105,6 +112,8 @@ public class UsuarioService {
         }
         if(usuarioAtualizado.getSenha() == null){
             usuarioAtualizado.setSenha(usuarioJaSalvo.getSenha());
+        }else {
+            usuarioAtualizado.setSenha(passwordEncoder.encode(usuarioAtualizado.getSenha()));
         }
 
         if(usuarioAtualizado.getId() == null){
@@ -149,7 +158,7 @@ public class UsuarioService {
             String senha) {
 
         Usuario usuario = this.buscarPorId(id);
-        usuario.setSenha(senha);
+        usuario.setSenha(passwordEncoder.encode(senha));
 
         this.repository.save(usuario);
 
@@ -191,6 +200,11 @@ public class UsuarioService {
         }
         throw new RuntimeException("O usuário informado não é um corretor");
     }
+
+    public Usuario buscarPorEmail(String email){
+        return this.repository.findByEmail(email).get();
+    }
+
     public void excluirReferenciaImovelCorretor(Long id) {
         Usuario usuario = this.repository.findById(id).get();
 
@@ -204,11 +218,14 @@ public class UsuarioService {
         return  this.repository.findByRoleAndAtivoTrue(RoleEnum.CORRETOR);
     }
 
-    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable ) {
-        Usuario usuario = this.buscarPorId(id);
-        return  usuario.getImoveisFavoritosPaginados(pageable);
+    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable) {
+        return repository.findImoveisFavoritadosByUsuarioId(id, pageable);
+    }
+    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(Long idUsuario){
+        return this.repository.findIdImoveisFavoritadosByUsuarioId(idUsuario);
     }
 
+    @Transactional
     public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {
         Usuario usuario = this.buscarPorId(idUsuario);
         Imovel imovel = this.imovelService.buscarPorId(idImovel);
@@ -217,11 +234,15 @@ public class UsuarioService {
         this.repository.save(usuario);
 
     }
+    @Transactional
     public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
         Usuario usuario = this.buscarPorId(idUsuario);
         usuario.removerImovelFavorito(idImovel);
     }
-    public List<Usuario> buscarPorRole(String role) {
+    public List<Usuario> buscarPorRole(RoleEnum role) {
         return repository.buscarPorRole(role);
+    }
+    public Long buscarTotalUsuarios() {
+        return repository.count();
     }
 }

@@ -1,4 +1,4 @@
-package com.hav.imobiliaria.exceptions;
+package com.hav.imobiliaria.exceptions.requisicao_padrao;
 
 public class UsuarioJaCadastradoException extends RuntimeException {
     public UsuarioJaCadastradoException() {
