@@ -6,6 +6,7 @@ import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaGetMapper;
 import com.hav.imobiliaria.model.entity.Pergunta;
 import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
 import com.hav.imobiliaria.service.PerguntaService;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +27,11 @@ public class PerguntaController {
 
     @GetMapping
     public ResponseEntity<Page<PerguntaGetDTO>> buscarTodasPerguntas(
-            @RequestParam(value = "tipo_pergunta") TipoPerguntaEnum tipoPergunta,
-            @RequestParam(value = "email") String email,
-            @RequestParam(value = "telefone") String telefone,
-            @RequestParam(value = "nome") String nome,
-            @RequestParam(value = "mensagem") String mensagem,
+            @RequestParam(value = "tipo_pergunta") @Nullable TipoPerguntaEnum tipoPergunta,
+            @RequestParam(value = "email") @Nullable String email,
+            @RequestParam(value = "telefone") @Nullable String telefone,
+            @RequestParam(value = "nome") @Nullable String nome,
+            @RequestParam(value = "mensagem") @Nullable String mensagem,
             Pageable pageable
     ){
         Page<Pergunta> paginaResultadoDTO = service.pesquisar(tipoPergunta, email, telefone, nome, mensagem, pageable);

@@ -5,6 +5,8 @@ import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
+
 public class PerguntaSpecs {
     public static Specification<Pergunta> tipoPerguntaLike(TipoPerguntaEnum tipoPergunta) {
         return (root, query, criteriaBuilder) ->
@@ -30,5 +32,9 @@ public class PerguntaSpecs {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(root.get("mensagem"),
                         "%" + mensagem + "%");
+    }
+    public static Specification<Pergunta> dataLike(LocalDateTime data){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("data"), "%" + data + "%");
     }
 }

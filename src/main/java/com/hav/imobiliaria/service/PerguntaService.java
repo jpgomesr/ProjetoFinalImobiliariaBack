@@ -22,11 +22,11 @@ public class PerguntaService {
 
     private final PerguntaPostMapper perguntaPostMapper;
 
-    public Pergunta buscarPorId(Long id){
+    public Pergunta buscarPorId(Long id) {
         return repositry.findById(id).get();
     }
 
-    public Pergunta cadastrar(PerguntaPostDTO perguntaPostDTO){
+    public Pergunta cadastrar(PerguntaPostDTO perguntaPostDTO) {
         var entity = perguntaPostMapper.toEntity(perguntaPostDTO);
 
         System.out.println(entity);
@@ -41,23 +41,29 @@ public class PerguntaService {
             String mensagem,
             Pageable pageable
     ) {
-        Specification<Pergunta> specs = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+        Specification<Pergunta> specs =
+                Specification.where((root, query, criteriaBuilder) ->
+                        criteriaBuilder.conjunction());
 
-        telefone = telefone.replace("(", "")
-                .replace(")", "").replace("-","");
+        if (telefone != null) {
+            telefone = telefone.replace("(", "")
+                    .replace(")", "").replace("-", "");
+        }
 
-        if (tipoPergunta !=null){
+        if (tipoPergunta != null) {
             specs = specs.and(PerguntaSpecs.tipoPerguntaLike(tipoPergunta));
         }
-        if (StringUtils.isNotBlank(email)){
+        if (StringUtils.isNotBlank(email)) {
             specs = specs.and(PerguntaSpecs.emailLike(email));
         }
-        if (StringUtils.isNotBlank(nome)){
+        if (StringUtils.isNotBlank(nome)) {
             specs = specs.and(PerguntaSpecs.nomeLike(nome));
         }
-        if (StringUtils.isNotBlank(telefone)){
+        if (StringUtils.isNotBlank(telefone)) {
             specs = specs.and(PerguntaSpecs.mensagemLike(mensagem));
         }
-        return repositry.findAll(specs, pageable);
+        Page<Pergunta> perguntas = repositry.findAll(specs, pageable);
+        System.out.println(perguntas);
+        return perguntas;
     }
 }
