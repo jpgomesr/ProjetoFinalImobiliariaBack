@@ -50,6 +50,11 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> buscarTotalUsuarios() {
+        return ResponseEntity.ok(service.buscarTotalUsuarios());
+    }
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
@@ -137,9 +142,14 @@ public class UsuarioController implements GenericController{
     }
 
     @GetMapping("/corretorApresentacao/{role}")
-    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable String role) {
+    public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
+    @GetMapping("/ids-imoveis-favoritados/{idUsuario}")
+    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(@PathVariable Long idUsuario){
+        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario(idUsuario));
+    }
+
 
 //    @PatchMapping("/alterarSenha/{id}")
 //    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,

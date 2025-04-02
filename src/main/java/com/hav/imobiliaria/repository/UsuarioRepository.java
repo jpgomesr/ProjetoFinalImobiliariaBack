@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.repository;
 
+import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,15 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Usuario> findByRoleAndAtivoTrue(RoleEnum role);
 
     Page<Usuario> findAll(Specification<Usuario> specs, Pageable pageable);
-
+  
+    @Query(value = "SELECT i FROM Imovel i JOIN i.usuariosFavoritos u WHERE u.id = :usuarioId")
+    Page<Imovel> findImoveisFavoritadosByUsuarioId(@Param("usuarioId") Long usuarioId, Pageable pageable);
+  
     @Query("SELECT u FROM Usuario u WHERE u.role = :role")
-    List<Usuario> buscarPorRole(@Param("role") String role);
+    List<Usuario> buscarPorRole(@Param("role") RoleEnum role);
+
+    @Query(value = "SELECT i.id FROM Imovel i JOIN i.usuariosFavoritos u WHERE u.id = :usuarioId")
+    List<Long> findIdImoveisFavoritadosByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+    Long id(Long id);
 }

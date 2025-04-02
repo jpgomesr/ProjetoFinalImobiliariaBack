@@ -6,16 +6,19 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import software.amazon.awssdk.core.util.PaginatorUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +52,7 @@ public class Usuario {
     @Column
     private LocalDateTime dataDelecao;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "imovel_favorito_usuario",
             joinColumns = @JoinColumn(name = "id_usuario"),
@@ -64,10 +67,11 @@ public class Usuario {
         }
     }
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
-        return  new PageImpl<>(this.getImoveisFavoritados(), pageable, this.getImoveisFavoritados().size());
+        List<Imovel> imoveis = this.getImoveisFavoritados();
+        return new PageImpl<>(imoveis, pageable, imoveis.size());
     }
     public void  adicionarImovelFavorito(Imovel imovel) {
-        if(this.imoveisFavoritados.contains(imovel)) {
+        if(!this.imoveisFavoritados.contains(imovel)) {
             this.imoveisFavoritados.add(imovel);
         }
     }
@@ -75,4 +79,18 @@ public class Usuario {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }
