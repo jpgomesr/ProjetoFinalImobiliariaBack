@@ -13,6 +13,7 @@ import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.UsuarioValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -217,27 +220,27 @@ public class UsuarioService {
     public List<Usuario> buscarCorretorListagem(){
         return  this.repository.findByRoleAndAtivoTrue(RoleEnum.CORRETOR);
     }
-
-    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable) {
-        return repository.findImoveisFavoritadosByUsuarioId(id, pageable);
-    }
-    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(Long idUsuario){
-        return this.repository.findIdImoveisFavoritadosByUsuarioId(idUsuario);
+    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(){
+        Usuario usuarioLogado = SecurityUtils.buscarUsuarioLogado();
+        return this.repository.findIdImoveisFavoritadosByUsuarioId(usuarioLogado.getId());
     }
 
     @Transactional
-    public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {
-        Usuario usuario = this.buscarPorId(idUsuario);
+    public void adicionarImovelFavorito(Long idImovel) {
+        Usuario usuarioAutenticado = SecurityUtils.buscarUsuarioLogado();
+        Usuario usuarioAtual = this.repository.findById(usuarioAutenticado.getId()).orElseThrow(NoSuchElementException::new);
         Imovel imovel = this.imovelService.buscarPorId(idImovel);
 
-        usuario.adicionarImovelFavorito(imovel);
-        this.repository.save(usuario);
+        usuarioAtual.adicionarImovelFavorito(imovel);
+        this.repository.save(usuarioAtual);
 
     }
     @Transactional
-    public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
-        Usuario usuario = this.buscarPorId(idUsuario);
-        usuario.removerImovelFavorito(idImovel);
+    public void removerImovelFavorito(Long idImovel) {
+        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
+        Usuario usuarioAtual = this.repository.findById(usuario.getId()).orElseThrow(NoSuchElementException::new);
+
+        usuarioAtual.removerImovelFavorito(idImovel);
     }
     public List<Usuario> buscarPorRole(RoleEnum role) {
         return repository.buscarPorRole(role);

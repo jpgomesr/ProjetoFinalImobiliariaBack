@@ -7,6 +7,7 @@ import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.service.CorretorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CorretorController {
     private final CorretorService service;
     private final HorarioCorretorGetMapper horarioCorretorGetMapper;
 
+    @PreAuthorize("hasRole('USUARIO')")
     @GetMapping("/horarios/{id}")
     public ResponseEntity<List<HorarioCorretorGetDTO>> getHorarios(@PathVariable Long id,
                                                                    @RequestParam(required = false) Integer mes,
@@ -28,15 +30,12 @@ public class CorretorController {
         return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorIdImovel(id, mes, dia)
                 .stream().map(horarioCorretorGetMapper::toDTO).toList());
     }
-    @GetMapping("/horarios/corretor/{id}")
+    @PreAuthorize("hasRole('CORRETOR')")
+    @GetMapping("/horarios/corretor")
     public ResponseEntity<List<HorarioCorretorGetDTO>> getHorarios(
-            @PathVariable Long id
+
     ){
-
-
-        return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorId(id).stream().map(horarioCorretorGetMapper::toDTO).toList());
-
-
+        return ResponseEntity.ok(this.service.buscarHorariosCorretoresPorId().stream().map(horarioCorretorGetMapper::toDTO).toList());
     }
 
 }

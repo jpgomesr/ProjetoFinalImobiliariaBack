@@ -12,4 +12,7 @@ public class SecurityUtils {
             throw new AcessoNegadoException();
         }
     }
+    public static Usuario buscarUsuarioLogado() {
+        return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

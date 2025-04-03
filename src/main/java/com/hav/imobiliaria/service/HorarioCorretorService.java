@@ -2,9 +2,13 @@ package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPatchDTO;
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPostDTO;
+import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.HorarioCorretor;
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.repository.HorarioCorretorRepository;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,15 +27,17 @@ public class HorarioCorretorService {
 
         repository.save(horarioCorretorEntity);
     }
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public void delete() {
+        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
+        repository.deleteById(usuario.getId());
+
     }
 
 
-    public void atualizar(HorarioCorretorPatchDTO horarioCorretorPatchDTO, Long id) {
+    public void atualizar(HorarioCorretorPatchDTO horarioCorretorPatchDTO) {
 
-
-        HorarioCorretor horarioCorretor = repository.findById(id).get();
+        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
+        HorarioCorretor horarioCorretor = repository.findById(usuario.getId()).get();
         horarioCorretor.setDataHora(horarioCorretorPatchDTO.horario());
         repository.save(horarioCorretor);
     }

@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +56,8 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<Long> buscarTotalUsuarios() {
         return ResponseEntity.ok(service.buscarTotalUsuarios());
     }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
@@ -114,25 +117,18 @@ public class UsuarioController implements GenericController{
         List<Usuario> usuarios = this.service.buscarCorretorListagem();
         return  ResponseEntity.ok(usuarios.stream().map(usuarioListaSelectResponseMapper::toDto).toList());
     }
-    @GetMapping("favoritos/{id}")
-    public ResponseEntity<Page<ImovelListagemDTO>> listarFavoritos(@PathVariable Long id, Pageable pageable) {
-        Page<Imovel> imoveis = this.service.buscarImoveisFavoritados(id, pageable);
 
-        return ResponseEntity.ok(imoveis.map(imovelGetMapper::toImovelListagemDto));
-    }
     @PostMapping("favoritos")
-    public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel,
-                                                           @RequestParam Long idUsuario){
+    public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel){
 
-        this.service.adicionarImovelFavorito(idImovel,idUsuario);
+        this.service.adicionarImovelFavorito(idImovel);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @DeleteMapping("favoritos")
-    public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel,
-                                                @RequestParam Long idUsuario){
+    public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel){
 
-        this.service.remocarImovelFavorito(idImovel,idUsuario);
+        this.service.removerImovelFavorito(idImovel);
         return ResponseEntity.noContent().build();
 
     }
@@ -145,9 +141,10 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
-    @GetMapping("/ids-imoveis-favoritados/{idUsuario}")
-    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(@PathVariable Long idUsuario){
-        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario(idUsuario));
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/ids-imoveis-favoritados")
+    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(){
+        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario());
     }
 
 
