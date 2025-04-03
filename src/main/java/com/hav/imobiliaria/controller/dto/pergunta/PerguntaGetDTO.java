@@ -6,8 +6,7 @@ public record PerguntaGetDTO(
         Long id,
         TipoPerguntaEnum tipoPergunta,
         String email,
-        String telefone,
-        String nome,
+        String titulo,
         String mensagem
 ) {
 

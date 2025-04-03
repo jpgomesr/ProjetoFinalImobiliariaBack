@@ -29,12 +29,11 @@ public class PerguntaController {
     public ResponseEntity<Page<PerguntaGetDTO>> buscarTodasPerguntas(
             @RequestParam(value = "tipo_pergunta") @Nullable TipoPerguntaEnum tipoPergunta,
             @RequestParam(value = "email") @Nullable String email,
-            @RequestParam(value = "telefone") @Nullable String telefone,
-            @RequestParam(value = "nome") @Nullable String nome,
+            @RequestParam(value = "titulo") @Nullable String titulo,
             @RequestParam(value = "mensagem") @Nullable String mensagem,
             Pageable pageable
     ){
-        Page<Pergunta> paginaResultadoDTO = service.pesquisar(tipoPergunta, email, telefone, nome, mensagem, pageable);
+        Page<Pergunta> paginaResultadoDTO = service.pesquisar(tipoPergunta, email, titulo, mensagem, pageable);
         return ResponseEntity.ok(paginaResultadoDTO.map(perguntaGetMapper::toDto));
     }
 

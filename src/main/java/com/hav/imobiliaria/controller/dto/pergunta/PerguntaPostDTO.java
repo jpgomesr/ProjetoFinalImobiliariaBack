@@ -12,9 +12,7 @@ public record PerguntaPostDTO(
         @Email
         String email,
         @NotBlank
-        String telefone,
-        @NotBlank
-        String nome,
+        String titulo,
         @NotBlank
         String mensagem
 ) {

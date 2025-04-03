@@ -24,14 +24,13 @@ public class  Pergunta {
     @Column(name = "tipo_pergunta")
     private TipoPerguntaEnum tipoPergunta;
     private String email;
-    private String telefone;
-    private String nome;
+    private String titulo;
     private String mensagem;
+
     @CreatedDate
     private LocalDateTime data;
     private String resposta;
     private boolean perguntaRespondida;
-
     @OneToOne(cascade = CascadeType.ALL)
     private Administrador idAdministrador;
     @OneToOne(cascade = CascadeType.ALL)
