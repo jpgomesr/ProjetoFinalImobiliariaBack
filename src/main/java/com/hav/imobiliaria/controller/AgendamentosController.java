@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -27,14 +28,16 @@ public class AgendamentosController {
 
 
 
+    @PreAuthorize("hasAnyRole('USUARIO')")
     @PostMapping
     public ResponseEntity<Void> agendarVisita(@RequestBody AgendamentoPostDto agendamentoPostDto) {
         this.service.salvarAgendamento(agendamentoPostDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @PreAuthorize("hasAnyRole('CORRETOR')")
     @GetMapping("/corretor/{id}")
-    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(
+    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentos(
             @PathVariable Long id,
             @RequestParam(required = false, name = "status") StatusAgendamentoEnum status,
             @RequestParam(required = false) LocalDate data,
@@ -57,6 +60,7 @@ public class AgendamentosController {
 
         return  ResponseEntity.ok(agendamentoListagemDTOS);
     }
+    @PreAuthorize("hasAnyRole('USUARIO')")
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosUsuario(
             @PathVariable Long id,
@@ -81,6 +85,7 @@ public class AgendamentosController {
 
         return  ResponseEntity.ok(agendamentoListagemDTOS);
     }
+    @PreAuthorize("hasAnyRole('CORRETOR','USUARIO')")
     @PatchMapping("{id}")
     public ResponseEntity<Void> alterarStatus(@PathVariable Long id,
                                               @RequestParam StatusAgendamentoEnum status){

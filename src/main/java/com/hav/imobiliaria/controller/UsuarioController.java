@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +42,7 @@ public class UsuarioController implements GenericController{
     private final ApresentacaoCorretorGetMapper apresentacaoCorretorGetMapper;
 
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping
     public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
             @RequestParam(value = "nome", required = false) String nome,
@@ -51,10 +53,13 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/total")
     public ResponseEntity<Long> buscarTotalUsuarios() {
         return ResponseEntity.ok(service.buscarTotalUsuarios());
     }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
@@ -64,6 +69,7 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(usuarioListagemResponseMapper.toCorretorResponseDto(service.buscarCorretor(id)));
     }
+    @PreAuthorize("permitAll()")
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, MethodArgumentNotValidException {
@@ -79,6 +85,7 @@ public class UsuarioController implements GenericController{
 
 
     }
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart @Valid String usuario,
                                                    @RequestPart(required = false) MultipartFile novaImagem,
@@ -92,11 +99,13 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(this.usuarioGetMapper.toDto(service.atualizar(usuarioPutDTO,id, novaImagem)));
     }
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/restaurar/{id}")
     public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
         this.service.restaurarUsuario(id);
@@ -104,35 +113,31 @@ public class UsuarioController implements GenericController{
         return  ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/imagem/{id}")
-    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
-        this.service.removerImagemUsuario(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/imagem/{id}")
+//    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
+//        this.service.removerImagemUsuario(id);
+//        return ResponseEntity.noContent().build();
+//    }
+    @PreAuthorize("permitAll()")
     @GetMapping("/corretores-lista-select")
     public ResponseEntity<List<UsuarioListaSelectResponseDTO>> listarCorretoresListaSelect(){
         List<Usuario> usuarios = this.service.buscarCorretorListagem();
         return  ResponseEntity.ok(usuarios.stream().map(usuarioListaSelectResponseMapper::toDto).toList());
     }
-    @GetMapping("favoritos/{id}")
-    public ResponseEntity<Page<ImovelListagemDTO>> listarFavoritos(@PathVariable Long id, Pageable pageable) {
-        Page<Imovel> imoveis = this.service.buscarImoveisFavoritados(id, pageable);
 
-        return ResponseEntity.ok(imoveis.map(imovelGetMapper::toImovelListagemDto));
-    }
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("favoritos")
-    public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel,
-                                                           @RequestParam Long idUsuario){
+    public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel){
 
-        this.service.adicionarImovelFavorito(idImovel,idUsuario);
+        this.service.adicionarImovelFavorito(idImovel);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("favoritos")
-    public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel,
-                                                @RequestParam Long idUsuario){
+    public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel){
 
-        this.service.remocarImovelFavorito(idImovel,idUsuario);
+        this.service.removerImovelFavorito(idImovel);
         return ResponseEntity.noContent().build();
 
     }
@@ -141,13 +146,15 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(service.buscarIdUsuarios());
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/corretorApresentacao/{role}")
     public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
     }
-    @GetMapping("/ids-imoveis-favoritados/{idUsuario}")
-    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(@PathVariable Long idUsuario){
-        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario(idUsuario));
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/ids-imoveis-favoritados")
+    public ResponseEntity<List<Long>> listarIdsImovelPorIdUsuario(){
+        return ResponseEntity.ok(service.buscarIdsImovelFavoritadoPorIdUsuario());
     }
 
 
