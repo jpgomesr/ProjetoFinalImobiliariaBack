@@ -35,8 +35,9 @@ public class AgendamentosController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @PreAuthorize("hasAnyRole('CORRETOR')")
     @GetMapping("/corretor/{id}")
-    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosCorretor(
+    public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentos(
             @PathVariable Long id,
             @RequestParam(required = false, name = "status") StatusAgendamentoEnum status,
             @RequestParam(required = false) LocalDate data,
@@ -84,6 +85,7 @@ public class AgendamentosController {
 
         return  ResponseEntity.ok(agendamentoListagemDTOS);
     }
+    @PreAuthorize("hasAnyRole('CORRETOR','USUARIO')")
     @PatchMapping("{id}")
     public ResponseEntity<Void> alterarStatus(@PathVariable Long id,
                                               @RequestParam StatusAgendamentoEnum status){

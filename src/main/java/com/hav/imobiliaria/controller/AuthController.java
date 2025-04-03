@@ -8,6 +8,7 @@ import com.hav.imobiliaria.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,7 @@ public class AuthController {
 
     private final TokenService tokenService;
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid LoginRequestDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
