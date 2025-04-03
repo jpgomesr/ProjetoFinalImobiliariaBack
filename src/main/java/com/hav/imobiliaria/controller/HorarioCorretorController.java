@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class HorarioCorretorController {
 
     private final HorarioCorretorService service;
 
+    @PreAuthorize("hasRole('CORRETOR')")
     @PostMapping
     public ResponseEntity<Void> salvarHorario(@RequestBody @Valid HorarioCorretorPostDTO horarioCorretorPostDTO) {
 
@@ -26,14 +28,17 @@ public class HorarioCorretorController {
         return new ResponseEntity<>(HttpStatus.CREATED);
 
     }
+    @PreAuthorize("hasRole('CORRETOR')")
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletarHorario(@PathVariable Long id) {
-        this.service.delete(id);
+    public ResponseEntity<Void> deletarHorario() {
+
+        this.service.delete();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PatchMapping("{id}")
-    public ResponseEntity<Void> atualizarHorario(@RequestBody @Valid HorarioCorretorPatchDTO horarioCorretorPatchDTO, @PathVariable Long id) {
-        this.service.atualizar(horarioCorretorPatchDTO, id);
+    @PreAuthorize("hasRole('CORRETOR')")
+    @PatchMapping
+    public ResponseEntity<Void> atualizarHorario(@RequestBody @Valid HorarioCorretorPatchDTO horarioCorretorPatchDTO) {
+        this.service.atualizar(horarioCorretorPatchDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -35,6 +35,7 @@ public class ImovelController implements GenericController {
     private final DtoValidator dtoValidator;
     private final ImovelGetMapper imovelGetMapper;
 
+
     @GetMapping
     public ResponseEntity<Page<ImovelListagemDTO>> listarImoveis(
             @RequestParam(value = "descricao", required = false) String descricao,
@@ -127,7 +128,6 @@ public class ImovelController implements GenericController {
 
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR','EDITOR')")
     @GetMapping("/ids-imoveis")
     public ResponseEntity<List<Long>> listarImoveis(){
         return  ResponseEntity.ok(service.buscarTodosIds());
