@@ -18,15 +18,10 @@ public class PerguntaSpecs {
                 criteriaBuilder.like(criteriaBuilder.upper(root.get("email")),
                         "%" + email.toUpperCase() + "%");
     }
-    public static Specification<Pergunta> telefoneLike(String telefone){
+    public static Specification<Pergunta> tituloLike(String titulo){
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("telefone"),
-                        "%" + telefone + "%");
-    }
-    public static Specification<Pergunta> nomeLike(String nome){
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("nome"),
-                        "%" + nome + "%");
+                criteriaBuilder.like(root.get("mensagem"),
+                        "%" + titulo.toUpperCase() + "%");
     }
     public static Specification<Pergunta> mensagemLike(String mensagem){
         return (root, query, criteriaBuilder) ->

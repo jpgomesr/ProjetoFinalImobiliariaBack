@@ -36,8 +36,7 @@ public class PerguntaService {
     public Page<Pergunta> pesquisar(
             TipoPerguntaEnum tipoPergunta,
             String email,
-            String telefone,
-            String nome,
+            String titulo,
             String mensagem,
             Pageable pageable
     ) {
@@ -45,23 +44,19 @@ public class PerguntaService {
                 Specification.where((root, query, criteriaBuilder) ->
                         criteriaBuilder.conjunction());
 
-        if (telefone != null) {
-            telefone = telefone.replace("(", "")
-                    .replace(")", "").replace("-", "");
-        }
-
         if (tipoPergunta != null) {
             specs = specs.and(PerguntaSpecs.tipoPerguntaLike(tipoPergunta));
         }
         if (StringUtils.isNotBlank(email)) {
             specs = specs.and(PerguntaSpecs.emailLike(email));
         }
-        if (StringUtils.isNotBlank(nome)) {
-            specs = specs.and(PerguntaSpecs.nomeLike(nome));
+        if (StringUtils.isNotBlank(titulo)){
+            specs = specs.and(PerguntaSpecs.tituloLike(titulo));
         }
-        if (StringUtils.isNotBlank(telefone)) {
+        if (StringUtils.isNotBlank(mensagem)){
             specs = specs.and(PerguntaSpecs.mensagemLike(mensagem));
         }
+
         Page<Pergunta> perguntas = repositry.findAll(specs, pageable);
         System.out.println(perguntas);
         return perguntas;
