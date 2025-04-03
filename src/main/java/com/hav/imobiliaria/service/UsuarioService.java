@@ -84,6 +84,10 @@ public class UsuarioService {
     }
     public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
 
+        if(!dto.role().equals(RoleEnum.USUARIO) && !SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.ADMINISTRADOR)){
+            throw new AcessoNegadoException();
+        }
+
         Usuario entity = instanciandoUsuarioPostDtoPorRole(dto);
 
         this.validator.validar(entity);
