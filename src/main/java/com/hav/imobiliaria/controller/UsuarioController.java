@@ -82,6 +82,7 @@ public class UsuarioController implements GenericController{
 
 
     }
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("{id}")
     public ResponseEntity<UsuarioGetDTO> atualizar(@RequestPart @Valid String usuario,
                                                    @RequestPart(required = false) MultipartFile novaImagem,
@@ -95,11 +96,13 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(this.usuarioGetMapper.toDto(service.atualizar(usuarioPutDTO,id, novaImagem)));
     }
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         service.removerPorId(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/restaurar/{id}")
     public ResponseEntity<Void> restaurarUsuario(@PathVariable Long id) {
         this.service.restaurarUsuario(id);
@@ -112,12 +115,14 @@ public class UsuarioController implements GenericController{
         this.service.removerImagemUsuario(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("permitAll()")
     @GetMapping("/corretores-lista-select")
     public ResponseEntity<List<UsuarioListaSelectResponseDTO>> listarCorretoresListaSelect(){
         List<Usuario> usuarios = this.service.buscarCorretorListagem();
         return  ResponseEntity.ok(usuarios.stream().map(usuarioListaSelectResponseMapper::toDto).toList());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("favoritos")
     public ResponseEntity<Void> cadastrarFavorito(@RequestParam Long idImovel){
 
@@ -125,6 +130,7 @@ public class UsuarioController implements GenericController{
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("favoritos")
     public ResponseEntity<Void> removerFavorito(@RequestParam Long idImovel){
 
@@ -137,6 +143,7 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(service.buscarIdUsuarios());
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/corretorApresentacao/{role}")
     public ResponseEntity<List<ApresentacaoCorretorDTO>> listarCorretorApresentacao(@PathVariable RoleEnum role) {
         return ResponseEntity.ok(apresentacaoCorretorGetMapper.toDTO(service.buscarPorRole(role)));
