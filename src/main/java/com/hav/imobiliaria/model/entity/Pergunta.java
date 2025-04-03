@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.model.entity;
 
 import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class  Pergunta {
     @CreatedDate
     private LocalDateTime data;
     private String resposta;
+    private boolean perguntaRespondida;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Administrador idAdministrador;
