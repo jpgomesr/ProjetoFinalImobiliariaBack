@@ -7,6 +7,7 @@ import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
+import com.hav.imobiliaria.exceptions.AcessoNegadoException;
 import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.entity.Usuario;
@@ -101,8 +102,14 @@ public class UsuarioService {
         usuarioAtualizado.setId(id);
         this.validator.validar(usuarioAtualizado);
         if(!usuarioSalvo.getRole().equals(usuarioAtualizado.getRole())) {
-            usuarioAtualizado.setId(null);
-            excluirReferenciaImovelCorretor(id);
+            if(SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.ADMINISTRADOR)) {
+                usuarioAtualizado.setId(null);
+                excluirReferenciaImovelCorretor(id);
+            }
+            else{
+                throw new AcessoNegadoException();
+            }
+
         }
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
@@ -129,9 +136,6 @@ public class UsuarioService {
         Optional<Usuario> usuarioOptional = repository.findById(id);
         if(usuarioOptional.isPresent()){
             Usuario usuario = usuarioOptional.get();
-//            if(usuario.getFoto() != null){
-//                this.s3Service.excluirObjeto(usuario.getFoto());
-//            }
             usuario.setAtivo(false);
             usuario.setDataDelecao(LocalDateTime.now());
             this.repository.save(usuario);
