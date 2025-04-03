@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -59,6 +60,9 @@ public class Usuario implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "id_imovel")
     )
     private List<Imovel> imoveisFavoritados;
+
+    @OneToMany(mappedBy = "usuario")
+    List<Notificacao> notificacoes;
 
     @PrePersist
     public void prePersist() {
