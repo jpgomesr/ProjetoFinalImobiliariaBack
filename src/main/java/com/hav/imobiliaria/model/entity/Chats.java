@@ -19,9 +19,13 @@ public class Chats {
     private Long idChat;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario1_id", nullable = false)
+    @ToString.Exclude
+
     private Usuario usuario1;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario2_id", nullable = false)
+    @ToString.Exclude
+
     private Usuario usuario2;
     @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
