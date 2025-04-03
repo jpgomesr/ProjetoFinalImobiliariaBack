@@ -25,3 +25,8 @@ api:
   security :
     token:
       secret: "teste"
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

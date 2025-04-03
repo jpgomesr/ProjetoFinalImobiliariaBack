@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import software.amazon.awssdk.core.util.PaginatorUtils;
 
@@ -81,16 +82,39 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        // Converte a RoleEnum para GrantedAuthority
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return this.getSenha();
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.getEmail();
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.ativo; // Usa o campo ativo
+    }
+
+
 }

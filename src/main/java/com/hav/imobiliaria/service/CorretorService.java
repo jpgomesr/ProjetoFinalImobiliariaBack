@@ -2,7 +2,9 @@ package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.model.entity.Corretor;
 import com.hav.imobiliaria.model.entity.HorarioCorretor;
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.repository.CorretorRepository;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,9 @@ public class CorretorService {
         return this.repository.findHorariosByImovelAndData(idImovel, mes, dia);
 
     }
-    public List<HorarioCorretor> buscarHorariosCorretoresPorId(Long id) {
-
-        return this.repository.findById(id).map(Corretor::getHorarios).orElse(null);
+    public List<HorarioCorretor> buscarHorariosCorretoresPorId() {
+        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
+        return this.repository.findById(usuario.getId()).map(Corretor::getHorarios).orElse(null);
     }
 
 }
