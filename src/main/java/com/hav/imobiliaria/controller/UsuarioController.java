@@ -42,6 +42,7 @@ public class UsuarioController implements GenericController{
     private final ApresentacaoCorretorGetMapper apresentacaoCorretorGetMapper;
 
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping
     public ResponseEntity<Page<UsuarioListagemResponseDTO>> listarEmPaginas(
             @RequestParam(value = "nome", required = false) String nome,
@@ -52,6 +53,7 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok(service.buscarTodos(nome,ativo,role,pageable).map(usuarioListagemResponseMapper::toDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/total")
     public ResponseEntity<Long> buscarTotalUsuarios() {
         return ResponseEntity.ok(service.buscarTotalUsuarios());
@@ -67,6 +69,7 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok(usuarioListagemResponseMapper.toCorretorResponseDto(service.buscarCorretor(id)));
     }
+    @PreAuthorize("permitAll()")
     @PostMapping
     public ResponseEntity<UsuarioGetDTO> cadastrar(@RequestPart(value = "usuario") @Valid String usuarioJson,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, MethodArgumentNotValidException {
@@ -110,11 +113,11 @@ public class UsuarioController implements GenericController{
         return  ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/imagem/{id}")
-    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
-        this.service.removerImagemUsuario(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/imagem/{id}")
+//    public ResponseEntity<Void> removerImagemUsuario(@PathVariable Long id){
+//        this.service.removerImagemUsuario(id);
+//        return ResponseEntity.noContent().build();
+//    }
     @PreAuthorize("permitAll()")
     @GetMapping("/corretores-lista-select")
     public ResponseEntity<List<UsuarioListaSelectResponseDTO>> listarCorretoresListaSelect(){

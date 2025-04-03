@@ -13,6 +13,10 @@ public class SecurityUtils {
         }
     }
     public static Usuario buscarUsuarioLogado() {
-        return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       try {
+           return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       }catch (Exception e){
+           throw new AcessoNegadoException();
+       }
     }
 }
