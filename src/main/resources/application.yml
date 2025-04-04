@@ -1,32 +1,49 @@
 spring:
-  application:
-    name: hav.imobiliaria
-  datasource:
-    urL: jdbc:mysql://localhost:3306/db_hav?createDatabaseIfNotExist=true
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-  servlet:
-    multipart:
-      max-request-size: 20MB
-      max-file-size: 20MB
+   application:
+      name: hav.imobiliaria
+   datasource:
+      urL: ${DATABASE_URL}
+      username: root
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+   jpa:
+      hibernate:
+         ddl-auto: update
+      show-sql: true
+   mail:
+      host: smtp.gmail.com
+      port: 587
+      username: hav.imobiliaria@gmail.com
+      password: ${EMAIL_APP_PASSWORD}
+      protocol: smtp
+      properties:
+         mail:
+            smtp:
+               auth: true
+               starttls:
+                  enable: true
+   thymeleaf:
+      prefix: classpath:/templates/
+      suffix: .html
+      check-template-location: true
+      cache: false
+   servlet:
+      multipart:
+         max-request-size: 20MB
+         max-file-size: 20MB
 server:
-  port: 8082
+   port: 8082
 aws:
-  access-key: AKIA2AUOPIM3J2WOGT5N
-  secret-key: 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
-  region: us-east-1
-  bucket-name: hav-bucket-c
+   access-key: ${S3_ACCESS_KEY}
+   secret-key: ${S3_SECRET_KEY}
+   region: ${S3_REGION}
+   bucket-name: ${S3_BUCKET_NAME}
 api:
-  security :
-    token:
-      secret: "teste"
+   security:
+      token:
+         secret: "teste"
 logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+   level:
+      org:
+         springframework:
+            security: DEBUG
