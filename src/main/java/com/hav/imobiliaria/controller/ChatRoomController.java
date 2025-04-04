@@ -79,6 +79,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{idChat}/mensagens")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatMessage>> getMensagem(
             @PathVariable Long idChat,
             @RequestParam Long idUsuario,
@@ -102,6 +103,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/list/{idUsuario}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatGetDTO>> getChats(@PathVariable Long idUsuario) {
         List<Chats> chats = repository.findAllByUsuario1IdOrUsuario2IdOrderByMessagesTimeStamp(idUsuario, idUsuario);
         System.out.println(chats);
@@ -139,6 +141,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{idUsuario1}/{idUsuario2}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ChatGetDTO> getChat
             (@PathVariable Long idUsuario1, @PathVariable Long idUsuario2) {
         Chats chat = repository.findByUsuario1IdAndUsuario2Id(idUsuario1, idUsuario2);
@@ -146,6 +149,7 @@ public class ChatRoomController {
     }
 
     @PostMapping("/{idChat}/marcarLidas")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> marcarMensagensComoLidas(
             @PathVariable Long idChat,
             @RequestParam Long idUsuario) {
