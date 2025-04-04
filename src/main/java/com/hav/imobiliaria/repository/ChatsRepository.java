@@ -41,4 +41,6 @@ public interface ChatsRepository extends JpaRepository<Chats, Long> {
             Long usuario1Id1, Long usuario2Id1,
             Long usuario1Id2, Long usuario2Id2
     );
+
+    Chats findByUsuario1IdAndUsuario2Id(Long usuario1Id, Long usuario2Id);
 }

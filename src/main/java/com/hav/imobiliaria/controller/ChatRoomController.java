@@ -17,6 +17,7 @@ import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.service.MessageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class ChatRoomController {
     MessageService messageService;
 
     @PostMapping("/{idUsuario1}/{idUsuario2}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> createChat(
             @PathVariable Long idUsuario1,
             @PathVariable Long idUsuario2) {
@@ -106,12 +108,12 @@ public class ChatRoomController {
         if (chats.isEmpty()) {
             throw new ChatNaoEncontradoException("Nenhum chat encontrado");
         }
-        
+
         List<ChatGetDTO> chatDTOs = new ArrayList<>();
         for (Chats chat : chats) {
             // Verificar se existem mensagens não lidas para este usuário neste chat
             boolean temMensagensNaoLidas = messageService.temMensagensNaoLidas(chat.getIdChat(), idUsuario);
-            
+
             // Obter a última mensagem do chat
             ChatMessageDTO ultimaMensagem = null;
             if (chat.getMessages() != null && !chat.getMessages().isEmpty()) {
@@ -120,22 +122,29 @@ public class ChatRoomController {
                     ultimaMensagem = chatGetMapper.toMessageDto(lastMessageOpt.get());
                 }
             }
-            
+
             ChatGetDTO dto = chatGetMapper.toDto(chat);
             // Como o MapStruct não suporta diretamente a adição de campos, precisamos criar um novo DTO com o campo naoLido
             chatDTOs.add(new ChatGetDTO(
-                dto.id(),
-                dto.idChat(),
-                dto.usuario1(),
-                dto.usuario2(),
-                temMensagensNaoLidas,
-                ultimaMensagem
+                    dto.id(),
+                    dto.idChat(),
+                    dto.usuario1(),
+                    dto.usuario2(),
+                    temMensagensNaoLidas,
+                    ultimaMensagem
             ));
         }
-        
+
         return ResponseEntity.ok(chatDTOs);
     }
-    
+
+    @GetMapping("/{idUsuario1}/{idUsuario2}")
+    public ResponseEntity<ChatGetDTO> getChat
+            (@PathVariable Long idUsuario1, @PathVariable Long idUsuario2) {
+        Chats chat = repository.findByUsuario1IdAndUsuario2Id(idUsuario1, idUsuario2);
+        return ResponseEntity.ok(chatGetMapper.toDto(chat));
+    }
+
     @PostMapping("/{idChat}/marcarLidas")
     public ResponseEntity<Void> marcarMensagensComoLidas(
             @PathVariable Long idChat,
