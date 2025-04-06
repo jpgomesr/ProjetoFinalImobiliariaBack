@@ -24,17 +24,17 @@ public class EnderecoController {
     @GetMapping("cidades/{estado}")
     public ResponseEntity<Set<String>>buscarCidades(@PathVariable  String estado){
         String estadoFormatado = estado.replace("-"," ");
-        System.out.println(service.buscarCidades(estadoFormatado));
+        System.out.println(this.service.buscarCidades(estadoFormatado));
 
         return ResponseEntity.ok(service.buscarCidades(estadoFormatado));
 
     }
     @PreAuthorize("permitAll()")
     @GetMapping("bairros/{cidade}")
-    private ResponseEntity<Set<String>>buscarBairros(@PathVariable String cidade){
+    public ResponseEntity<Set<String>>buscarBairros(@PathVariable String cidade){
         String cidadeFormatada = cidade.replace("-"," ");
 
-        return ResponseEntity.ok(service.buscarBarrosPorCidade(cidadeFormatada));
+        return ResponseEntity.ok(this.service.buscarBarrosPorCidade(cidadeFormatada));
     }
 
 
