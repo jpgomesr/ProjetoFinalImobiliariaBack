@@ -17,7 +17,7 @@ public class Corretor extends Usuario{
     @ManyToMany(mappedBy = "corretores")
     private List<Imovel> imoveis;
 
-    @OneToMany(mappedBy = "corretor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "corretor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<HorarioCorretor> horarios;
 
     @OneToMany(mappedBy = "corretor", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -34,5 +34,6 @@ public class Corretor extends Usuario{
         }
         throw new HorarioCorretorInvalidoException("O horario informado é inválido");
     }
+
 
 }

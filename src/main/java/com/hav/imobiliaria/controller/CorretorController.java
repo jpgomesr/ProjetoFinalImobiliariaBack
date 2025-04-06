@@ -23,7 +23,7 @@ public class CorretorController {
 
     @PreAuthorize("hasRole('USUARIO')")
     @GetMapping("/horarios/{id}")
-    public ResponseEntity<List<HorarioCorretorGetDTO>> getHorarios(@PathVariable Long id,
+    public ResponseEntity<List<HorarioCorretorGetDTO>> getHorariosPorIdImovel(@PathVariable Long id,
                                                                    @RequestParam(required = false) Integer mes,
                                                                    @RequestParam(required = false) Integer dia) {
 
