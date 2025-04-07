@@ -60,8 +60,8 @@ public class AgendamentosController {
                     agendamento.getId(),
                     agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
-                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     new UsuarioNomeIdDTO(agendamento.getUsuarioComum().getId(), agendamento.getUsuarioComum().getNome()),
+                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     agendamento.getImovel().getId(),
                     agendamento.getImovel().getImagens().getFirst().getReferencia(),
                     agendamento.getStatus());
@@ -86,8 +86,8 @@ public class AgendamentosController {
                     agendamento.getId(),
                     agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
-                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     new UsuarioNomeIdDTO(agendamento.getUsuarioComum().getId(), agendamento.getUsuarioComum().getNome()),
+                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     agendamento.getImovel().getId(),
                     agendamento.getImovel().getImagens().getFirst().getReferencia(),
                     agendamento.getStatus());
