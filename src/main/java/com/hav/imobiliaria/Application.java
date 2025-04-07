@@ -18,8 +18,6 @@ import java.util.Map;
 @SpringBootApplication
 @AllArgsConstructor
 public class Application {
-	EmailService emailService;
-
 	public static void main(String[] args) {
 		// Carregar variáveis do .env antes de iniciar a aplicação
 		Dotenv dotenv = Dotenv.load();
@@ -35,16 +33,15 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void sendEmail() throws MessagingException {
-		EmailRequest emailRequest = new EmailRequest();
-		emailRequest.setTipoEmail("resposta-pergunta");
-		emailRequest.setDestinatario("joao_pg_rodrigues@estudante.sesisenai.org.br");
-		Map<String, Object> variaveis = new HashMap<>();
-		variaveis.put("nomeCliente", "Alex Zastrow");
-		variaveis.put("pergunta", "Como está indo a criação de envio de email?");
-		variaveis.put("resposta", "Finalizamos a criação de envio de email.");
-		emailRequest.setVariaveis(variaveis);
-		emailService.enviarEmail(emailRequest);
-	}
+//	public void sendEmail() throws MessagingException { // Modelo de envio de email
+//		EmailRequest emailRequest = new EmailRequest();
+//		emailRequest.setTipoEmail("resposta-pergunta");
+//		emailRequest.setDestinatario("joao_pg_rodrigues@estudante.sesisenai.org.br");
+//		Map<String, Object> variaveis = new HashMap<>();
+//		variaveis.put("nomeCliente", "Alex Zastrow");
+//		variaveis.put("pergunta", "Como está indo a criação de envio de email?");
+//		variaveis.put("resposta", "Finalizamos a criação de envio de email.");
+//		emailRequest.setVariaveis(variaveis);
+//		emailService.enviarEmail(emailRequest);
+//	}
 }
