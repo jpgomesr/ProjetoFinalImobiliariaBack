@@ -7,6 +7,8 @@ import com.hav.imobiliaria.model.entity.HorarioCorretor;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.repository.HorarioCorretorRepository;
 import com.hav.imobiliaria.security.utils.SecurityUtils;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,14 @@ public class HorarioCorretorService {
 
         repository.save(horarioCorretorEntity);
     }
-    public void delete() {
-        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
-        repository.deleteById(usuario.getId());
+
+    @Transactional
+    public void delete(Long id) {
+        Long  idUsuario = SecurityUtils.buscarUsuarioLogado().getId();
+        Corretor corretor =  usuarioService.buscarCorretor(idUsuario);
+
+        corretor.getHorarios().removeIf(horario -> horario.getId().equals(id));
+
 
     }
 

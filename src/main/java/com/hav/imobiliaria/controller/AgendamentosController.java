@@ -2,7 +2,9 @@ package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoListagemDTO;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
+import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPutDTO;
 import com.hav.imobiliaria.controller.dto.agendamento.HorarioCorretorPostDTO;
+import com.hav.imobiliaria.controller.dto.usuario.UsuarioNomeIdDTO;
 import com.hav.imobiliaria.controller.mapper.endereco.EnderecoGetMapper;
 import com.hav.imobiliaria.model.entity.Agendamento;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
@@ -27,7 +29,6 @@ public class AgendamentosController {
     private final EnderecoGetMapper enderecoGetMapper;
 
 
-
     @PreAuthorize("hasAnyRole('USUARIO')")
     @PostMapping
     public ResponseEntity<Void> agendarVisita(@RequestBody AgendamentoPostDto agendamentoPostDto) {
@@ -35,6 +36,14 @@ public class AgendamentosController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @PreAuthorize("hasAnyRole('USUARIO')")
+    @PutMapping
+    public ResponseEntity<Void> atualizarVisita(@RequestBody AgendamentoPutDTO agendamentoPutDTO) {
+        this.service.atualizarAgendamento(agendamentoPutDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyRole('CORRETOR')")
     @GetMapping("/corretor/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentos(
@@ -44,22 +53,23 @@ public class AgendamentosController {
             Pageable pageable) {
 
         Page<Agendamento> agendamentos = service.listarAgendamentosCorretorId(
-                pageable,id, status, data);
+                pageable, id, status, data);
 
-        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
-            return  new AgendamentoListagemDTO(
+        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento -> {
+            return new AgendamentoListagemDTO(
                     agendamento.getId(),
                     agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
-                    agendamento.getCorretor().getNome(),
-                    agendamento.getUsuarioComum().getNome(),
+                    new UsuarioNomeIdDTO(agendamento.getUsuarioComum().getId(), agendamento.getUsuarioComum().getNome()),
+                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     agendamento.getImovel().getId(),
                     agendamento.getImovel().getImagens().getFirst().getReferencia(),
                     agendamento.getStatus());
         });
 
-        return  ResponseEntity.ok(agendamentoListagemDTOS);
+        return ResponseEntity.ok(agendamentoListagemDTOS);
     }
+
     @PreAuthorize("hasAnyRole('USUARIO')")
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentosUsuario(
@@ -69,37 +79,33 @@ public class AgendamentosController {
             Pageable pageable) {
 
         Page<Agendamento> agendamentos = service.listarAgendamentosUsuarioId(
-                pageable,id, status, data);
+                pageable, id, status, data);
 
-        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento ->{
-            return  new AgendamentoListagemDTO(
+        Page<AgendamentoListagemDTO> agendamentoListagemDTOS = agendamentos.map(agendamento -> {
+            return new AgendamentoListagemDTO(
                     agendamento.getId(),
                     agendamento.getDataHora(),
                     enderecoGetMapper.toEnderecoVisitaDTO(agendamento.getImovel().getEndereco()),
-                    agendamento.getCorretor().getNome(),
-                    agendamento.getUsuarioComum().getNome(),
+                    new UsuarioNomeIdDTO(agendamento.getUsuarioComum().getId(), agendamento.getUsuarioComum().getNome()),
+                    new UsuarioNomeIdDTO(agendamento.getCorretor().getId(), agendamento.getCorretor().getNome()),
                     agendamento.getImovel().getId(),
                     agendamento.getImovel().getImagens().getFirst().getReferencia(),
                     agendamento.getStatus());
         });
 
-        return  ResponseEntity.ok(agendamentoListagemDTOS);
+        return ResponseEntity.ok(agendamentoListagemDTOS);
     }
+
     @PreAuthorize("hasAnyRole('CORRETOR','USUARIO')")
     @PatchMapping("{id}")
     public ResponseEntity<Void> alterarStatus(@PathVariable Long id,
-                                              @RequestParam StatusAgendamentoEnum status){
+                                              @RequestParam StatusAgendamentoEnum status) {
 
         this.service.atualizarStatus(id, status);
 
         return ResponseEntity.noContent().build();
 
     }
-
-
-
-
-
 
 
 }
