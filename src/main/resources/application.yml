@@ -39,11 +39,11 @@ aws:
    region: ${S3_REGION}
    bucket-name: ${S3_BUCKET_NAME}
 api:
-   security:
-      token:
-         secret: "teste"
-logging:
-   level:
-      org:
-         springframework:
-            security: DEBUG
+  security :
+    token:
+      secret: "teste"
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

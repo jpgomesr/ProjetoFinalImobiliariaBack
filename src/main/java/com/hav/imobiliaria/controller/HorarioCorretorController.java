@@ -30,9 +30,9 @@ public class HorarioCorretorController {
     }
     @PreAuthorize("hasRole('CORRETOR')")
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletarHorario() {
+    public ResponseEntity<Void> deletarHorario(@PathVariable Long id) {
 
-        this.service.delete();
+        this.service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @PreAuthorize("hasRole('CORRETOR')")

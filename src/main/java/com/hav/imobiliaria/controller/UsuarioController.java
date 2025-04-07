@@ -64,6 +64,7 @@ public class UsuarioController implements GenericController{
     public ResponseEntity<UsuarioGetDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioGetMapper.toDto(service.buscarPorId(id)));
     }
+
     @GetMapping("/corretor/{id}")
     public ResponseEntity<CorretorResponseDto> buscarPorCorretor(@PathVariable Long id) {
 
