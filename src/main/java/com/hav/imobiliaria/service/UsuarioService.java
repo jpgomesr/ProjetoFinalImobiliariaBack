@@ -259,17 +259,15 @@ public class UsuarioService {
         return repository.count();
     }
 
+
+    @Transactional
     public void enviarEmailParaRefefinicaoSenha(String email) {
         Usuario usuario = this.buscarPorEmail(email);
 
         String token = UUID.randomUUID().toString();
 
         criarTokenParaRefefinicaoSenha(token, usuario);
-    }
-    private void criarTokenParaRefefinicaoSenha(String token, Usuario usuario) {
 
-        TokenRecuperacaoSenha tokenRecuperacaoSenha = new TokenRecuperacaoSenha(token,usuario);
-        tokenRecuperacaoSenhaRepository.save(tokenRecuperacaoSenha);
         Dotenv dotenv = Dotenv.load();
         Map<String,Object> variaveis = new HashMap<>();
         variaveis.put("nomeCliente", usuario.getNome());
@@ -286,6 +284,21 @@ public class UsuarioService {
                         .variaveis(variaveis)
                         .build()
         );
-        
+
+
+    }
+
+
+    private void criarTokenParaRefefinicaoSenha(String token, Usuario usuario) {
+
+       tokenRecuperacaoSenhaRepository.deleteByUsuario_Id(usuario.getId());
+
+       tokenRecuperacaoSenhaRepository.flush();
+
+        TokenRecuperacaoSenha tokenRecuperacaoSenha = new TokenRecuperacaoSenha(token,usuario);
+
+        tokenRecuperacaoSenha.setDataExpiracao(LocalDateTime.now().plusMinutes(15));
+        tokenRecuperacaoSenhaRepository.save(tokenRecuperacaoSenha);
+
     }
 }
