@@ -1,6 +1,7 @@
 package com.hav.imobiliaria;
 
 import com.hav.imobiliaria.model.entity.EmailRequest;
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
 import com.hav.imobiliaria.service.EmailService;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.MessagingException;
@@ -20,6 +21,8 @@ import java.util.Map;
 @AllArgsConstructor
 @EnableAsync
 public class Application {
+//	EmailService emailService;
+
 	public static void main(String[] args) {
 		// Carregar variáveis do .env antes de iniciar a aplicação
 		Dotenv dotenv = Dotenv.load();
@@ -35,10 +38,11 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
+//	@EventListener(ApplicationReadyEvent.class)
 //	public void sendEmail() throws MessagingException { // Modelo de envio de email
 //		EmailRequest emailRequest = new EmailRequest();
-//		emailRequest.setTipoEmail("resposta-pergunta");
-//		emailRequest.setDestinatario("joao_pg_rodrigues@estudante.sesisenai.org.br");
+//		emailRequest.setTipoEmail(TipoEmailEnum.RESPOSTA_PERGUNTA);
+//		emailRequest.setDestinatario("jpgomesr.dev@gmail.com");
 //		Map<String, Object> variaveis = new HashMap<>();
 //		variaveis.put("nomeCliente", "Alex Zastrow");
 //		variaveis.put("pergunta", "Como está indo a criação de envio de email?");
