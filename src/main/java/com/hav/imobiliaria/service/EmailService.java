@@ -6,10 +6,12 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -18,15 +20,22 @@ public class EmailService {
     private JavaMailSender mailSender;
     private TemplateEngine templateEngine;
 
-    public void enviarEmail(EmailRequest request) throws MessagingException {
-        MimeMessage mensagem = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mensagem, true);
+    @Async
+    public void enviarEmail(EmailRequest request)  {
 
-        helper.setTo(request.getDestinatario());
-        helper.setSubject(definirAssunto(request.getTipoEmail()));
-        helper.setText(processarTemplate(request.getTipoEmail(), request.getVariaveis()), true);
+        try{
+            MimeMessage mensagem = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mensagem, true);
 
-        mailSender.send(mensagem);
+            helper.setTo(request.getDestinatario());
+            helper.setSubject(definirAssunto(request.getTipoEmail()));
+            helper.setText(processarTemplate(request.getTipoEmail(), request.getVariaveis()), true);
+
+            mailSender.send(mensagem);
+        }catch (MessagingException e){
+            System.out.println("ajustar");
+        }
+
     }
 
     private String processarTemplate(String tipoEmail, Map<String, Object> variaveis) {
@@ -44,4 +53,5 @@ public class EmailService {
             default -> "Notificação da Imobiliária";
         };
     }
+
 }
