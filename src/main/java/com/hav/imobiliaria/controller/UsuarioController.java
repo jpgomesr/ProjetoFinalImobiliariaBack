@@ -165,7 +165,7 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok().build();
 
     }
-    @PatchMapping("/alterar-senha")
+    @PatchMapping("/redefinir-senha")
     public ResponseEntity<Void> alterarSenha(@Valid @RequestBody TrocaDeSenhaDTO trocaDeSenhaDto) {
         this.service.alterarSenha(trocaDeSenhaDto);
 
