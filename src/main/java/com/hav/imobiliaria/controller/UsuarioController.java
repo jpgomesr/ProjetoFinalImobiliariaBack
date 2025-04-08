@@ -165,13 +165,12 @@ public class UsuarioController implements GenericController{
         return ResponseEntity.ok().build();
 
     }
-//    @PatchMapping("/alterarSenha/{id}")
-//    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody TrocaDeSenha senhaUsuarioDto ,
-//                                             @PathVariable Long id) {
-//        this.service.alterarSenha(id,senhaUsuarioDto.senha());
-//
-//        return ResponseEntity.ok().build();
-//    }
+    @PatchMapping("/alterar-senha")
+    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody TrocaDeSenhaDTO trocaDeSenhaDto) {
+        this.service.alterarSenha(trocaDeSenhaDto);
+
+        return ResponseEntity.ok().build();
+    }
 
 
 }
