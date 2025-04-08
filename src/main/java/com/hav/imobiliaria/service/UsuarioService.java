@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
+import com.hav.imobiliaria.controller.dto.usuario.TrocaDeSenhaDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
@@ -8,6 +9,7 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.TokenRecuperacaoDeSenhaInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
@@ -164,16 +166,18 @@ public class UsuarioService {
     }
 
 
-    public void alterarSenha(
-            Long id,
-            @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
-            @NotBlank(message = "A senha é obrigatória")
-            String senha) {
+    public void alterarSenha(TrocaDeSenhaDTO trocaDeSenhaDto) {
 
-        Usuario usuario = this.buscarPorId(id);
-        usuario.setSenha(passwordEncoder.encode(senha));
+        TokenRecuperacaoSenha tokenRecuperacaoSenha =
+                tokenRecuperacaoSenhaRepository.findByToken(trocaDeSenhaDto.token()).orElseThrow(TokenRecuperacaoDeSenhaInvalidoException::new);
 
-        this.repository.save(usuario);
+
+        if(tokenRecuperacaoSenha.getDataExpiracao().plusMinutes(15).isBefore(LocalDateTime.now())){
+            throw new TokenRecuperacaoDeSenhaInvalidoException();
+        }
+        tokenRecuperacaoSenha.getUsuario().setSenha(passwordEncoder.encode(trocaDeSenhaDto.senha()));
+
+        this.repository.save(tokenRecuperacaoSenha.getUsuario());
 
     }
     private Usuario instanciandoUsuarioPostDtoPorRole(UsuarioPostDTO dto) {
