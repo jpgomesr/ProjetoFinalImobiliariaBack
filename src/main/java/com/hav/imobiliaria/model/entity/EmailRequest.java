@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,6 @@ import java.util.Map;
 @Data
 public class EmailRequest {
     private String destinatario;
-    private String tipoEmail;
+    private TipoEmailEnum tipoEmail;
     private Map<String, Object> variaveis;
 }

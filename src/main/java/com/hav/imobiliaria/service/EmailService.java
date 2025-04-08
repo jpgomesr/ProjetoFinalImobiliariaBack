@@ -21,21 +21,19 @@ public class EmailService {
     private TemplateEngine templateEngine;
 
     @Async
-    public void enviarEmail(EmailRequest request)  {
-
-        try{
+    public void enviarEmail(EmailRequest request) {
+        try {
             MimeMessage mensagem = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mensagem, true);
 
             helper.setTo(request.getDestinatario());
-            helper.setSubject(definirAssunto(request.getTipoEmail()));
-            helper.setText(processarTemplate(request.getTipoEmail(), request.getVariaveis()), true);
+            helper.setSubject(definirAssunto(request.getTipoEmail().getRefHtml()));
+            helper.setText(processarTemplate(request.getTipoEmail().getRefHtml(), request.getVariaveis()), true);
 
             mailSender.send(mensagem);
-        }catch (MessagingException e){
+        } catch (MessagingException e) {
             System.out.println("ajustar");
         }
-
     }
 
     private String processarTemplate(String tipoEmail, Map<String, Object> variaveis) {
