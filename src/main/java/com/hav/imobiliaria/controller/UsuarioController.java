@@ -1,14 +1,12 @@
 package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.ApresentacaoCorretorGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListaSelectResponseMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioListagemResponseMapper;
-import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.service.UsuarioService;
@@ -18,7 +16,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -159,8 +156,17 @@ public class UsuarioController implements GenericController{
     }
 
 
+    @PreAuthorize("permitAll()")
+    @GetMapping("/token-redefinir-senha")
+    public ResponseEntity<Void> tokenRedefinirSenha(@RequestParam String email){
+
+        this.service.enviarEmailParaRefefinicaoSenha(email);
+
+        return ResponseEntity.ok().build();
+
+    }
 //    @PatchMapping("/alterarSenha/{id}")
-//    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody SenhaUsuarioDto senhaUsuarioDto ,
+//    public ResponseEntity<Void> alterarSenha(@Valid @RequestBody TrocaDeSenha senhaUsuarioDto ,
 //                                             @PathVariable Long id) {
 //        this.service.alterarSenha(id,senhaUsuarioDto.senha());
 //

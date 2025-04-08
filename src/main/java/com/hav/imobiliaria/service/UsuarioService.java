@@ -8,14 +8,16 @@ import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
-import com.hav.imobiliaria.model.entity.Corretor;
-import com.hav.imobiliaria.model.entity.Imovel;
-import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
+import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
+import com.hav.imobiliaria.repository.TokenRecuperacaoSenhaRepository;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
 import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.UsuarioValidator;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -34,9 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +49,8 @@ public class UsuarioService {
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
     private final ImovelService imovelService;
+    private final TokenRecuperacaoSenhaRepository tokenRecuperacaoSenhaRepository;
+    private final EmailService emailService;
     private  PasswordEncoder passwordEncoder;
 
     public Page<Usuario> buscarTodos(
@@ -213,11 +215,11 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorEmail(String email){
-        return this.repository.findByEmail(email).get();
+        return this.repository.findByEmail(email).orElseThrow(UsuarioNaoEncontradoException::new);
     }
 
     public void excluirReferenciaImovelCorretor(Long id) {
-        Usuario usuario = this.repository.findById(id).get();
+        Usuario usuario = this.repository.findById(id).orElseThrow(UsuarioNaoEncontradoException::new);
 
         if(usuario.getRole().equals(RoleEnum.CORRETOR)){
             ((Corretor) usuario).getImoveis().forEach(i -> {
@@ -255,5 +257,35 @@ public class UsuarioService {
     }
     public Long buscarTotalUsuarios() {
         return repository.count();
+    }
+
+    public void enviarEmailParaRefefinicaoSenha(String email) {
+        Usuario usuario = this.buscarPorEmail(email);
+
+        String token = UUID.randomUUID().toString();
+
+        criarTokenParaRefefinicaoSenha(token, usuario);
+    }
+    private void criarTokenParaRefefinicaoSenha(String token, Usuario usuario) {
+
+        TokenRecuperacaoSenha tokenRecuperacaoSenha = new TokenRecuperacaoSenha(token,usuario);
+        tokenRecuperacaoSenhaRepository.save(tokenRecuperacaoSenha);
+        Dotenv dotenv = Dotenv.load();
+        Map<String,Object> variaveis = new HashMap<>();
+        variaveis.put("nomeCliente", usuario.getNome());
+        variaveis.put("titulo", "Recuperacao de senha");
+        variaveis.put("mensagem", "Clique no botão abaixo para redefinir a sua senha");
+        variaveis.put("linkAcao", dotenv.get("FRONTEND_URL")+ "/autenticacao/mudar-senha/" + token );
+        variaveis.put("textoBotao", "Redefinir senha");
+
+        emailService.enviarEmail(
+                EmailRequest
+                        .builder()
+                        .destinatario(usuario.getEmail())
+                        .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                        .variaveis(variaveis)
+                        .build()
+        );
+        
     }
 }
