@@ -39,17 +39,23 @@ public class AuthController {
 
         Usuario usuario = (Usuario) auth.getPrincipal();
 
-        if(usuario.getAutenticacaoDoisFatoresHabilitado().equals(Boolean.TRUE)){
-            authDoisFatoresService.gerarESalvarCodigoDoisFatores(data.email());
-            return ResponseEntity.ok(Map.of(
-                    "require2fa", usuario.getAutenticacaoDoisFatoresHabilitado()
-            ));
-        }
-
         var token = tokenService.generateToken(usuario);
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
+    @GetMapping("verificar-2fa-habilitado/{email}")
+    public ResponseEntity<Map> verificar2FAHabilitadoPor(@PathVariable String email){
+        Boolean habilitado = this.usuarioService.buscarPorEmail(email).getAutenticacaoDoisFatoresHabilitado();
+        if(habilitado){
+            authDoisFatoresService.gerarESalvarCodigoDoisFatores(email);
+        }
+        return ResponseEntity.ok(
+                Map.of("habilitado",  habilitado)
+
+       );
+
+    }
+
 
     @PostMapping("2fa/verify")
     public ResponseEntity<?> verificarCodigo(@RequestBody @Valid CodigoDoisFatoresRequestDTO codigoDoisFatoresRequestDTO) {
