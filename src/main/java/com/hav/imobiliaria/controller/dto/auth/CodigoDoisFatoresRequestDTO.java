@@ -10,6 +10,8 @@ public record CodigoDoisFatoresRequestDTO(
         String email,
         @NotBlank
         @Size(min = 6, max = 6)
-        String codigo
+        String codigo,
+        @NotBlank
+        String senha
 ){
 }
