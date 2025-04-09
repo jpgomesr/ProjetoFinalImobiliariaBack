@@ -31,13 +31,18 @@ public class AuthDoisFatoresService {
                 .expiracao(LocalDateTime.now().plusMinutes(10))
                 .build();
 
-        repository.save(CodigoAuthDoisFatores.builder().codigo(code).build());
+        repository.save(CodigoAuthDoisFatores.
+                builder()
+                .codigo(code)
+                .email(email)
+                .expiracao(LocalDateTime.now().plusMinutes(10))
+                .build());
 
 
         Map<String,Object> variaveis = new HashMap<>();
         variaveis.put("nomeCliente", "");
-        variaveis.put("titulo", "Recuperacao de senha");
-        variaveis.put("mensagem", "Clique no botão abaixo para redefinir a sua senha");
+        variaveis.put("titulo", "Codígo de autenticação de dois fatores");
+        variaveis.put("mensagem", "Seu código é: " + code);
 
 
         emailService.enviarEmail(
