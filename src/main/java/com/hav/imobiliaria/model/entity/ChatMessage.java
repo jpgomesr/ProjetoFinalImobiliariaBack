@@ -19,7 +19,7 @@ public class ChatMessage {
     private String remetente;
     private LocalDateTime timeStamp;
     private Boolean lida;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false)
     @ToString.Exclude
     @JsonIgnore

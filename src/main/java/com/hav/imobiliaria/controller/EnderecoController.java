@@ -24,8 +24,6 @@ public class EnderecoController {
     @GetMapping("cidades/{estado}")
     public ResponseEntity<Set<String>>buscarCidades(@PathVariable  String estado){
         String estadoFormatado = estado.replace("-"," ");
-        System.out.println(this.service.buscarCidades(estadoFormatado));
-
         return ResponseEntity.ok(service.buscarCidades(estadoFormatado));
 
     }

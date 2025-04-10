@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -62,8 +63,12 @@ public class Usuario implements UserDetails {
     )
     private List<Imovel> imoveisFavoritados;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Notificacao> notificacoes;
+
+    @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Chats> chats;
 
     @PrePersist
     public void prePersist() {
@@ -119,6 +124,4 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return this.ativo; // Usa o campo ativo
     }
-
-
 }

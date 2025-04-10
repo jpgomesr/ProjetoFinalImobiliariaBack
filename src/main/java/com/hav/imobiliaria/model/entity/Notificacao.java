@@ -26,7 +26,7 @@ public class Notificacao {
     private LocalDateTime dataCriacao;
     private Boolean lido = false;
     private String link;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario")
     @ToString.Exclude
     private Usuario usuario;
