@@ -55,6 +55,9 @@ public class Usuario implements UserDetails {
     @Column
     private LocalDateTime dataDelecao;
 
+    @Column
+    private Boolean autenticacaoDoisFatoresHabilitado;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "imovel_favorito_usuario",
@@ -63,8 +66,8 @@ public class Usuario implements UserDetails {
     )
     private List<Imovel> imoveisFavoritados;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Notificacao> notificacoes;
+    @OneToMany(mappedBy = "usuario")
+    private List<Notificacao> notificacoes;
 
     @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
     @ToString.Exclude
@@ -74,6 +77,9 @@ public class Usuario implements UserDetails {
     public void prePersist() {
         if (ativo == null) {
             ativo = true;
+        }
+        if(autenticacaoDoisFatoresHabilitado == null){
+            autenticacaoDoisFatoresHabilitado = false;
         }
     }
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
