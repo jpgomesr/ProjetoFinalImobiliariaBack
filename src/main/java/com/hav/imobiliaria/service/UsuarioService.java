@@ -33,6 +33,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.Transient;
@@ -117,7 +118,6 @@ public class UsuarioService {
             else{
                 throw new AcessoNegadoException();
             }
-
         }
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
@@ -137,6 +137,13 @@ public class UsuarioService {
         if(usuarioAtualizado.getId() == null){
             this.repository.deleteById(id);
         }
+        if(usuarioAtualizado.getAtivo() == null){
+            usuarioAtualizado.setAtivo(usuarioJaSalvo.getAtivo());
+        }
+        if(usuarioAtualizado.getRole() == null){
+            usuarioAtualizado.setRole(usuarioJaSalvo.getRole());
+        }
+
         return repository.save(usuarioAtualizado);
 
     }
