@@ -75,6 +75,7 @@ public class Usuario implements UserDetails {
             this.imoveisFavoritados.add(imovel);
         }
     }
+
     public void removerImovelFavorito(Long id) {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
     }

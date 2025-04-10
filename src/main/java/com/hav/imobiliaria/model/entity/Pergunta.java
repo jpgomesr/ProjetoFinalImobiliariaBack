@@ -31,10 +31,8 @@ public class  Pergunta {
     private LocalDateTime data;
     private String resposta;
     private boolean perguntaRespondida;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Administrador idAdministrador;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Editor idEditor;
+    @ManyToOne
+    private Usuario idUsuario;
 
 
 }

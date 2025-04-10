@@ -2,7 +2,12 @@ package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.pergunta.PerguntaGetDTO;
 import com.hav.imobiliaria.controller.dto.pergunta.PerguntaPostDTO;
+import com.hav.imobiliaria.controller.dto.pergunta.PerguntaRespondidaGetDTO;
+import com.hav.imobiliaria.controller.dto.pergunta.PerguntaRespondidaPatchDTO;
+import com.hav.imobiliaria.controller.dto.pergunta.PerguntaRespondidaPatchDTO;
 import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaGetMapper;
+import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaPatchMapper;
+import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaRespondidaGetMapper;
 import com.hav.imobiliaria.model.entity.Pergunta;
 import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
 import com.hav.imobiliaria.service.PerguntaService;
@@ -19,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class PerguntaController {
     private final PerguntaService service;
     private final PerguntaGetMapper perguntaGetMapper;
+    private final PerguntaPatchMapper perguntaPatchMapper;
+    private final PerguntaRespondidaGetMapper perguntaRespondidaGetMapper;
 
     @GetMapping("{id}")
     public ResponseEntity<PerguntaGetDTO> buscarPorId(@PathVariable Long id){
@@ -40,6 +47,16 @@ public class PerguntaController {
     @PostMapping
     public ResponseEntity<Pergunta> cadastrar(@RequestBody PerguntaPostDTO perguntaPostDTO){
         return ResponseEntity.ok(service.cadastrar(perguntaPostDTO));
+    }
+
+    @PatchMapping("{id}")
+    private ResponseEntity<PerguntaRespondidaGetDTO> responder(
+            @PathVariable Long id,
+            @RequestParam String resposta){
+        Pergunta atualizacaoPergunta = service.responder(resposta, id);
+        PerguntaRespondidaGetDTO getDto = perguntaPatchMapper.toGetDto(atualizacaoPergunta);
+
+        return ResponseEntity.ok(getDto);
     }
 
 
