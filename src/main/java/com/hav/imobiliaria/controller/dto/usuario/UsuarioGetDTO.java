@@ -11,5 +11,6 @@ public record UsuarioGetDTO (
         String email,
         String descricao,
         Boolean ativo,
+        Boolean autenticacaoDoisFatoresHabilitado,
         String foto){
 }
