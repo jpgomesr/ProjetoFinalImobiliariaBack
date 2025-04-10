@@ -18,6 +18,7 @@ import com.hav.imobiliaria.service.MessageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ChatRoomController {
             @PathVariable Long idUsuario2) {
         // Verifica se já existe um chat entre esses usuários
         if (repository.existsByUsuario1IdAndUsuario2IdOrUsuario1IdAndUsuario2Id(
-                idUsuario1, idUsuario2, idUsuario2, idUsuario1)) {
+                idUsuario1, idUsuario2)) {
             throw new ChatJaCadastradoException("Chat já existente entre esses usuários");
         }
         Usuario usuario1 = usuarioRepository.findById(idUsuario1)
@@ -54,28 +55,25 @@ public class ChatRoomController {
                 .orElseThrow(UsuarioNaoEncontradoException::new);
 
         Chats chat = new Chats();
-        chat.setUsuario1(usuario1);
-        chat.setUsuario2(usuario2);
         chat.setIdChat(System.currentTimeMillis());
+        chat.setUsuarios(List.of(usuario1, usuario2));
 
         Chats chatSalvo = repository.save(chat);
         return ResponseEntity.ok(chatPostMapper.toDto(chatSalvo));
     }
 
-    @GetMapping("/{idChat}")
-    public ResponseEntity<?> joinChat(
-            @PathVariable Long idChat,
-            @RequestParam Long idUsuario) {
-        Chats chat = repository.findByIdChatWithUsersAndMessages(idChat)
-                .orElseThrow(() -> new ChatNaoEncontradoException("Chat não encontrado"));
-
-        // Verifica se o usuário é participante do chat
-        if (!chat.getUsuario1().getId().equals(idUsuario) &&
-                !chat.getUsuario2().getId().equals(idUsuario)) {
-            return ResponseEntity.badRequest().body("Usuário não autorizado para este chat");
+    @GetMapping("/join/{idChat}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> joinChat(@PathVariable Long idChat) {
+        Optional<Chats> chatWithUsers = repository.findByIdChatWithUsersAndMessages(idChat);
+        Optional<Chats> chatWithMessages = repository.findByIdChatWithMessages(idChat);
+        
+        if (chatWithUsers.isPresent() && chatWithMessages.isPresent()) {
+            Chats chat = chatWithUsers.get();
+            chat.setMessages(chatWithMessages.get().getMessages());
+            return ResponseEntity.ok(chatResponseMapper.toDto(chat));
         }
-
-        return ResponseEntity.ok(chatResponseMapper.toDto(chat));
+        throw new ChatNaoEncontradoException("Chat não encontrado");
     }
 
     @GetMapping("/{idChat}/mensagens")
@@ -86,14 +84,16 @@ public class ChatRoomController {
             @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(value = "size", defaultValue = "20", required = false) Integer size
     ) {
-        Chats chat = repository.findByIdChatWithUsersAndMessages(idChat)
-                .orElseThrow(() -> new RuntimeException("Chat não encontrado"));
-
-        // Verifica se o usuário é participante do chat
-        if (!chat.getUsuario1().getId().equals(idUsuario) &&
-                !chat.getUsuario2().getId().equals(idUsuario)) {
+        // Verificar se o usuário é participante do chat usando uma consulta otimizada
+        boolean isParticipant = repository.isUserParticipantInChat(idChat, idUsuario);
+        
+        if (!isParticipant) {
             return ResponseEntity.badRequest().build();
         }
+        
+        // Buscar o chat com suas mensagens
+        Chats chat = repository.findByIdChatWithMessagesOnly(idChat)
+                .orElseThrow(() -> new RuntimeException("Chat não encontrado"));
 
         List<ChatMessage> messages = chat.getMessages();
         Integer start = Math.max(0, messages.size() - (page + 1) * size);
@@ -105,8 +105,9 @@ public class ChatRoomController {
     @GetMapping("/list/{idUsuario}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatGetDTO>> getChats(@PathVariable Long idUsuario) {
-        List<Chats> chats = repository.findAllByUsuario1IdOrUsuario2IdOrderByMessagesTimeStamp(idUsuario, idUsuario);
-        System.out.println(chats);
+        // Buscar os chats do usuário com informações básicas, sem carregar as mensagens
+        List<Chats> chats = repository.findAllByUsuario1IdOrUsuario2IdOrderByLastMessageTime(idUsuario);
+        
         if (chats.isEmpty()) {
             throw new ChatNaoEncontradoException("Nenhum chat encontrado");
         }
@@ -118,11 +119,11 @@ public class ChatRoomController {
 
             // Obter a última mensagem do chat
             ChatMessageDTO ultimaMensagem = null;
-            if (chat.getMessages() != null && !chat.getMessages().isEmpty()) {
-                Optional<ChatMessage> lastMessageOpt = messageService.getUltimaMensagem(chat.getMessages());
-                if (lastMessageOpt.isPresent()) {
-                    ultimaMensagem = chatGetMapper.toMessageDto(lastMessageOpt.get());
-                }
+            
+            // Buscar a última mensagem do chat em uma consulta separada
+            Optional<ChatMessage> lastMessageOpt = chatMessagesRepository.findFirstByChatOrderByTimeStampDesc(chat);
+            if (lastMessageOpt.isPresent()) {
+                ultimaMensagem = chatGetMapper.toMessageDto(lastMessageOpt.get());
             }
 
             ChatGetDTO dto = chatGetMapper.toDto(chat);
