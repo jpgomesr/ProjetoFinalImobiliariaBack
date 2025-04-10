@@ -32,4 +32,8 @@ public class PerguntaSpecs {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(root.get("data"), "%" + data + "%");
     }
+    public static Specification<Pergunta> perguntaRespondida(Boolean perguntaRespondida){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("pergunta_respondida"), "%" + perguntaRespondida + "%");
+    }
 }
