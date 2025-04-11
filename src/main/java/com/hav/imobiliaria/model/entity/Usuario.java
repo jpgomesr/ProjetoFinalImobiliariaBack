@@ -66,7 +66,7 @@ public class Usuario implements UserDetails {
     )
     private List<Imovel> imoveisFavoritados;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<Notificacao> notificacoes;
 
     @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
@@ -93,6 +93,12 @@ public class Usuario implements UserDetails {
     }
     public void removerImovelFavorito(Long id) {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
+    }
+
+
+    @PreRemove
+    public void removerChats(){
+        this.chats.forEach(chat ->  chat.setUsuarios(null));
     }
 
     @Override
