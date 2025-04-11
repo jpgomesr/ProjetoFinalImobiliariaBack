@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,11 +29,13 @@ public class PerguntaController {
     private final PerguntaRespondidaGetMapper perguntaRespondidaGetMapper;
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
     public ResponseEntity<PerguntaGetDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(perguntaGetMapper.toDto(service.buscarPorId(id)));
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
     public ResponseEntity<Page<PerguntaGetDTO>> buscarTodasPerguntas(
             @RequestParam(value = "tipo_pergunta") @Nullable TipoPerguntaEnum tipoPergunta,
             @RequestParam(value = "email") @Nullable String email,
@@ -45,11 +48,13 @@ public class PerguntaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
     public ResponseEntity<Pergunta> cadastrar(@RequestBody PerguntaPostDTO perguntaPostDTO){
         return ResponseEntity.ok(service.cadastrar(perguntaPostDTO));
     }
 
     @PatchMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
     private ResponseEntity<PerguntaRespondidaGetDTO> responder(
             @PathVariable Long id,
             @RequestParam String resposta){
