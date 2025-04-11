@@ -39,14 +39,17 @@ public class TokenService {
     }
 
     public String validateToken(String token){
+
+        String cleanedToken = token.replaceAll("(?i)bearrer ", "").replaceAll("(?i)bearer ", "");
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()
-                    .verify(token)
+                    .verify(cleanedToken)
                     .getSubject();
         } catch (JWTVerificationException exception){
+            System.out.println(exception.getMessage());
             return "";
         }
     }

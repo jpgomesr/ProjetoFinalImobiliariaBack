@@ -13,6 +13,8 @@ import org.mapstruct.Mapping;
 public interface ChatGetMapper {
     @Mapping(source = "idChat", target = "idChat")
     @Mapping(target = "ultimaMensagem", expression = "java(null)")
+    @Mapping(target = "usuario1", expression = "java(toUsuarioDto(chat.getUsuarios().get(0)))")
+    @Mapping(target = "usuario2", expression = "java(chat.getUsuarios().size() > 1 ? toUsuarioDto(chat.getUsuarios().get(1)) : null)")
     ChatGetDTO toDto(Chats chat);
     
     @Mapping(source = "conteudo", target = "conteudo")

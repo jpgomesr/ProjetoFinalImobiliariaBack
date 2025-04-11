@@ -1,6 +1,8 @@
 package com.hav.imobiliaria.service;
 
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
+import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPutDTO;
+import com.hav.imobiliaria.exceptions.AcessoNegadoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.AgendamentoInexistenteException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.TipoUsuarioIncorretoException;
 import com.hav.imobiliaria.model.entity.Agendamento;
@@ -11,6 +13,7 @@ import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.AgendamentoValidator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -35,28 +38,30 @@ public class AgendamentoService {
 
         Agendamento agendamento = new Agendamento();
 
-        Usuario corretor = usuarioService.buscarPorId(agendamentoPostDto.idCorretor());
-        Usuario usuarioComum = usuarioService.buscarPorId(agendamentoPostDto.idUsuario());
-
-        if(corretor.getRole().equals(RoleEnum.CORRETOR)){
-            agendamento.setCorretor((Corretor) corretor);
-        }else {
-            throw  new TipoUsuarioIncorretoException("corretor");
-        }
-        if(usuarioComum.getRole().equals(RoleEnum.USUARIO)){
-            agendamento.setUsuarioComum((UsuarioComum) usuarioComum);
-        }else {
-            System.out.println(usuarioComum.getRole());
-            throw  new TipoUsuarioIncorretoException("usuario");
-        }
-
-        validator.validarAgendamento(agendamentoPostDto, agendamento.getUsuarioComum());
+        validator.validarUsuarios(agendamento,agendamentoPostDto.idUsuario(), agendamentoPostDto.idCorretor());
+        validator.validarCriacaoAgendamento(agendamentoPostDto, agendamento.getUsuarioComum());
 
 
         agendamento.setImovel(imovelService.buscarPorId(agendamentoPostDto.idImovel()));
-
         agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPostDto.dataHora());
         agendamento.setDataHora(agendamentoPostDto.dataHora());
+
+        repository.save(agendamento);
+    }
+    @Transactional
+    public void atualizarAgendamento(AgendamentoPutDTO agendamentoPutDTO) {
+
+        Agendamento agendamento = repository.findById(agendamentoPutDTO.id()).orElseThrow(AgendamentoInexistenteException::new);
+
+        validator.validarUsuarios(agendamento,agendamentoPutDTO.idUsuario(), agendamentoPutDTO.idCorretor());
+
+
+        validator.validarAtualizacaoAgendamento(agendamentoPutDTO, agendamento.getUsuarioComum());
+
+        agendamento.setImovel(imovelService.buscarPorId(agendamentoPutDTO.idImovel()));
+
+        agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPutDTO.dataHora());
+        agendamento.setDataHora(agendamentoPutDTO.dataHora());
 
         repository.save(agendamento);
     }
@@ -105,6 +110,9 @@ public class AgendamentoService {
 
         if(!this.repository.existsById(id)){
             throw new AgendamentoInexistenteException();
+        }
+        if(status.equals(StatusAgendamentoEnum.CONFIRMADO) && !SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.CORRETOR)){
+            throw  new AcessoNegadoException();
         }
         repository.findById(id).ifPresent(agendamento -> {
             agendamento.setStatus(status);

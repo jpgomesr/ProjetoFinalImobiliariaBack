@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.security.service;
 
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,10 @@ public class CustomUserDatailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioService.buscarPorEmail(username);
+        Usuario usuario = usuarioService.buscarPorEmail(username);
+        if (usuario == null) {
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+        return usuario;
     }
 }

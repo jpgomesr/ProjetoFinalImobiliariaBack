@@ -1,12 +1,15 @@
 package com.hav.imobiliaria.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import software.amazon.awssdk.core.util.PaginatorUtils;
 
@@ -46,11 +49,14 @@ public class Usuario implements UserDetails {
     @Column(length = 300)
     private String foto;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    @Column(columnDefinition = "BIT DEFAULT 1")
     private Boolean ativo;
 
     @Column
     private LocalDateTime dataDelecao;
+
+    @Column(columnDefinition = "BIT DEFAULT 0")
+    private Boolean autenticacaoDoisFatoresHabilitado;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -60,12 +66,25 @@ public class Usuario implements UserDetails {
     )
     private List<Imovel> imoveisFavoritados;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
+    private List<Notificacao> notificacoes;
+
+    @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Chats> chats;
+
     @PrePersist
-    public void prePersist() {
-        if (ativo == null) {
+    public void setUp(){
+        if(ativo == null){
             ativo = true;
         }
+        if(autenticacaoDoisFatoresHabilitado == null){
+            autenticacaoDoisFatoresHabilitado =false;
+        }
     }
+
+
+
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
         List<Imovel> imoveis = this.getImoveisFavoritados();
         return new PageImpl<>(imoveis, pageable, imoveis.size());
@@ -79,18 +98,45 @@ public class Usuario implements UserDetails {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
     }
 
+
+    @PreRemove
+    public void removerChats(){
+        this.chats.forEach(chat ->  chat.setUsuarios(null));
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        // Converte a RoleEnum para GrantedAuthority
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return this.getSenha();
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Ou lógica personalizada
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.ativo; // Usa o campo ativo
     }
 }

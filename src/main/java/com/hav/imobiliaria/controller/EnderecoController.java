@@ -4,6 +4,7 @@ import com.hav.imobiliaria.repository.EnderecoRepository;
 import com.hav.imobiliaria.service.EnderecoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,25 +20,20 @@ public class EnderecoController {
 
     private final EnderecoService service;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("cidades/{estado}")
     public ResponseEntity<Set<String>>buscarCidades(@PathVariable  String estado){
         String estadoFormatado = estado.replace("-"," ");
-        System.out.println(service.buscarCidades(estadoFormatado));
-
         return ResponseEntity.ok(service.buscarCidades(estadoFormatado));
 
     }
-
+    @PreAuthorize("permitAll()")
     @GetMapping("bairros/{cidade}")
-    private ResponseEntity<Set<String>>buscarBairros(@PathVariable String cidade){
+    public ResponseEntity<Set<String>>buscarBairros(@PathVariable String cidade){
         String cidadeFormatada = cidade.replace("-"," ");
 
-        return ResponseEntity.ok(service.buscarBarrosPorCidade(cidadeFormatada));
+        return ResponseEntity.ok(this.service.buscarBarrosPorCidade(cidadeFormatada));
     }
-//    @GetMapping("estados")
-//    private ResponseEntity<Set<String>>buscarBairros(){
-//
-//        return ResponseEntity.ok(service.buscarEstados());
-//    }
+
 
 }

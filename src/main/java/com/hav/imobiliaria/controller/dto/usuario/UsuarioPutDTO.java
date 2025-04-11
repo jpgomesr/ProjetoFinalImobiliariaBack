@@ -21,6 +21,8 @@ public record UsuarioPutDTO(
         String descricao,
         @NotNull(message = "A role é obrigatória")
         RoleEnum role,
+        @Nullable
+        Boolean autenticacaoDoisFatoresHabilitado,
         Boolean ativo
 ) {
 }

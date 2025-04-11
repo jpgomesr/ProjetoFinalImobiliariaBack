@@ -25,8 +25,7 @@ public class MessageService {
     }
     
     public boolean temMensagensNaoLidas(Long chatId, Long usuarioId) {
-        List<ChatMessage> mensagensNaoLidas = repository.findByIdChatAndLidaFalseAndRemetenteIdNot(chatId, usuarioId);
-        return !mensagensNaoLidas.isEmpty();
+        return repository.countByIdChatAndLidaFalseAndRemetenteIdNot(chatId, usuarioId) > 0;
     }
     
     public Optional<ChatMessage> getUltimaMensagem(List<ChatMessage> mensagens) {

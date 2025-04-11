@@ -39,26 +39,37 @@ public class ChatController {
             @DestinationVariable Long idChat,
             @RequestBody MessageRequest request
     ) {
-        Chats chat = repository.findByIdChat(request.getIdChat())
-                .orElseThrow(() -> new ChatNaoEncontradoException("Chat não encontrado"));
+        // Verificar se o chat existe
+        if (!repository.existsByIdChat(request.getIdChat())) {
+            throw new ChatNaoEncontradoException("Chat não encontrado");
+        }
         
-        // Verifica se o remetente é participante do chat
-        if (!chat.getUsuario1().getId().toString().equals(request.getRemetente()) && 
-            !chat.getUsuario2().getId().toString().equals(request.getRemetente())) {
+        // Verificar se o usuário é participante do chat usando uma consulta otimizada
+        boolean isParticipant = repository.isUserParticipantInChat(
+                request.getIdChat(), 
+                Long.parseLong(request.getRemetente())
+        );
+        
+        if (!isParticipant) {
             throw new RuntimeException("Usuário não autorizado para enviar mensagens neste chat");
         }
         
-        ChatMessage message = new ChatMessage();
-        message.setConteudo(request.getConteudo());
-        message.setRemetente(request.getRemetente());
-        message.setTimeStamp(LocalDateTime.now());
-        message.setLida(false); // Inicialmente, a mensagem não está lida
-        message.setChat(chat);
+        // Buscar o chat com suas mensagens
+        Chats chat = repository.findByIdChatWithMessagesOnly(request.getIdChat())
+                .orElseThrow(() -> new ChatNaoEncontradoException("Chat não encontrado"));
         
+        // Criar a mensagem usando o construtor que já inicializa os campos
+        ChatMessage message = new ChatMessage(
+            request.getConteudo(),
+            request.getRemetente(),
+            chat
+        );
+        
+        // Adicionar a mensagem ao chat e salvar
         chat.getMessages().add(message);
         repository.save(chat);
         
-        // Criar um mapa com os campos necessários para o frontend, incluindo o nomeRemetente
+        // Criar um mapa com os campos necessários para o frontend
         Map<String, Object> response = new HashMap<>();
         response.put("id", message.getId());
         response.put("conteudo", message.getConteudo());
