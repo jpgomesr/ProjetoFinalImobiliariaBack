@@ -56,9 +56,6 @@ public class  Imovel {
     @Column(nullable = false)
     private Boolean permitirDestaque;
 
-    @Column(nullable = false)
-    private Boolean habilitarVisibilidade;
-
 
     @Column(nullable = false)
     private Boolean banner;
@@ -93,6 +90,7 @@ public class  Imovel {
             joinColumns = @JoinColumn(name = "id_imovel"),
             inverseJoinColumns = @JoinColumn(name = "id_corretor")
     )
+
     private List<Corretor> corretores;
 
 

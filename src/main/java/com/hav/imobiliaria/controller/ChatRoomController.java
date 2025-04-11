@@ -56,7 +56,12 @@ public class ChatRoomController {
 
         Chats chat = new Chats();
         chat.setIdChat(System.currentTimeMillis());
-        chat.setUsuarios(List.of(usuario1, usuario2));
+        
+        // Inicializa a lista de usuários corretamente
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(usuario1);
+        usuarios.add(usuario2);
+        chat.setUsuarios(usuarios);
 
         Chats chatSalvo = repository.save(chat);
         return ResponseEntity.ok(chatPostMapper.toDto(chatSalvo));
