@@ -1,11 +1,8 @@
 package com.hav.imobiliaria.service;
 
-import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
 import com.hav.imobiliaria.controller.dto.usuario.TrocaDeSenhaDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
-import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
@@ -21,26 +18,18 @@ import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.UsuarioValidator;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor

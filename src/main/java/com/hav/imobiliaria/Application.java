@@ -34,7 +34,9 @@ public class Application {
 		System.setProperty("S3_BUCKET_NAME", dotenv.get("S3_BUCKET_NAME"));
 		System.setProperty("EMAIL_APP_PASSWORD", dotenv.get("EMAIL_APP_PASSWORD"));
 		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
-		
+		System.setProperty("DATABASE_USER", dotenv.get("DATABASE_USER"));
+		System.setProperty("DATABASE_PASSWORD", dotenv.get("DATABASE_PASSWORD"));
+
 		SpringApplication.run(Application.class, args);
 	}
 

@@ -49,13 +49,13 @@ public class Usuario implements UserDetails {
     @Column(length = 300)
     private String foto;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    @Column(columnDefinition = "BIT DEFAULT 1")
     private Boolean ativo;
 
     @Column
     private LocalDateTime dataDelecao;
 
-    @Column
+    @Column(columnDefinition = "BIT DEFAULT 0")
     private Boolean autenticacaoDoisFatoresHabilitado;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -73,15 +73,7 @@ public class Usuario implements UserDetails {
     @ToString.Exclude
     private List<Chats> chats;
 
-    @PrePersist
-    public void prePersist() {
-        if (ativo == null) {
-            ativo = true;
-        }
-        if(autenticacaoDoisFatoresHabilitado == null){
-            autenticacaoDoisFatoresHabilitado = false;
-        }
-    }
+
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
         List<Imovel> imoveis = this.getImoveisFavoritados();
         return new PageImpl<>(imoveis, pageable, imoveis.size());
