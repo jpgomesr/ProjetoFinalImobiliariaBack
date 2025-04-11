@@ -1,39 +1,35 @@
 package com.hav.imobiliaria.service;
 
-import com.hav.imobiliaria.controller.dto.imovel.ImovelListagemDTO;
+import com.hav.imobiliaria.controller.dto.usuario.TrocaDeSenhaDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
-import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
-import com.hav.imobiliaria.controller.mapper.usuario.UsuarioGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
-import com.hav.imobiliaria.model.entity.Corretor;
-import com.hav.imobiliaria.model.entity.Imovel;
-import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.exceptions.AcessoNegadoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.TokenRecuperacaoDeSenhaInvalidoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
+import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
+import com.hav.imobiliaria.repository.TokenRecuperacaoSenhaRepository;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.repository.specs.UsuarioSpecs;
+import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.UsuarioValidator;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.Transient;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+
 
 @Service
 @AllArgsConstructor
@@ -45,6 +41,8 @@ public class UsuarioService {
     private final UsuarioPutMapper usuarioPutMapper;
     private final UsuarioValidator validator;
     private final ImovelService imovelService;
+    private final TokenRecuperacaoSenhaRepository tokenRecuperacaoSenhaRepository;
+    private final EmailService emailService;
     private  PasswordEncoder passwordEncoder;
 
     public Page<Usuario> buscarTodos(
@@ -80,6 +78,10 @@ public class UsuarioService {
     }
     public Usuario salvar(UsuarioPostDTO dto, MultipartFile foto) throws IOException {
 
+        if(!dto.role().equals(RoleEnum.USUARIO) && !SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.ADMINISTRADOR)){
+            throw new AcessoNegadoException();
+        }
+
         Usuario entity = instanciandoUsuarioPostDtoPorRole(dto);
 
         this.validator.validar(entity);
@@ -98,8 +100,13 @@ public class UsuarioService {
         usuarioAtualizado.setId(id);
         this.validator.validar(usuarioAtualizado);
         if(!usuarioSalvo.getRole().equals(usuarioAtualizado.getRole())) {
-            usuarioAtualizado.setId(null);
-            excluirReferenciaImovelCorretor(id);
+            if(SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.ADMINISTRADOR)) {
+                usuarioAtualizado.setId(null);
+                excluirReferenciaImovelCorretor(id);
+            }
+            else{
+                throw new AcessoNegadoException();
+            }
         }
         Usuario usuarioJaSalvo = this.buscarPorId(id);
         if(imagemNova != null){
@@ -119,6 +126,13 @@ public class UsuarioService {
         if(usuarioAtualizado.getId() == null){
             this.repository.deleteById(id);
         }
+        if(usuarioAtualizado.getAtivo() == null){
+            usuarioAtualizado.setAtivo(usuarioJaSalvo.getAtivo());
+        }
+        if(usuarioAtualizado.getRole() == null){
+            usuarioAtualizado.setRole(usuarioJaSalvo.getRole());
+        }
+
         return repository.save(usuarioAtualizado);
 
     }
@@ -126,9 +140,6 @@ public class UsuarioService {
         Optional<Usuario> usuarioOptional = repository.findById(id);
         if(usuarioOptional.isPresent()){
             Usuario usuario = usuarioOptional.get();
-//            if(usuario.getFoto() != null){
-//                this.s3Service.excluirObjeto(usuario.getFoto());
-//            }
             usuario.setAtivo(false);
             usuario.setDataDelecao(LocalDateTime.now());
             this.repository.save(usuario);
@@ -151,16 +162,18 @@ public class UsuarioService {
     }
 
 
-    public void alterarSenha(
-            Long id,
-            @Size(min = 8, max = 45, message = "A senha deve conter entre 8 a 45 caractéres")
-            @NotBlank(message = "A senha é obrigatória")
-            String senha) {
+    public void alterarSenha(TrocaDeSenhaDTO trocaDeSenhaDto) {
 
-        Usuario usuario = this.buscarPorId(id);
-        usuario.setSenha(passwordEncoder.encode(senha));
+        TokenRecuperacaoSenha tokenRecuperacaoSenha =
+                tokenRecuperacaoSenhaRepository.findByToken(trocaDeSenhaDto.token()).orElseThrow(TokenRecuperacaoDeSenhaInvalidoException::new);
 
-        this.repository.save(usuario);
+
+        if(tokenRecuperacaoSenha.getDataExpiracao().plusMinutes(15).isBefore(LocalDateTime.now())){
+            throw new TokenRecuperacaoDeSenhaInvalidoException();
+        }
+        tokenRecuperacaoSenha.getUsuario().setSenha(passwordEncoder.encode(trocaDeSenhaDto.senha()));
+
+        this.repository.save(tokenRecuperacaoSenha.getUsuario());
 
     }
     private Usuario instanciandoUsuarioPostDtoPorRole(UsuarioPostDTO dto) {
@@ -202,11 +215,11 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorEmail(String email){
-        return this.repository.findByEmail(email).get();
+        return this.repository.findByEmail(email).orElseThrow(UsuarioNaoEncontradoException::new);
     }
 
     public void excluirReferenciaImovelCorretor(Long id) {
-        Usuario usuario = this.repository.findById(id).get();
+        Usuario usuario = this.repository.findById(id).orElseThrow(UsuarioNaoEncontradoException::new);
 
         if(usuario.getRole().equals(RoleEnum.CORRETOR)){
             ((Corretor) usuario).getImoveis().forEach(i -> {
@@ -217,32 +230,75 @@ public class UsuarioService {
     public List<Usuario> buscarCorretorListagem(){
         return  this.repository.findByRoleAndAtivoTrue(RoleEnum.CORRETOR);
     }
-
-    public Page<Imovel> buscarImoveisFavoritados(Long id, Pageable pageable) {
-        return repository.findImoveisFavoritadosByUsuarioId(id, pageable);
-    }
-    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(Long idUsuario){
-        return this.repository.findIdImoveisFavoritadosByUsuarioId(idUsuario);
+    public  List<Long> buscarIdsImovelFavoritadoPorIdUsuario(){
+        Usuario usuarioLogado = SecurityUtils.buscarUsuarioLogado();
+        return this.repository.findIdImoveisFavoritadosByUsuarioId(usuarioLogado.getId());
     }
 
     @Transactional
-    public void adicionarImovelFavorito(Long idImovel, Long idUsuario) {
-        Usuario usuario = this.buscarPorId(idUsuario);
+    public void adicionarImovelFavorito(Long idImovel) {
+        Usuario usuarioAutenticado = SecurityUtils.buscarUsuarioLogado();
+        Usuario usuarioAtual = this.repository.findById(usuarioAutenticado.getId()).orElseThrow(NoSuchElementException::new);
         Imovel imovel = this.imovelService.buscarPorId(idImovel);
 
-        usuario.adicionarImovelFavorito(imovel);
-        this.repository.save(usuario);
+        usuarioAtual.adicionarImovelFavorito(imovel);
+        this.repository.save(usuarioAtual);
 
     }
     @Transactional
-    public void remocarImovelFavorito(Long idImovel, Long idUsuario) {
-        Usuario usuario = this.buscarPorId(idUsuario);
-        usuario.removerImovelFavorito(idImovel);
+    public void removerImovelFavorito(Long idImovel) {
+        Usuario usuario = SecurityUtils.buscarUsuarioLogado();
+        Usuario usuarioAtual = this.repository.findById(usuario.getId()).orElseThrow(NoSuchElementException::new);
+
+        usuarioAtual.removerImovelFavorito(idImovel);
     }
     public List<Usuario> buscarPorRole(RoleEnum role) {
         return repository.buscarPorRole(role);
     }
     public Long buscarTotalUsuarios() {
         return repository.count();
+    }
+
+
+    @Transactional
+    public void enviarEmailParaRefefinicaoSenha(String email) {
+        Usuario usuario = this.buscarPorEmail(email);
+
+        String token = UUID.randomUUID().toString();
+
+        criarTokenParaRefefinicaoSenha(token, usuario);
+
+        Dotenv dotenv = Dotenv.load();
+        Map<String,Object> variaveis = new HashMap<>();
+        variaveis.put("nomeCliente", usuario.getNome());
+        variaveis.put("titulo", "Recuperacao de senha");
+        variaveis.put("mensagem", "Clique no botão abaixo para redefinir a sua senha");
+        variaveis.put("linkAcao", dotenv.get("FRONTEND_URL")+ "/autenticacao/mudar-senha/" + token );
+        variaveis.put("textoBotao", "Redefinir senha");
+
+        emailService.enviarEmail(
+                EmailRequest
+                        .builder()
+                        .destinatario(usuario.getEmail())
+                        .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                        .variaveis(variaveis)
+                        .build()
+        );
+
+
+    }
+
+
+    private void criarTokenParaRefefinicaoSenha(String token, Usuario usuario) {
+
+       tokenRecuperacaoSenhaRepository.deleteByUsuario_Id(usuario.getId());
+
+       tokenRecuperacaoSenhaRepository.flush();
+
+        TokenRecuperacaoSenha tokenRecuperacaoSenha = new TokenRecuperacaoSenha(token,usuario);
+
+        tokenRecuperacaoSenha.setDataExpiracao(LocalDateTime.now().plusMinutes(15));
+        tokenRecuperacaoSenhaRepository.save(tokenRecuperacaoSenha);
+
     }
 }

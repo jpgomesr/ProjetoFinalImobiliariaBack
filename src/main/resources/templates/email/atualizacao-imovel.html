@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualização no seu imóvel favorito</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+<table style="width: 100%; max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px;">
+    <tr>
+        <td style="text-align: center; background-color: #702632; padding: 15px; border-radius: 10px 10px 0 0;">
+            <h2 style="color: white;">O seu imóvel favorito foi atualizado!</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <p>Olá, <strong th:text="${nomeCliente}">[Nome do Cliente]</strong>!</p>
+            <p>O imóvel <strong th:text="${nomeImovel}">[Nome do Imóvel]</strong> teve uma nova atualização:</p>
+            <p><strong th:text="${descricaoAtualizacao}">[Detalhe da Atualização]</strong></p>
+            <p>
+                <a th:href="${linkImovel}" style="background: #702632; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    Ver detalhes do imóvel
+                </a>
+            </p>
+            <p>Se precisar de mais informações, entre em contato!</p>
+            <p>Atenciosamente,</p>
+            <p><strong>Equipe da Imobiliária</strong></p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

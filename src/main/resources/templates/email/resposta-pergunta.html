@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resposta à sua pergunta</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+<table style="width: 100%; max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px;">
+    <tr>
+        <td style="text-align: center; background-color: #702632; padding: 15px; border-radius: 10px 10px 0 0;">
+            <h2 style="color: white;">Resposta à sua pergunta</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <p>Olá, <strong th:text="${nomeCliente}">[Nome do Cliente]</strong>!</p>
+            <p>Você perguntou-nos:</p>
+            <blockquote style="background: #f9f9f9; padding: 10px; border-left: 4px solid #702632;">
+                <em th:text="${pergunta}">[Pergunta do Cliente]</em>
+            </blockquote>
+            <p>Aqui está a nossa resposta:</p>
+            <p><strong th:text="${resposta}">[Nossa Resposta]</strong></p>
+            <p>Se tiver mais dúvidas, estamos à disposição!</p>
+            <p>Atenciosamente,</p>
+            <p><strong>Equipe HAV</strong></p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

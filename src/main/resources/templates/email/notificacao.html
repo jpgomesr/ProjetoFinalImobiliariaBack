@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificação Importante</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+<table style="width: 100%; max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px;">
+    <tr>
+        <td style="text-align: center; background-color: #702632; padding: 15px; border-radius: 10px 10px 0 0;">
+            <h2 style="color: white;" th:text="${titulo}">[Título da Notificação]</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <p>Olá, <strong th:text="${nomeCliente}">[Nome do Cliente]</strong>!</p>
+            <p th:text="${mensagem}">[Mensagem da Notificação]</p>
+            <p>
+                <a th:if="${linkAcao}" th:href="${linkAcao}" style="background: #702632; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    <span th:text="${textoBotao}">[Texto do Botão]</span>
+                </a>
+            </p>
+            <p>Atenciosamente,</p>
+            <p><strong>Equipe da Imobiliária</strong></p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

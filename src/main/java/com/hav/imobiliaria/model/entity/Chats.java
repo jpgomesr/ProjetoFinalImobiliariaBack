@@ -17,13 +17,15 @@ public class Chats {
     private Long id;
     @Column(name = "id_chat")
     private Long idChat;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "usuario1_id", nullable = false)
-    private Usuario usuario1;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "usuario2_id", nullable = false)
-    private Usuario usuario2;
-    @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "chat_usuario",
+        joinColumns = @JoinColumn(name = "chat_id"),
+        inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    @ToString.Exclude
+    private List<Usuario> usuarios;
+    @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<ChatMessage> messages;
 }
