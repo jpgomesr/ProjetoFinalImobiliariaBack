@@ -73,6 +73,17 @@ public class Usuario implements UserDetails {
     @ToString.Exclude
     private List<Chats> chats;
 
+    @PrePersist
+    public void setUp(){
+        if(ativo == null){
+            ativo = true;
+        }
+        if(autenticacaoDoisFatoresHabilitado == null){
+            autenticacaoDoisFatoresHabilitado =false;
+        }
+    }
+
+
 
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
         List<Imovel> imoveis = this.getImoveisFavoritados();
