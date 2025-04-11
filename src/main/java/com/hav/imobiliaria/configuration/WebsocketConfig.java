@@ -14,16 +14,13 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws/chat") // Endpoint Websocket Chat
                 .setAllowedOrigins("http://localhost:3000")
                 .withSockJS();
-
-        registry.addEndpoint("/ws/notificacoes") // Endpoint WebSocket Notificação
-                .setAllowedOrigins("http://localhost:3000")
-                .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic/chat", "/topic/notificacoes",
-                "/topic/chat/global");
+        registry.enableSimpleBroker("/topic/chat", "/topic/chat/global");
+        // Tópico para envio de mensagem nos chats (/topic/chat)
+        // Tópico para atualização dos chats para mensagens não lidas (/topic/chat/global)
         registry.setApplicationDestinationPrefixes("/app");
     }
 }
