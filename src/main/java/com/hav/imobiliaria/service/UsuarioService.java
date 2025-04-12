@@ -132,6 +132,9 @@ public class UsuarioService {
         if(usuarioAtualizado.getRole() == null){
             usuarioAtualizado.setRole(usuarioJaSalvo.getRole());
         }
+        if(usuarioAtualizado.getAutenticacaoDoisFatoresHabilitado() == null){
+            usuarioAtualizado.setAutenticacaoDoisFatoresHabilitado(usuarioSalvo.getAutenticacaoDoisFatoresHabilitado());
+        }
 
         return repository.save(usuarioAtualizado);
 
