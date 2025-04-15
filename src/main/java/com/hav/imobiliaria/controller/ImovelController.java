@@ -55,7 +55,7 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "condicoesEspeciais", required = false) Boolean condicoesEspecias,
             @RequestParam(value = "idUsuario", required = false) Long idUsuario,
             @PageableDefault(page = 0, size = 10) Pageable pageable,
-            @RequestParam(value = "ativo") Boolean ativo
+            @RequestParam(value = "ativo", required = false) Boolean ativo
     ) {
 
 
