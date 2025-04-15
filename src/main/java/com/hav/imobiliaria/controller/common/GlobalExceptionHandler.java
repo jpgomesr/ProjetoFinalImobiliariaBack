@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AcessoNegadoException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErroResposta handleAccessDeniedException(AcessoNegadoException e){
-        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
+        return new ErroResposta(HttpStatus.FORBIDDEN.value(), e.getMessage(),
                 List.of());
     }
 

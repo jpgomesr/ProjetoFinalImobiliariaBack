@@ -3,6 +3,8 @@ package com.hav.imobiliaria.security.service;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.hav.imobiliaria.exceptions.TokenInvalidoException;
 import com.hav.imobiliaria.model.entity.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,12 +51,11 @@ public class TokenService {
                     .verify(cleanedToken)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            System.out.println(exception.getMessage());
-            return "";
+            throw new TokenInvalidoException();
         }
     }
 
     private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(30).toInstant(ZoneOffset.of("-03:00"));
     }
 }
