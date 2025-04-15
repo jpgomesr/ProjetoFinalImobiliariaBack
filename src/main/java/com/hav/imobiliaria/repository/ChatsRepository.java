@@ -31,10 +31,10 @@ public interface ChatsRepository extends JpaRepository<Chats, Long> {
     List<Chats> findAllByUsuario1IdOrUsuario2IdOrderByMessagesTimeStamp(
             @Param("idUsuario") Long idUsuario);
             
-    @Query("SELECT DISTINCT c FROM Chats c " +
+    @Query("SELECT DISTINCT c, (SELECT MAX(m2.timeStamp) FROM ChatMessage m2 WHERE m2.chat = c) as lastMessageTime FROM Chats c " +
            "LEFT JOIN FETCH c.usuarios u " +
            "WHERE EXISTS (SELECT 1 FROM c.usuarios u2 WHERE u2.id = :idUsuario) " +
-           "ORDER BY (SELECT MAX(m2.timeStamp) FROM ChatMessage m2 WHERE m2.chat = c) DESC NULLS LAST")
+           "ORDER BY lastMessageTime DESC NULLS LAST")
     List<Chats> findAllByUsuario1IdOrUsuario2IdOrderByLastMessageTime(
             @Param("idUsuario") Long idUsuario);
 
@@ -59,8 +59,9 @@ public interface ChatsRepository extends JpaRepository<Chats, Long> {
     Chats findByUsuario1IdAndUsuario2Id(@Param("idUsuario1") Long idUsuario1, @Param("idUsuario2") Long idUsuario2);
     
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Chats c " +
-           "WHERE EXISTS (SELECT 1 FROM c.usuarios u1 WHERE u1.id = :idUsuario1) " +
-           "AND EXISTS (SELECT 1 FROM c.usuarios u2 WHERE u2.id = :idUsuario2)")
+           "WHERE EXISTS (SELECT 1 FROM c.usuarios u WHERE u.id = :idUsuario1) " +
+           "AND EXISTS (SELECT 1 FROM c.usuarios u WHERE u.id = :idUsuario2) " +
+           "AND SIZE(c.usuarios) = 2")
     boolean existsByUsuario1IdAndUsuario2IdOrUsuario1IdAndUsuario2Id(
             @Param("idUsuario1") Long idUsuario1, 
             @Param("idUsuario2") Long idUsuario2

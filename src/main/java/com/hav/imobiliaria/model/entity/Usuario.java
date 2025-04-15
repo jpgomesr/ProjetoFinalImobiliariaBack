@@ -73,6 +73,17 @@ public class Usuario implements UserDetails {
     @ToString.Exclude
     private List<Chats> chats;
 
+    @PrePersist
+    public void setUp(){
+        if(ativo == null){
+            ativo = true;
+        }
+        if(autenticacaoDoisFatoresHabilitado == null){
+            autenticacaoDoisFatoresHabilitado = false;
+        }
+    }
+
+
 
     public Page<Imovel> getImoveisFavoritosPaginados(Pageable pageable) {
         List<Imovel> imoveis = this.getImoveisFavoritados();
@@ -93,6 +104,8 @@ public class Usuario implements UserDetails {
     public void removerChats(){
         this.chats.forEach(chat ->  chat.setUsuarios(null));
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -117,16 +130,16 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Ou lógica personalizada
+        return this.getAtivo();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Ou lógica personalizada
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.ativo; // Usa o campo ativo
+        return this.ativo;
     }
 }
