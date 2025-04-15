@@ -41,7 +41,7 @@ public record ImovelPutDTO(
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
-        Boolean habilitarVisibilidade,
+        Boolean ativo,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
@@ -54,7 +54,6 @@ public record ImovelPutDTO(
         Long idProprietario,
         @NotNull
         List<Corretor> corretores,
-        Boolean ativo,
         @NotNull
         EnderecoPutDTO endereco
 ) {
