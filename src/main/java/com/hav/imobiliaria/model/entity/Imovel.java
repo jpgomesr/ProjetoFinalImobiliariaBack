@@ -100,6 +100,9 @@ public class  Imovel {
     @Column
     private LocalDateTime dataDelecao;
 
+    @Column
+    private Boolean visibilidade;
+
     @ManyToMany(mappedBy = "imoveisFavoritados", fetch = FetchType.LAZY)
     private List<Usuario> usuariosFavoritos;
 
