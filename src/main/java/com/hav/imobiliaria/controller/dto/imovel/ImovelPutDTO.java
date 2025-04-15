@@ -42,6 +42,8 @@ public record ImovelPutDTO(
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
         Boolean ativo,
+        @NotNull(message = "Você deve habilitar ou não a visibilidade")
+        Boolean visibilidade,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
