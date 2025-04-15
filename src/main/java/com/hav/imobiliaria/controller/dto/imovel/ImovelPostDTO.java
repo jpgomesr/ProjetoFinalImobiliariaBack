@@ -39,7 +39,7 @@ public record ImovelPostDTO(
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean permitirDestaque,
         @NotNull(message = "Você deve habilitar ou não a visibilidade")
-        Boolean habilitarVisibilidade,
+        Boolean ativo,
         @NotNull(message = "Você deve permitir ou não um destaque")
         Boolean banner,
         TipoBunnerEnum tipoBanner,
@@ -50,7 +50,6 @@ public record ImovelPostDTO(
         @NotNull(message = "O id é obrigatório")
         Long idProprietario,
         List<Corretor> corretores,
-        Boolean ativo,
         @NotNull(message = "O endereço é obrigatório")
         EnderecoPostDTO endereco
 
