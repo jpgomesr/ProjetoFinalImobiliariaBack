@@ -24,7 +24,7 @@ public record ImovelGetDTO(
         Double preco,
         Double precoPromocional,
         Boolean permitirDestaque,
-        Boolean habilitarVisibilidade,
+        Boolean ativo,
         Boolean banner,
         TipoBunnerEnum tipoBanner,
         List<ImagemImovelResponseDTO> imagens,
