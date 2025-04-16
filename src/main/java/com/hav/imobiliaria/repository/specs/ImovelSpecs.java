@@ -3,6 +3,7 @@ package com.hav.imobiliaria.repository.specs;
 import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ImovelSpecs {
@@ -42,8 +43,16 @@ public class ImovelSpecs {
         return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("qtdGaragens"), qtdGaragem);
     }
     public static Specification<Imovel> precoBetween(Double precoMin, Double precoMax) {
-        return (root, query, cb) -> cb.between(root.get("preco"), precoMin, precoMax);
+        return (root, query, cb) -> {
+            // Expressão condicional: se precoPromocional for diferente de null, usar ele; senão usar preco normal
+            Expression<Double> precoConsiderado = cb.<Double>selectCase()
+                    .when(cb.isNotNull(root.get("precoPromocional")), root.get("precoPromocional"))
+                    .otherwise(root.get("preco"));
+
+            return cb.between(precoConsiderado, precoMin, precoMax);
+        };
     }
+
     public static Specification<Imovel> precoMin(Double precoMin) {
         return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("preco"), precoMin);
     }
