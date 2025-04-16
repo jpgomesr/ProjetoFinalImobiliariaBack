@@ -41,7 +41,7 @@ aws:
 api:
   security :
     token:
-      secret: "teste"
+      secret: ${TOKEN_PASSWORD}
 #logging:
 #  level:
 #    org:

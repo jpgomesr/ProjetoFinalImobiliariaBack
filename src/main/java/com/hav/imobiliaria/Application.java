@@ -36,6 +36,7 @@ public class Application {
 		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
 		System.setProperty("DATABASE_USER", dotenv.get("DATABASE_USER"));
 		System.setProperty("DATABASE_PASSWORD", dotenv.get("DATABASE_PASSWORD"));
+		System.setProperty("TOKEN_PASSWORD", dotenv.get("TOKEN_PASSWORD"));
 
 		SpringApplication.run(Application.class, args);
 	}
