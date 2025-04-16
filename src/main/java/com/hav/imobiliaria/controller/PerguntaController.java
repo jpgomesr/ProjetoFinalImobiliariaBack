@@ -55,7 +55,7 @@ public class PerguntaController {
 
     @PatchMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
-    private ResponseEntity<PerguntaRespondidaGetDTO> responder(
+    public ResponseEntity<PerguntaRespondidaGetDTO> responder(
             @PathVariable Long id,
             @RequestParam String resposta){
         Pergunta atualizacaoPergunta = service.responder(resposta, id);
@@ -63,10 +63,4 @@ public class PerguntaController {
 
         return ResponseEntity.ok(getDto);
     }
-
-
-
-
-
-
 }
