@@ -30,6 +30,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final UsuarioRepository userRepository;
 
 
+
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
        try{
