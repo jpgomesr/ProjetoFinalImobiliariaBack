@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PerguntaRepositry extends JpaRepository<Pergunta, Long> {
     Page<Pergunta> findAll(Specification<Pergunta> specs, Pageable pageable);
+
+    Page<Pergunta> findAllByPerguntaRespondida(boolean perguntaRespondida, Pageable pageable);
 }

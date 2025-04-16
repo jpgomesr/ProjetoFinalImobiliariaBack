@@ -5,7 +5,9 @@ import com.hav.imobiliaria.controller.dto.pergunta.PerguntaRespondidaPatchDTO;
 import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaPatchMapper;
 import com.hav.imobiliaria.controller.mapper.pergunta.PerguntaPostMapper;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.PerguntaInexistenteException;
+import com.hav.imobiliaria.model.entity.EmailRequest;
 import com.hav.imobiliaria.model.entity.Pergunta;
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
 import com.hav.imobiliaria.model.enums.TipoPerguntaEnum;
 import com.hav.imobiliaria.repository.PerguntaRepositry;
 import com.hav.imobiliaria.repository.specs.PerguntaSpecs;
@@ -16,23 +18,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @AllArgsConstructor
 public class PerguntaService {
-    private final PerguntaRepositry repositry;
+    private final PerguntaRepositry repository;
     private final PerguntaPatchMapper perguntaPatchMapper;
+    private final EmailService emailService;
+    private final UsuarioService usuarioService;
 
     private final PerguntaPostMapper perguntaPostMapper;
 
     public Pergunta buscarPorId(Long id) {
-        return repositry.findById(id).get();
+        return repository.findById(id).get();
     }
 
     public Pergunta cadastrar(PerguntaPostDTO perguntaPostDTO) {
         var entity = perguntaPostMapper.toEntity(perguntaPostDTO);
 
         System.out.println(entity);
-        return repositry.save(entity);
+        return repository.save(entity);
     }
 
     public Page<Pergunta> pesquisar(
@@ -58,7 +65,7 @@ public class PerguntaService {
         if (StringUtils.isNotBlank(mensagem)){
             specs = specs.and(PerguntaSpecs.mensagemLike(mensagem));
         }
-        Page<Pergunta> perguntas = repositry.findAll(specs, pageable);
+        Page<Pergunta> perguntas = repository.findAll(specs, pageable);
         System.out.println(perguntas);
         return perguntas;
     }
@@ -68,8 +75,20 @@ public class PerguntaService {
         pergunta.setResposta(resposta);
         pergunta.setPerguntaRespondida(true);
 
-        return repositry.save(pergunta);
+        var destinatario = pergunta.getEmail();
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("nomeCliente", usuarioService.buscarPorEmail(pergunta.getEmail()).getNome());
+        variables.put("pergunta", pergunta.getTitulo());
+        variables.put("perguntaMensagem", pergunta.getMensagem());
+        variables.put("resposta", resposta);
+
+        EmailRequest email = new EmailRequest();
+        email.setTipoEmail(TipoEmailEnum.RESPOSTA_PERGUNTA);
+        email.setDestinatario(destinatario);
+        email.setVariaveis(variables);
+
+        emailService.enviarEmail(email);
+
+        return repository.save(pergunta);
     }
 }
-
-// joao candido carneiro da cunha
