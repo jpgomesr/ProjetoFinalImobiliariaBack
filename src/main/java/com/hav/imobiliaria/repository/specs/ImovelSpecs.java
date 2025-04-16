@@ -4,6 +4,7 @@ import com.hav.imobiliaria.model.entity.Imovel;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ImovelSpecs {
@@ -93,7 +94,12 @@ public class ImovelSpecs {
 
 
     public static Specification<Imovel> condicoesEspeciais(Boolean condicoesEspeciais) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("banner"), condicoesEspeciais);
+        return (root, query, criteriaBuilder) ->{
+            Predicate condicoesEspeciaisPredicate =  criteriaBuilder.equal(root.get("banner"), condicoesEspeciais);
+            Predicate precoPromocional = criteriaBuilder.isNotNull(root.get("precoPromocional"));
+
+            return criteriaBuilder.or(condicoesEspeciaisPredicate, precoPromocional);
+        };
     }
     public static Specification<Imovel> buscandoFavoritos(Long id) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("usuariosFavoritos").get("id"), id);
