@@ -54,14 +54,16 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "destaque", required = false) Boolean destaque,
             @RequestParam(value = "condicoesEspeciais", required = false) Boolean condicoesEspecias,
             @RequestParam(value = "idUsuario", required = false) Long idUsuario,
+            @RequestParam(value = "buscarArquivados", required = false) Boolean buscarArquivados,
             @PageableDefault(page = 0, size = 10) Pageable pageable,
             @RequestParam(value = "ativo", required = false) Boolean ativo
     ) {
 
 
-        Page<Imovel> paginaResultadoDto = service.pesquisa(descricao,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
-
-                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro, ativo,destaque,condicoesEspecias,idUsuario, pageable);
+        Page<Imovel> paginaResultadoDto = service.pesquisa
+                (descricao,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+                qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro,
+                        ativo,destaque,condicoesEspecias,idUsuario, buscarArquivados, pageable);
 
 
 

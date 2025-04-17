@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
 import jakarta.persistence.criteria.Expression;
@@ -21,6 +22,13 @@ public class ImovelSpecs {
     public static Specification<Imovel> tipoResidenciaEqual(TipoImovelEnum tipoResidencia) {
         return (root, query, cb) -> cb.equal(root.join("endereco").get("tipoResidencia"), tipoResidencia);
     }
+    public static Specification<Imovel> buscarApenasNaoArquivados() {
+        return (root, query, cb) -> cb.or(
+                cb.isNull(root.get("tipoBanner")),
+                cb.not(root.get("tipoBanner").in(TipoBunnerEnum.ALUGADO, TipoBunnerEnum.ADQUIRIDO))
+        );
+    }
+
 
     public static Specification<Imovel> tamanhoBeetween(Integer tamanhoMinimo, Integer tamanhoMaximo) {
         return (root, query, cb) -> cb.between(root.get("tamanho"), tamanhoMinimo, tamanhoMaximo);

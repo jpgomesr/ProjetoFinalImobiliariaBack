@@ -89,7 +89,9 @@ public class ImovelService {
         entity.setEndereco(enderecoEntity);
         entity.setImagens(imovelExistente.getImagens());
         entity.setAtivo(dto.ativo());
-
+        if(!entity.getBanner()){
+            entity.setTipoBanner(null);
+        }
         if (imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
@@ -210,6 +212,7 @@ public class ImovelService {
                                  Boolean destaque,
                                  Boolean condicoesEspeciais,
                                  Long idUsuario,
+                                 Boolean buscarArquivados,
                                  Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -238,6 +241,9 @@ public class ImovelService {
             }
 
         }
+        if(buscarArquivados != null && buscarArquivados){
+           specs = specs.and(ImovelSpecs.buscarApenasNaoArquivados());
+       }
         if(destaque != null && destaque){
             specs = specs.and(ImovelSpecs.permitirDestaqueEqual(destaque));
         }
