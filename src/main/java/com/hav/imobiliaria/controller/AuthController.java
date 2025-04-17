@@ -1,9 +1,11 @@
 package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.auth.CodigoDoisFatoresRequestDTO;
+import com.hav.imobiliaria.controller.dto.auth.LoginGoogleRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginResponseDTO;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.Codigo2FAInvalidoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
@@ -43,6 +45,24 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
+    @PreAuthorize("permitAll()")
+    @PostMapping("/google")
+    public ResponseEntity<?> loginGoogle(@RequestBody @Valid LoginGoogleRequestDTO data){
+
+       try{
+           Usuario usuario = usuarioService.buscarPorEmail(data.email());
+
+
+       }catch (UsuarioNaoEncontradoException e){
+
+       }
+
+
+
+    }
+
+
+    @PreAuthorize("permitAll()")
     @GetMapping("verificar-2fa-habilitado/{email}")
     public ResponseEntity<Map> verificar2FAHabilitadoPor(@PathVariable String email){
         Boolean habilitado = this.usuarioService.buscarPorEmail(email).getAutenticacaoDoisFatoresHabilitado();
@@ -53,10 +73,10 @@ public class AuthController {
                 Map.of("habilitado",  habilitado)
 
        );
-
     }
 
 
+    @PreAuthorize("permitAll()")
     @PostMapping("2fa/verify")
     public ResponseEntity<?> verificarCodigo(@RequestBody @Valid CodigoDoisFatoresRequestDTO codigoDoisFatoresRequestDTO) {
         Boolean valido = authDoisFatoresService.validarCodigo(codigoDoisFatoresRequestDTO.email(), codigoDoisFatoresRequestDTO.codigo());
