@@ -47,6 +47,7 @@ public class PerguntaService {
             String email,
             String titulo,
             String mensagem,
+            Boolean buscarRespondida,
             Pageable pageable
     ) {
         Specification<Pergunta> specs =
@@ -64,6 +65,9 @@ public class PerguntaService {
         }
         if (StringUtils.isNotBlank(mensagem)){
             specs = specs.and(PerguntaSpecs.mensagemLike(mensagem));
+        }
+        if(buscarRespondida != null){
+            specs = specs.and(PerguntaSpecs.perguntaRespondida(buscarRespondida));
         }
         Page<Pergunta> perguntas = repository.findAll(specs, pageable);
         System.out.println(perguntas);
