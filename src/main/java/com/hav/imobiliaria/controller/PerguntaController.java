@@ -36,19 +36,22 @@ public class PerguntaController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
-    public ResponseEntity<Page<PerguntaGetDTO>> buscarTodasPerguntas(
+    public ResponseEntity<Page<PerguntaGetDTO>> buscarPerguntasNaoRespondidas(
             @RequestParam(value = "tipo_pergunta") @Nullable TipoPerguntaEnum tipoPergunta,
             @RequestParam(value = "email") @Nullable String email,
             @RequestParam(value = "titulo") @Nullable String titulo,
             @RequestParam(value = "mensagem") @Nullable String mensagem,
+            @RequestParam(value = "buscarRespondida", required = false) @Nullable Boolean buscarRespondida,
             Pageable pageable
     ){
-        Page<Pergunta> paginaResultadoDTO = service.pesquisar(tipoPergunta, email, titulo, mensagem, pageable);
+        Page<Pergunta> paginaResultadoDTO =
+                service.pesquisar(tipoPergunta, email, titulo, mensagem, buscarRespondida,pageable);
         return ResponseEntity.ok(paginaResultadoDTO.map(perguntaGetMapper::toDto));
     }
 
+
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'EDITOR')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Pergunta> cadastrar(@RequestBody PerguntaPostDTO perguntaPostDTO){
         return ResponseEntity.ok(service.cadastrar(perguntaPostDTO));
     }
@@ -63,4 +66,5 @@ public class PerguntaController {
 
         return ResponseEntity.ok(getDto);
     }
+
 }
