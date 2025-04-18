@@ -34,6 +34,6 @@ public class PerguntaSpecs {
     }
     public static Specification<Pergunta> perguntaRespondida(Boolean perguntaRespondida){
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("pergunta_respondida"), "%" + perguntaRespondida + "%");
+                criteriaBuilder.equal(root.get("perguntaRespondida"), perguntaRespondida);
     }
 }
