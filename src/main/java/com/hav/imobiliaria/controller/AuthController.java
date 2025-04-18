@@ -7,6 +7,7 @@ import com.hav.imobiliaria.controller.dto.auth.LoginResponseDTO;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.Codigo2FAInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.security.GoogleAuthenticationToken;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
 import com.hav.imobiliaria.service.UsuarioService;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @RestController
@@ -52,8 +54,31 @@ public class AuthController {
        try{
            Usuario usuario = usuarioService.buscarPorEmail(data.email());
 
+           GoogleAuthenticationToken autentication = new GoogleAuthenticationToken(new ArrayList<>(),
+                   usuario);
+
+           authenticationManager.authenticate(autentication);
+
+           var token  = tokenService.generateToken(usuario);
+
+           return ResponseEntity.ok(new LoginResponseDTO(token));
 
        }catch (UsuarioNaoEncontradoException e){
+            Usuario usuario = new Usuario();
+            usuario.setNome(data.nome());
+            usuario.setEmail(data.email());
+            usuario.setFoto(data.foto());
+            usuario = usuarioService.salvarUsuarioRequisicaoGoogle(usuario);
+
+           GoogleAuthenticationToken autentication = new GoogleAuthenticationToken(new ArrayList<>(),
+                   usuario);
+
+            authenticationManager.authenticate(autentication);
+
+           var token  = tokenService.generateToken(usuario);
+
+           return ResponseEntity.ok(new LoginResponseDTO(token));
+
 
        }
 

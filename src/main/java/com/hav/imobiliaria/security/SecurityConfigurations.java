@@ -1,10 +1,12 @@
 package com.hav.imobiliaria.security;
 
+import com.hav.imobiliaria.security.service.CustomUserDatailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -21,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Service
 @EnableWebSecurity
@@ -30,6 +33,7 @@ public class SecurityConfigurations {
     
 
     private  final SecurityFilter securityFilter;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -50,14 +54,21 @@ public class SecurityConfigurations {
 
         @Bean
         public AuthenticationManager authenticationManager(
-                GoogleAuthenticationProvider googleAuthenticationProvider
-
+                GoogleAuthenticationProvider googleAuthenticationProvider,
+                CustomUserDatailsService customUserDatailsService,
+                PasswordEncoder passwordEncoder
         ) throws Exception {
 
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+
+
+
+        daoAuthenticationProvider.setUserDetailsService(customUserDatailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         
+        return new ProviderManager(List.of(daoAuthenticationProvider, googleAuthenticationProvider));
 
 
-            return authenticationConfiguration.getAuthenticationManager();
         }
 
     @Bean
