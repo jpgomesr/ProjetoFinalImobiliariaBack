@@ -7,6 +7,7 @@ import com.hav.imobiliaria.controller.dto.auth.LoginResponseDTO;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.Codigo2FAInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.entity.UsuarioComum;
 import com.hav.imobiliaria.security.GoogleAuthenticationToken;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
@@ -64,7 +65,7 @@ public class AuthController {
            return ResponseEntity.ok(new LoginResponseDTO(token));
 
        }catch (UsuarioNaoEncontradoException e){
-            Usuario usuario = new Usuario();
+            Usuario usuario = new UsuarioComum();
             usuario.setNome(data.nome());
             usuario.setEmail(data.email());
             usuario.setFoto(data.foto());
