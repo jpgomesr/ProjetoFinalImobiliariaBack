@@ -19,7 +19,7 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String email = (String) authentication.getPrincipal();
+        String email =  authentication.getName();
         Usuario usuario = service.buscarPorEmail(email);
 
         return new UsernamePasswordAuthenticationToken(
