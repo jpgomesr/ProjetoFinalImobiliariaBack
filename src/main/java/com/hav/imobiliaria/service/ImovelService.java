@@ -195,7 +195,7 @@ public class ImovelService {
         this.repository.save(imovel);
     }
 
-    public Page<Imovel> pesquisa(String descricao,
+    public Page<Imovel> pesquisa(String descricaoTitulo,
                                  Integer tamanhoMinimo,
                                  Integer tamanhoMaximo,
                                  String titulo,
@@ -227,9 +227,10 @@ public class ImovelService {
             SecurityUtils.verificarUsuarioLogado(idUsuario);
             specs = specs.and(ImovelSpecs.buscandoFavoritos(idUsuario));
         }
-        if (StringUtils.isNotBlank(descricao)) {
-            specs = specs.and(ImovelSpecs.descricaoLike(descricao));
+        if (StringUtils.isNotBlank(descricaoTitulo)) {
+            specs = specs.and(ImovelSpecs.descricaoLike(descricaoTitulo));
         }
+
         if (tipoResidencia != null) {
             specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
         }
