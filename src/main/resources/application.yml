@@ -5,7 +5,7 @@ spring:
       urL: ${DATABASE_URL}
       username: ${DATABASE_USER}
       password: ${DATABASE_PASSWORD}
-      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      driver-class-name: com.mysql.cj.jdbc.Driver
    jpa:
       hibernate:
          ddl-auto: update
