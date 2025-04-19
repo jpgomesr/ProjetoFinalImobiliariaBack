@@ -38,7 +38,6 @@ public class ImovelController implements GenericController {
 
     @GetMapping
     public ResponseEntity<Page<ImovelListagemDTO>> listarImoveis(
-            @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "tamanhoMinimo", required = false) Integer tamanhoMinimo,
             @RequestParam(value = "tamanhoMaximo", required = false) Integer tamanhoMaximo,
             @RequestParam(value = "titulo", required = false) String titulo,
@@ -55,13 +54,14 @@ public class ImovelController implements GenericController {
             @RequestParam(value = "condicoesEspeciais", required = false) Boolean condicoesEspecias,
             @RequestParam(value = "idUsuario", required = false) Long idUsuario,
             @RequestParam(value = "buscarArquivados", required = false) Boolean buscarArquivados,
-            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(value = "imovelDescTitulo", required = false) String imovelDescTitulo,
+            @PageableDefault(page = 0, size = 9) Pageable pageable,
             @RequestParam(value = "ativo", required = false) Boolean ativo
     ) {
 
 
         Page<Imovel> paginaResultadoDto = service.pesquisa
-                (descricao,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
+                (imovelDescTitulo,tamanhoMinimo,tamanhoMaximo, titulo, tipoResidencia, qtdBanheiros, qtdQuartos,
                 qtdGaragens, precoMin, precoMax, finalidade,cidade,bairro,
                         ativo,destaque,condicoesEspecias,idUsuario, buscarArquivados, pageable);
 

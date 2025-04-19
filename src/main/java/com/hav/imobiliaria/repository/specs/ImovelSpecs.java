@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
@@ -26,6 +27,12 @@ public class ImovelSpecs {
         return (root, query, cb) -> cb.or(
                 cb.isNull(root.get("tipoBanner")),
                 cb.not(root.get("tipoBanner").in(TipoBunnerEnum.ALUGADO, TipoBunnerEnum.ADQUIRIDO))
+        );
+    }
+    public static Specification<Imovel> tituloDescLike(String titulo, String descricao) {
+        return (root, query, cb) -> cb.or(
+                cb.like(cb.upper(root.get("titulo")), "%" + titulo.toUpperCase() + "%"),
+                cb.like(cb.upper(root.get("descricao")), "%" + descricao.toUpperCase() + "%")
         );
     }
 
