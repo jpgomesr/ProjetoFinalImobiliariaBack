@@ -3,14 +3,13 @@ package com.hav.imobiliaria.service;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPostDto;
 import com.hav.imobiliaria.controller.dto.agendamento.AgendamentoPutDTO;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.AgendamentoComImovelFinalizadoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.AgendamentoInexistenteException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.TipoUsuarioIncorretoException;
-import com.hav.imobiliaria.model.entity.Agendamento;
-import com.hav.imobiliaria.model.entity.Corretor;
-import com.hav.imobiliaria.model.entity.Usuario;
-import com.hav.imobiliaria.model.entity.UsuarioComum;
+import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
 import com.hav.imobiliaria.security.utils.SecurityUtils;
@@ -51,7 +50,20 @@ public class AgendamentoService {
     @Transactional
     public void atualizarAgendamento(AgendamentoPutDTO agendamentoPutDTO) {
 
+        Imovel imovel = imovelService.buscarPorId(agendamentoPutDTO.idImovel());
+
+
         Agendamento agendamento = repository.findById(agendamentoPutDTO.id()).orElseThrow(AgendamentoInexistenteException::new);
+
+        if(imovel.getBanner() != null && imovel.getBanner()){
+            if(imovel.getTipoBanner().equals(TipoBunnerEnum.ADQUIRIDO) ||
+                    imovel.getTipoBanner().equals(TipoBunnerEnum.ALUGADO)){
+                agendamento.setStatus(StatusAgendamentoEnum.CANCELADO);
+                repository.save(agendamento);
+                repository.flush();
+                throw new AgendamentoComImovelFinalizadoException();
+            }
+        }
 
         validator.validarUsuarios(agendamento,agendamentoPutDTO.idUsuario(), agendamentoPutDTO.idCorretor());
 
@@ -62,6 +74,7 @@ public class AgendamentoService {
 
         agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPutDTO.dataHora());
         agendamento.setDataHora(agendamentoPutDTO.dataHora());
+
 
         repository.save(agendamento);
     }

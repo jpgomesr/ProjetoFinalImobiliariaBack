@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.security;
 
+import com.hav.imobiliaria.exceptions.TokenInvalidoException;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.UsuarioService;
@@ -29,17 +30,24 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final UsuarioRepository userRepository;
 
 
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
-        if(token != null){
-            var email = tokenService.validateToken(token);
-            System.out.println(email);
-            UserDetails user = userRepository.findByEmail(email).get();
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        filterChain.doFilter(request, response);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+       try{
+           var token = this.recoverToken(request);
+           if(token != null){
+               var email = tokenService.validateToken(token);
+               System.out.println(email);
+               UserDetails user = userRepository.findByEmail(email).get();
+
+               var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+               SecurityContextHolder.getContext().setAuthentication(authentication);
+           }
+           filterChain.doFilter(request, response);
+       }catch (TokenInvalidoException e ){
+           response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+       }
+
     }
 
     private String recoverToken(HttpServletRequest request){

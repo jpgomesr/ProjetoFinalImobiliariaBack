@@ -69,6 +69,13 @@ public class UsuarioService {
 
         return repository.findAll(specs, pageable);
     }
+    public Usuario salvarUsuarioRequisicaoGoogle(Usuario usuario){
+        usuario.setSenha(passwordEncoder.encode("ADADADIASDHASUDBASUDUOAHDI1a#1asd"));
+        usuario.setRole(RoleEnum.USUARIO);
+
+        return this.repository.save(usuario);
+
+    }
     public Usuario buscarPorId(Long id) {
         return repository.findById(id).get();
 
@@ -131,6 +138,9 @@ public class UsuarioService {
         }
         if(usuarioAtualizado.getRole() == null){
             usuarioAtualizado.setRole(usuarioJaSalvo.getRole());
+        }
+        if(usuarioAtualizado.getAutenticacaoDoisFatoresHabilitado() == null){
+            usuarioAtualizado.setAutenticacaoDoisFatoresHabilitado(usuarioSalvo.getAutenticacaoDoisFatoresHabilitado());
         }
 
         return repository.save(usuarioAtualizado);

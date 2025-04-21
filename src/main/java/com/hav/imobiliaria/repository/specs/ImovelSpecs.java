@@ -1,8 +1,12 @@
 package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.entity.Imovel;
+import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
 import com.hav.imobiliaria.model.enums.TipoFinalidadeEnum;
 import com.hav.imobiliaria.model.enums.TipoImovelEnum;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ImovelSpecs {
@@ -19,6 +23,19 @@ public class ImovelSpecs {
     public static Specification<Imovel> tipoResidenciaEqual(TipoImovelEnum tipoResidencia) {
         return (root, query, cb) -> cb.equal(root.join("endereco").get("tipoResidencia"), tipoResidencia);
     }
+    public static Specification<Imovel> buscarApenasNaoArquivados() {
+        return (root, query, cb) -> cb.or(
+                cb.isNull(root.get("tipoBanner")),
+                cb.not(root.get("tipoBanner").in(TipoBunnerEnum.ALUGADO, TipoBunnerEnum.ADQUIRIDO))
+        );
+    }
+    public static Specification<Imovel> tituloDescLike(String titulo, String descricao) {
+        return (root, query, cb) -> cb.or(
+                cb.like(cb.upper(root.get("titulo")), "%" + titulo.toUpperCase() + "%"),
+                cb.like(cb.upper(root.get("descricao")), "%" + descricao.toUpperCase() + "%")
+        );
+    }
+
 
     public static Specification<Imovel> tamanhoBeetween(Integer tamanhoMinimo, Integer tamanhoMaximo) {
         return (root, query, cb) -> cb.between(root.get("tamanho"), tamanhoMinimo, tamanhoMaximo);
@@ -42,8 +59,16 @@ public class ImovelSpecs {
         return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("qtdGaragens"), qtdGaragem);
     }
     public static Specification<Imovel> precoBetween(Double precoMin, Double precoMax) {
-        return (root, query, cb) -> cb.between(root.get("preco"), precoMin, precoMax);
+        return (root, query, cb) -> {
+            // Expressão condicional: se precoPromocional for diferente de null, usar ele; senão usar preco normal
+            Expression<Double> precoConsiderado = cb.<Double>selectCase()
+                    .when(cb.isNotNull(root.get("precoPromocional")), root.get("precoPromocional"))
+                    .otherwise(root.get("preco"));
+
+            return cb.between(precoConsiderado, precoMin, precoMax);
+        };
     }
+
     public static Specification<Imovel> precoMin(Double precoMin) {
         return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("preco"), precoMin);
     }
@@ -84,7 +109,12 @@ public class ImovelSpecs {
 
 
     public static Specification<Imovel> condicoesEspeciais(Boolean condicoesEspeciais) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("banner"), condicoesEspeciais);
+        return (root, query, criteriaBuilder) ->{
+            Predicate condicoesEspeciaisPredicate =  criteriaBuilder.equal(root.get("banner"), condicoesEspeciais);
+            Predicate precoPromocional = criteriaBuilder.isNotNull(root.get("precoPromocional"));
+
+            return criteriaBuilder.or(condicoesEspeciaisPredicate, precoPromocional);
+        };
     }
     public static Specification<Imovel> buscandoFavoritos(Long id) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("usuariosFavoritos").get("id"), id);

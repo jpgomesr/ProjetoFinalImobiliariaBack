@@ -89,7 +89,9 @@ public class ImovelService {
         entity.setEndereco(enderecoEntity);
         entity.setImagens(imovelExistente.getImagens());
         entity.setAtivo(dto.ativo());
-
+        if(!entity.getBanner()){
+            entity.setTipoBanner(null);
+        }
         if (imagemPrincipal != null) {
             atualizarImagemPrincipalImovel(entity, imagemPrincipal);
         }
@@ -193,7 +195,7 @@ public class ImovelService {
         this.repository.save(imovel);
     }
 
-    public Page<Imovel> pesquisa(String descricao,
+    public Page<Imovel> pesquisa(String descricaoTitulo,
                                  Integer tamanhoMinimo,
                                  Integer tamanhoMaximo,
                                  String titulo,
@@ -210,6 +212,7 @@ public class ImovelService {
                                  Boolean destaque,
                                  Boolean condicoesEspeciais,
                                  Long idUsuario,
+                                 Boolean buscarArquivados,
                                  Pageable pageable) {
 
         Specification<Imovel> specs = Specification.where((root, query, cb) -> cb.conjunction());
@@ -224,9 +227,10 @@ public class ImovelService {
             SecurityUtils.verificarUsuarioLogado(idUsuario);
             specs = specs.and(ImovelSpecs.buscandoFavoritos(idUsuario));
         }
-        if (StringUtils.isNotBlank(descricao)) {
-            specs = specs.and(ImovelSpecs.descricaoLike(descricao));
+        if (StringUtils.isNotBlank(descricaoTitulo)) {
+            specs = specs.and(ImovelSpecs.descricaoLike(descricaoTitulo));
         }
+
         if (tipoResidencia != null) {
             specs = specs.and(ImovelSpecs.tipoResidenciaEqual(tipoResidencia));
         }
@@ -238,6 +242,9 @@ public class ImovelService {
             }
 
         }
+        if(buscarArquivados != null && buscarArquivados){
+           specs = specs.and(ImovelSpecs.buscarApenasNaoArquivados());
+       }
         if(destaque != null && destaque){
             specs = specs.and(ImovelSpecs.permitirDestaqueEqual(destaque));
         }

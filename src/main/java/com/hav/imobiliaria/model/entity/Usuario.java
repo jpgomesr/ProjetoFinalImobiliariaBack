@@ -79,7 +79,7 @@ public class Usuario implements UserDetails {
             ativo = true;
         }
         if(autenticacaoDoisFatoresHabilitado == null){
-            autenticacaoDoisFatoresHabilitado =false;
+            autenticacaoDoisFatoresHabilitado = false;
         }
     }
 
@@ -94,6 +94,7 @@ public class Usuario implements UserDetails {
             this.imoveisFavoritados.add(imovel);
         }
     }
+
     public void removerImovelFavorito(Long id) {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
     }
@@ -103,6 +104,8 @@ public class Usuario implements UserDetails {
     public void removerChats(){
         this.chats.forEach(chat ->  chat.setUsuarios(null));
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -127,16 +130,16 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Ou lógica personalizada
+        return this.getAtivo();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Ou lógica personalizada
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.ativo; // Usa o campo ativo
+        return this.ativo;
     }
 }

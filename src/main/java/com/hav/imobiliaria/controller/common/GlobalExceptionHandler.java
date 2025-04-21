@@ -8,6 +8,7 @@ import com.hav.imobiliaria.exceptions.requisicao_padrao.RequisicaoPadraoExceptio
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioJaCadastradoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
+import java.security.DigestException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -34,7 +36,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RequisicaoPadraoException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroResposta handleRequisicaoPadraoException(RequisicaoPadraoException e){
+        e.printStackTrace();
         return new ErroResposta(HttpStatus.BAD_REQUEST.value(), e.getMessage(), List.of());
+    }
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroResposta handleDisabledException(DisabledException e){
+        return new ErroResposta(HttpStatus.FORBIDDEN.value(), e.getMessage(), List.of());
     }
 
     @ExceptionHandler(CampoInvalidoException.class)
@@ -47,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AcessoNegadoException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErroResposta handleAccessDeniedException(AcessoNegadoException e){
-        return new ErroResposta(HttpStatus.CONFLICT.value(), e.getMessage(),
+        return new ErroResposta(HttpStatus.FORBIDDEN.value(), e.getMessage(),
                 List.of());
     }
 

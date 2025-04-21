@@ -1,10 +1,14 @@
 package com.hav.imobiliaria.controller;
 
 import com.hav.imobiliaria.controller.dto.auth.CodigoDoisFatoresRequestDTO;
+import com.hav.imobiliaria.controller.dto.auth.LoginGoogleRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginResponseDTO;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.Codigo2FAInvalidoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.Usuario;
+import com.hav.imobiliaria.model.entity.UsuarioComum;
+import com.hav.imobiliaria.security.GoogleAuthenticationToken;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
 import com.hav.imobiliaria.service.UsuarioService;
@@ -17,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @RestController
@@ -43,6 +48,47 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
+    @PreAuthorize("permitAll()")
+    @PostMapping("/google")
+    public ResponseEntity<?> loginGoogle(@RequestBody @Valid LoginGoogleRequestDTO data){
+
+       try{
+           Usuario usuario = usuarioService.buscarPorEmail(data.email());
+
+           GoogleAuthenticationToken autentication = new GoogleAuthenticationToken(new ArrayList<>(),
+                   usuario);
+
+           authenticationManager.authenticate(autentication);
+
+           var token  = tokenService.generateToken(usuario);
+
+           return ResponseEntity.ok(new LoginResponseDTO(token));
+
+       }catch (UsuarioNaoEncontradoException e){
+            Usuario usuario = new UsuarioComum();
+            usuario.setNome(data.nome());
+            usuario.setEmail(data.email());
+            usuario.setFoto(data.foto());
+            usuario = usuarioService.salvarUsuarioRequisicaoGoogle(usuario);
+
+           GoogleAuthenticationToken autentication = new GoogleAuthenticationToken(new ArrayList<>(),
+                   usuario);
+
+            authenticationManager.authenticate(autentication);
+
+           var token  = tokenService.generateToken(usuario);
+
+           return ResponseEntity.ok(new LoginResponseDTO(token));
+
+
+       }
+
+
+
+    }
+
+
+    @PreAuthorize("permitAll()")
     @GetMapping("verificar-2fa-habilitado/{email}")
     public ResponseEntity<Map> verificar2FAHabilitadoPor(@PathVariable String email){
         Boolean habilitado = this.usuarioService.buscarPorEmail(email).getAutenticacaoDoisFatoresHabilitado();
@@ -53,10 +99,10 @@ public class AuthController {
                 Map.of("habilitado",  habilitado)
 
        );
-
     }
 
 
+    @PreAuthorize("permitAll()")
     @PostMapping("2fa/verify")
     public ResponseEntity<?> verificarCodigo(@RequestBody @Valid CodigoDoisFatoresRequestDTO codigoDoisFatoresRequestDTO) {
         Boolean valido = authDoisFatoresService.validarCodigo(codigoDoisFatoresRequestDTO.email(), codigoDoisFatoresRequestDTO.codigo());
