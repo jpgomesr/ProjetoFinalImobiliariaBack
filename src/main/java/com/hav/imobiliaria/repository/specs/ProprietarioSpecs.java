@@ -1,12 +1,18 @@
 package com.hav.imobiliaria.repository.specs;
 
 import com.hav.imobiliaria.model.entity.Proprietario;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProprietarioSpecs {
 
-    public static Specification<Proprietario> nomeLike(String nome) {
-        return (root, query, cb) -> cb.like(cb.upper(root.get("nome")), "%" + nome.toUpperCase() + "%");
+    public static Specification<Proprietario> nomeEmailLike(String pesquisa) {
+        return (root, query, cb) -> {
+            Predicate nomeLike = cb.like(cb.upper(root.get("nome")), "%" + pesquisa.toUpperCase() + "%");
+            Predicate emailLike = cb.like(cb.upper(root.get("email")), "%" + pesquisa.toUpperCase() + "%");
+
+            return cb.or(nomeLike,emailLike);
+        };
     }
 
 
