@@ -6,6 +6,7 @@ public record ProprietarioListagemDTO(
         String telefone,
         String cpf,
         String email,
-        String imagemUrl
+        String imagemUrl,
+        Boolean ativo
 ) {
 }
