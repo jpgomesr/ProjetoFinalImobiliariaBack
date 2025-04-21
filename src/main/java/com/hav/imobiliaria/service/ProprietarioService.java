@@ -90,12 +90,12 @@ public class ProprietarioService {
         this.repository.save(proprietario);
     }
 
-    public Page<Proprietario> pesquisa(String nome, String cpf, String email, Boolean ativo, Pageable pageable) {
+    public Page<Proprietario> pesquisa(String pesquisa, String cpf, String email, Boolean ativo, Pageable pageable) {
 
         Specification<Proprietario> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
-        if (nome != null && !nome.isEmpty()) {
-            specs = specs.and(ProprietarioSpecs.nomeLike(nome));
+        if (pesquisa != null && !pesquisa.isEmpty()) {
+            specs = specs.and(ProprietarioSpecs.nomeEmailLike(pesquisa));
         }
         if (cpf != null && !cpf.isEmpty()) {
             specs = specs.and(ProprietarioSpecs.cpfLike(cpf));
