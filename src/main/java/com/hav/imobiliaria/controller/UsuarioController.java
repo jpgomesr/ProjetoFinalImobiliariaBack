@@ -171,6 +171,14 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok().build();
     }
+    @PostMapping("comunicado/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    public  ResponseEntity<Void> enviarComunidado(@PathVariable Long id, @RequestParam String mensagem){
+        this.service.enviarComunicado(id, mensagem);
+
+        return ResponseEntity.ok().build();
+
+    }
 
 
 }

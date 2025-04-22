@@ -311,4 +311,24 @@ public class UsuarioService {
         tokenRecuperacaoSenhaRepository.save(tokenRecuperacaoSenha);
 
     }
+
+    public void enviarComunicado(Long id, String mensagem) {
+        Usuario usuario = this.buscarPorId(id);
+
+        Map<String, Object> variables = new HashMap<>();
+
+
+        variables.put("nomeCliente", usuario.getNome());
+        variables.put("titulo", "Você recebeu um comunicado!");
+        variables.put("mensagem", mensagem);
+
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                .destinatario(usuario.getEmail())
+                .variaveis(variables).build();
+
+        emailService.enviarEmail(emailRequest);
+
+    }
 }
