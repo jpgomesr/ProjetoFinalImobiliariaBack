@@ -44,7 +44,7 @@ public class AgendamentosController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('CORRETOR')")
+    @PreAuthorize("hasAnyRole('CORRETOR', 'ADMINISTRADOR', 'EDITOR')")
     @GetMapping("/corretor/{id}")
     public ResponseEntity<Page<AgendamentoListagemDTO>> buscarAgendamentos(
             @PathVariable Long id,
