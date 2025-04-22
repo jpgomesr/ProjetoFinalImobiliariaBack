@@ -79,7 +79,7 @@ public class AgendamentoService {
 
         agendamento.getCorretor().removerHorarioPorDatahora(agendamentoPutDTO.dataHora());
         agendamento.setDataHora(agendamentoPutDTO.dataHora());
-
+        agendamento.setStatus(StatusAgendamentoEnum.PENDENTE);
 
         repository.save(agendamento);
     }
