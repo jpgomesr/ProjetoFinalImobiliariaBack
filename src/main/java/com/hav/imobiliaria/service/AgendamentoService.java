@@ -51,6 +51,24 @@ public class AgendamentoService {
         agendamento.setDataHora(agendamentoPostDto.dataHora());
 
         repository.save(agendamento);
+
+        Map<String, Object> variables = new HashMap<>();
+
+        Dotenv dotenv = Dotenv.load();
+
+        variables.put("nomeCliente", agendamento.getCorretor().getNome());
+        variables.put("titulo", "Nova solicitação de agendamento");
+        variables.put("mensagem", "O usuário " + agendamento.getUsuarioComum().getNome() + " fez uma solicitação de agendamento para você");
+        variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getCorretor().getId());
+        variables.put("textoBotao", "Ir para os seus agendametos");
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                .destinatario(agendamento.getCorretor().getEmail())
+                .variaveis(variables).build();
+
+
+        emailService.enviarEmail(emailRequest);
     }
     @Transactional
     public void atualizarAgendamento(AgendamentoPutDTO agendamentoPutDTO) {
@@ -82,6 +100,27 @@ public class AgendamentoService {
         agendamento.setStatus(StatusAgendamentoEnum.PENDENTE);
 
         repository.save(agendamento);
+
+        Map<String, Object> variables = new HashMap<>();
+
+        Dotenv dotenv = Dotenv.load();
+
+        variables.put("nomeCliente", agendamento.getCorretor().getNome());
+        variables.put("titulo", "Reagendamento de visita");
+        variables.put("mensagem", "O usuário " + agendamento.getUsuarioComum().getNome() + " fez uma solicitação de reagendamento de visita para você");
+        variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getCorretor().getId());
+        variables.put("textoBotao", "Ir para os seus agendametos");
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                .destinatario(agendamento.getCorretor().getEmail())
+                .variaveis(variables).build();
+
+
+        emailService.enviarEmail(emailRequest);
+
+
+
     }
 
     public Page<Agendamento> listarAgendamentosCorretorId(Pageable pageable,
