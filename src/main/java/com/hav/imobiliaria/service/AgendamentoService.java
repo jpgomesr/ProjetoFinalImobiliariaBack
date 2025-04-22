@@ -10,10 +10,12 @@ import com.hav.imobiliaria.model.entity.*;
 import com.hav.imobiliaria.model.enums.RoleEnum;
 import com.hav.imobiliaria.model.enums.StatusAgendamentoEnum;
 import com.hav.imobiliaria.model.enums.TipoBunnerEnum;
+import com.hav.imobiliaria.model.enums.TipoEmailEnum;
 import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
 import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.AgendamentoValidator;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +33,7 @@ public class AgendamentoService {
 
     private final AgendamentoRepository repository;
     private final UsuarioService usuarioService;
+    private final EmailService emailService;
     private final ImovelService imovelService;
     private final AgendamentoValidator validator;
 
@@ -127,8 +132,33 @@ public class AgendamentoService {
         if(status.equals(StatusAgendamentoEnum.CONFIRMADO) && !SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.CORRETOR)){
             throw  new AcessoNegadoException();
         }
+
+
         repository.findById(id).ifPresent(agendamento -> {
+
             agendamento.setStatus(status);
+
+            if(SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.CORRETOR)){
+                Map<String, Object> variables = new HashMap<>();
+
+                Dotenv dotenv = Dotenv.load();
+
+                variables.put("nomeCliente", agendamento.getUsuarioComum().getNome());
+                variables.put("titulo", "Mudança de estádo de agendamento");
+                variables.put("mensagem", "O corretor acabou de alterar o status do seu agendamento para "+ agendamento.getStatus());
+                variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getUsuarioComum().getId());
+                variables.put("textoBotao", "Ir para os seus agendametos");
+
+                EmailRequest emailRequest = EmailRequest.builder()
+                        .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
+                        .destinatario(agendamento.getUsuarioComum().getEmail())
+                        .variaveis(variables).build();
+
+
+                emailService.enviarEmail(emailRequest);
+
+            }
+
             repository.save(agendamento);
         });
 
