@@ -1,6 +1,7 @@
 package com.hav.imobiliaria.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hav.imobiliaria.controller.dto.notificacao.ComunicadoDTO;
 import com.hav.imobiliaria.controller.dto.usuario.*;
 import com.hav.imobiliaria.controller.mapper.imovel.ImovelGetMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.ApresentacaoCorretorGetMapper;
@@ -171,10 +172,10 @@ public class UsuarioController implements GenericController{
 
         return ResponseEntity.ok().build();
     }
-    @PostMapping("comunicado/{id}")
+    @PostMapping("comunicado")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    public  ResponseEntity<Void> enviarComunidado(@PathVariable Long id, @RequestParam String mensagem){
-        this.service.enviarComunicado(id, mensagem);
+    public  ResponseEntity<Void> enviarComunidado(@RequestBody ComunicadoDTO comunicadoDTO){
+        this.service.enviarComunicado(comunicadoDTO);
 
         return ResponseEntity.ok().build();
 

@@ -1,5 +1,6 @@
 package com.hav.imobiliaria.service;
 
+import com.hav.imobiliaria.controller.dto.notificacao.ComunicadoDTO;
 import com.hav.imobiliaria.controller.dto.usuario.TrocaDeSenhaDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPostDTO;
 import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
@@ -312,20 +313,19 @@ public class UsuarioService {
 
     }
 
-    public void enviarComunicado(Long id, String mensagem) {
-        Usuario usuario = this.buscarPorId(id);
+    public void enviarComunicado(ComunicadoDTO comunicadoDTO) {
 
         Map<String, Object> variables = new HashMap<>();
 
 
-        variables.put("nomeCliente", usuario.getNome());
+        variables.put("nomeCliente", comunicadoDTO.nome());
         variables.put("titulo", "Você recebeu um comunicado!");
-        variables.put("mensagem", mensagem);
+        variables.put("mensagem", comunicadoDTO.mensagem());
 
 
         EmailRequest emailRequest = EmailRequest.builder()
                 .tipoEmail(TipoEmailEnum.NOTIFICACAO_IMOBILIARIA)
-                .destinatario(usuario.getEmail())
+                .destinatario(comunicadoDTO.email())
                 .variaveis(variables).build();
 
         emailService.enviarEmail(emailRequest);
