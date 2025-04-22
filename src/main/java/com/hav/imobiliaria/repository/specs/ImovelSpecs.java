@@ -70,10 +70,26 @@ public class ImovelSpecs {
     }
 
     public static Specification<Imovel> precoMin(Double precoMin) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("preco"), precoMin);
+
+        return (root, query, cb) -> {
+
+            Expression<Double> precoConsiderado = cb.<Double>selectCase()
+                    .when(cb.isNotNull(root.get("precoPromocional")), root.get("precoPromocional"))
+                    .otherwise(root.get("preco"));
+
+           return  cb.greaterThanOrEqualTo(precoConsiderado, precoMin);
+        };
     }
-    public static Specification<Imovel> precoMax(Double precoMin) {
-        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("preco"), precoMin);
+
+    public static Specification<Imovel> precoMax(Double precoMax) {
+        return (root, query, cb) -> {
+            Expression<Double> precoConsiderado = cb.<Double>selectCase()
+                    .when(cb.isNotNull(root.get("precoPromocional")), root.get("precoPromocional"))
+                    .otherwise(root.get("preco"));
+
+            return  cb.lessThanOrEqualTo(precoConsiderado,   precoMax);
+
+        };
     }
 
     public static Specification<Imovel> finalidadeEqual(TipoFinalidadeEnum finalidade) {
