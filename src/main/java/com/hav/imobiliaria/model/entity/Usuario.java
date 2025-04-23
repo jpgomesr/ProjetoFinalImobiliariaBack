@@ -73,6 +73,11 @@ public class Usuario implements UserDetails {
     @ToString.Exclude
     private List<Chats> chats;
 
+
+    @OneToMany(cascade =  CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    private List<SenhaAntigaUsuario>  senhasAntigasUsuario;
+
+
     @PrePersist
     public void setUp(){
         if(ativo == null){

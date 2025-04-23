@@ -172,16 +172,21 @@ public class UsuarioService {
         this.repository.save(usuario);
     }
 
-
+    @Transactional
     public void alterarSenha(TrocaDeSenhaDTO trocaDeSenhaDto) {
 
         TokenRecuperacaoSenha tokenRecuperacaoSenha =
                 tokenRecuperacaoSenhaRepository.findByToken(trocaDeSenhaDto.token()).orElseThrow(TokenRecuperacaoDeSenhaInvalidoException::new);
 
 
+
         if(tokenRecuperacaoSenha.getDataExpiracao().plusMinutes(15).isBefore(LocalDateTime.now())){
             throw new TokenRecuperacaoDeSenhaInvalidoException();
         }
+        SenhaAntigaUsuario senhaAntigaUsuario = new SenhaAntigaUsuario();
+        senhaAntigaUsuario.setSenha(tokenRecuperacaoSenha.getUsuario().getSenha());
+        senhaAntigaUsuario.setUsuario(tokenRecuperacaoSenha.getUsuario());
+        tokenRecuperacaoSenha.getUsuario().getSenhasAntigasUsuario().add(senhaAntigaUsuario);
         tokenRecuperacaoSenha.getUsuario().setSenha(passwordEncoder.encode(trocaDeSenhaDto.senha()));
 
         this.repository.save(tokenRecuperacaoSenha.getUsuario());
