@@ -7,6 +7,7 @@ import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
+import com.hav.imobiliaria.exceptions.requisicao_padrao.SenhaUtilizadaRecentementeException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.TokenRecuperacaoDeSenhaInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import com.hav.imobiliaria.model.entity.*;
@@ -183,11 +184,8 @@ public class UsuarioService {
         if(tokenRecuperacaoSenha.getDataExpiracao().plusMinutes(15).isBefore(LocalDateTime.now())){
             throw new TokenRecuperacaoDeSenhaInvalidoException();
         }
-        SenhaAntigaUsuario senhaAntigaUsuario = new SenhaAntigaUsuario();
-        senhaAntigaUsuario.setSenha(tokenRecuperacaoSenha.getUsuario().getSenha());
-        senhaAntigaUsuario.setUsuario(tokenRecuperacaoSenha.getUsuario());
-        tokenRecuperacaoSenha.getUsuario().getSenhasAntigasUsuario().add(senhaAntigaUsuario);
-        tokenRecuperacaoSenha.getUsuario().setSenha(passwordEncoder.encode(trocaDeSenhaDto.senha()));
+        validarSenhaAntiga(tokenRecuperacaoSenha.getUsuario(),trocaDeSenhaDto.senha());
+        atualizarSenhaUsuario(tokenRecuperacaoSenha.getUsuario() ,trocaDeSenhaDto.senha());
 
         this.repository.save(tokenRecuperacaoSenha.getUsuario());
 
@@ -336,4 +334,28 @@ public class UsuarioService {
         emailService.enviarEmail(emailRequest);
 
     }
+    private void validarSenhaAntiga(Usuario usuario, String senha) {
+
+        if(usuario.getSenhasAntigasUsuario().stream().anyMatch( usuarioSenha ->
+                passwordEncoder.matches(senha, usuarioSenha.getSenha()))){
+            throw new SenhaUtilizadaRecentementeException();
+        }
+    }
+    private void atualizarSenhaUsuario(Usuario usuario, String senha){
+
+        SenhaAntigaUsuario senhaAntigaUsuario = new SenhaAntigaUsuario();
+
+        senhaAntigaUsuario.setSenha(usuario.getSenha());
+
+
+        usuario.setSenha(passwordEncoder.encode(senha));
+        if(usuario.getSenhasAntigasUsuario().size() >= 5){
+            usuario.getSenhasAntigasUsuario().stream()
+                    .min(Comparator.comparing(SenhaAntigaUsuario::getDataCadastro))
+                    .ifPresent(usuarioSenha -> usuario.removerSenhaAntigaPorId(usuarioSenha.getId()) );
+        }
+        senhaAntigaUsuario.setUsuario(usuario);
+        usuario.getSenhasAntigasUsuario().add(senhaAntigaUsuario);
+    }
+
 }

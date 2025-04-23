@@ -99,6 +99,10 @@ public class Usuario implements UserDetails {
             this.imoveisFavoritados.add(imovel);
         }
     }
+    public void removerSenhaAntigaPorId(Long id){
+        this.getSenhasAntigasUsuario().removeIf(senha -> senha.getId().equals(id));
+    }
+
 
     public void removerImovelFavorito(Long id) {
         imoveisFavoritados.removeIf(i -> i.getId().equals(id));
