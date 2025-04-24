@@ -36,7 +36,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RequisicaoPadraoException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroResposta handleRequisicaoPadraoException(RequisicaoPadraoException e){
-        e.printStackTrace();
         return new ErroResposta(HttpStatus.BAD_REQUEST.value(), e.getMessage(), List.of());
     }
     @ExceptionHandler(DisabledException.class)
