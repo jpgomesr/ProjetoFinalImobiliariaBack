@@ -4,6 +4,8 @@ import com.hav.imobiliaria.model.entity.EmailRequest;
 import com.hav.imobiliaria.model.enums.TipoEmailEnum;
 import com.hav.imobiliaria.service.EmailService;
 import io.github.cdimascio.dotenv.Dotenv;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +22,13 @@ import java.util.Map;
 @SpringBootApplication
 @AllArgsConstructor
 @EnableAsync
+@OpenAPIDefinition(
+		info = @Info(
+				title = "Projeto final hav",
+				description = "Documentacao da api hav",
+				version = "1.0"
+		)
+)
 public class Application {
 //	EmailService emailService;
 

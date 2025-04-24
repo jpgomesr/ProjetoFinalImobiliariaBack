@@ -42,6 +42,10 @@ api:
   security :
     token:
       secret: ${TOKEN_PASSWORD}
+springdoc:
+   swagger-ui:
+      path: /swagger-ui.html
+
 #logging:
 #  level:
 #    org:
