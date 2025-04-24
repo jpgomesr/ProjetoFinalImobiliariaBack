@@ -4,24 +4,30 @@ import com.hav.imobiliaria.controller.dto.auth.CodigoDoisFatoresRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginGoogleRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginRequestDTO;
 import com.hav.imobiliaria.controller.dto.auth.LoginResponseDTO;
+import com.hav.imobiliaria.controller.dto.exception.ErroResposta;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.Codigo2FAInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
+import com.hav.imobiliaria.model.entity.TentativaLoginUsuario;
 import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.model.entity.UsuarioComum;
 import com.hav.imobiliaria.security.GoogleAuthenticationToken;
 import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
+import com.hav.imobiliaria.service.TentativaLoginUsuarioService;
 import com.hav.imobiliaria.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,6 +39,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final AuthDoisFatoresService authDoisFatoresService;
+    private final TentativaLoginUsuarioService tentativaLoginUsuarioService;
     private final TokenService tokenService;
 
     @PreAuthorize("permitAll()")
@@ -40,14 +47,21 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO data){
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        try{
+            var auth = this.authenticationManager.authenticate(usernamePassword);
 
+            Usuario usuario = (Usuario) auth.getPrincipal();
 
-        Usuario usuario = (Usuario) auth.getPrincipal();
+            var token = tokenService.generateToken(usuario);
 
-        var token = tokenService.generateToken(usuario);
+            return ResponseEntity.ok(new LoginResponseDTO(token ));
+        }catch (BadCredentialsException e ){
+           tentativaLoginUsuarioService.verificarTentativaUsuario(data.email());
+        }
+        ErroResposta erroResposta =
+                new ErroResposta(HttpStatus.UNAUTHORIZED.value(), "Usuário ou senha incorreto", List.of());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return new ResponseEntity<>(erroResposta, HttpStatus.UNAUTHORIZED );
     }
     @PreAuthorize("permitAll()")
     @PostMapping("/google")

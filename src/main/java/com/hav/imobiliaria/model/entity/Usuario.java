@@ -78,6 +78,7 @@ public class Usuario implements UserDetails {
     private List<SenhaAntigaUsuario>  senhasAntigasUsuario;
 
 
+
     @PrePersist
     public void setUp(){
         if(ativo == null){
