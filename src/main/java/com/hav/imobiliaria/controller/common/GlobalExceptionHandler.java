@@ -9,6 +9,7 @@ import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioJaCadastradoExcep
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,10 +39,13 @@ public class GlobalExceptionHandler {
     public ErroResposta handleRequisicaoPadraoException(RequisicaoPadraoException e){
         return new ErroResposta(HttpStatus.BAD_REQUEST.value(), e.getMessage(), List.of());
     }
-    @ExceptionHandler(DisabledException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErroResposta handleDisabledException(DisabledException e){
-        return new ErroResposta(HttpStatus.FORBIDDEN.value(), e.getMessage(), List.of());
+    @ExceptionHandler(LockedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErroResposta handleUsuarioInativoException(LockedException disabledException){
+        disabledException.printStackTrace();
+        return new ErroResposta(HttpStatus.UNAUTHORIZED.value(),
+                "Sua conta foi bloqueada, entre em contato com o suporte",
+                List.of());
     }
 
     @ExceptionHandler(CampoInvalidoException.class)
