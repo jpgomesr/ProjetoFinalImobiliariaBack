@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ApplicationTests {
 
-//	@Test // Esse teste da dando erro na build (que porra é essa)
+//	@Test // Esse teste da dando erro na build
 //	void contextLoads() {
 //	}
 

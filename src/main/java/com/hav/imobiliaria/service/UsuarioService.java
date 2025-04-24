@@ -7,6 +7,7 @@ import com.hav.imobiliaria.controller.dto.usuario.UsuarioPutDTO;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPostMapper;
 import com.hav.imobiliaria.controller.mapper.usuario.UsuarioPutMapper;
 import com.hav.imobiliaria.exceptions.AcessoNegadoException;
+import com.hav.imobiliaria.exceptions.NenhumUsernamePossivelEncontrado;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.SenhaUtilizadaRecentementeException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.TokenRecuperacaoDeSenhaInvalidoException;
 import com.hav.imobiliaria.exceptions.requisicao_padrao.UsuarioNaoEncontradoException;
@@ -101,6 +102,7 @@ public class UsuarioService {
         }
         entity.setFoto(url);
         entity.setSenha(passwordEncoder.encode(entity.getSenha()));
+        entity.setUsername(gerarUsernames(dto.nome(), 1));
         return repository.save(entity);
     }
     public Usuario atualizar(UsuarioPutDTO dto, Long id, MultipartFile imagemNova) throws IOException {
@@ -358,4 +360,66 @@ public class UsuarioService {
         usuario.getSenhasAntigasUsuario().add(senhaAntigaUsuario);
     }
 
+    public String gerarUsernames(String nomeCompleto, Integer tentativa) {
+        if (tentativa == 5) {
+            throw new NenhumUsernamePossivelEncontrado();
+        }
+
+        nomeCompleto = nomeCompleto.trim().toLowerCase();
+        String[] nomes = nomeCompleto.split(" ");
+        String primeiro = nomes[0];
+        String ultimo = nomes[nomes.length - 1];
+
+        // Pegando as iniciais
+        StringBuilder iniciais = new StringBuilder();
+        for (String n : nomes) {
+            if (!n.isEmpty()) {
+                iniciais.append(n.charAt(0));
+            }
+        }
+
+        Random random = new Random();
+        int numero = 10 + random.nextInt(90); // Gera número entre 10 e 99
+
+        // Lista para armazenar os possíveis usernames
+        List<String> usernames = new ArrayList<>();
+
+        // Adicionando as variações de usernames, com corte inteligente
+        String[] variacoes = {
+                primeiro + "." + ultimo,
+                primeiro + "_" + ultimo + numero,
+                primeiro + numero,
+                ultimo + numero,
+                iniciais.toString() + "_" + numero,
+                primeiro + ultimo,
+                ultimo + "." + primeiro + numero
+        };
+
+        // Adicionando corte inteligente e o número ao final
+        for (String username : variacoes) {
+            String textoComNumero = username + numero;
+            if (textoComNumero.length() > 15) {
+                // Faz o corte inteligente, removendo caracteres se necessário
+                username = username.length() > 15 - 2 ? username.substring(0, 15 - 2) : username;
+            }
+            usernames.add(username + numero);
+        }
+
+        // Verificando se o username já existe e gerando novo se necessário
+        String usernameFinal = null;
+        for (String username : usernames) {
+            if (!repository.existsByUsername(username)) {
+                usernameFinal = username;
+                break; // Se o username não existir, escolhe esse
+            }
+        }
+
+        // Caso todos os usernames já existam, adiciona uma variação numérica
+        if (usernameFinal == null) {
+            return gerarUsernames(usernameFinal, tentativa++);
+        }
+
+        // Retorna o username final
+        return usernameFinal;
+    }
 }

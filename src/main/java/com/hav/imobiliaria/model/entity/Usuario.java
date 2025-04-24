@@ -77,6 +77,9 @@ public class Usuario implements UserDetails {
     @OneToMany(cascade =  CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     private List<SenhaAntigaUsuario>  senhasAntigasUsuario;
 
+    @Column(unique = true, nullable = false, length = 15)
+    private String username;
+
 
 
     @PrePersist

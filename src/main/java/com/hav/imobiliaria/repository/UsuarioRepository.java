@@ -45,4 +45,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Long> findIdImoveisFavoritadosByUsuarioId(@Param("usuarioId") Long usuarioId);
 
     Long id(Long id);
+
+    Boolean existsByUsername(String username);
 }
