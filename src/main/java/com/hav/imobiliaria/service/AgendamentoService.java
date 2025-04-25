@@ -36,6 +36,7 @@ public class AgendamentoService {
     private final EmailService emailService;
     private final ImovelService imovelService;
     private final AgendamentoValidator validator;
+    private final NotificacaoService notificacaoService;
 
     @Transactional
     public void salvarAgendamento(AgendamentoPostDto agendamentoPostDto) {
@@ -67,7 +68,11 @@ public class AgendamentoService {
                 .destinatario(agendamento.getCorretor().getEmail())
                 .variaveis(variables).build();
 
-
+        Notificacao notificacao = new Notificacao();
+        notificacao.setLink(dotenv.get("FRONTEND_URL")+"/historico-agendamentos/" +agendamento.getCorretor().getId());
+        notificacao.setTitulo("Novo agendamento");
+        notificacao.setDescricao("Há um novo agendamento para você");
+        notificacaoService.criarNotificacao(notificacao,agendamento.getCorretor().getId());
         emailService.enviarEmail(emailRequest);
     }
     @Transactional
