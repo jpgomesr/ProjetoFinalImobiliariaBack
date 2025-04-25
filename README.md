@@ -1,54 +1,74 @@
-# Utilização de Prefixos no GitHub
+# Projeto Final Imobiliária Back
 
-Este repositório utiliza uma convenção de prefixos para organizar e categorizar issues, pull requests e commits. A adoção desses prefixos ajuda a manter o projeto organizado, facilita a identificação do tipo de tarefa e melhora a clareza durante o desenvolvimento.
+Este é o backend do projeto final de imobiliária, desenvolvido com Spring Boot.
 
-## Prefixos Comuns
+## Pré-requisitos
 
-Aqui estão os prefixos mais utilizados e seus significados:
+-  Java 17 ou superior
+-  Maven
+-  MySQL
 
-- **feat**: Indica a adição de uma nova funcionalidade ao projeto.
-  - Exemplo: `feat: adiciona suporte a autenticação via OAuth`
+## Instalação
 
-- **fix**: Corrige um bug ou problema no código.
-  - Exemplo: `fix: resolve erro de validação no formulário`
+1. Clone o repositório:
 
-- **docs**: Atualizações ou adições na documentação.
-  - Exemplo: `docs: atualiza guia de instalação`
+```bash
+git clone https://github.com/jpgomesr/ProjetoFinalImobiliariaBack.git
+```
 
-- **style**: Alterações relacionadas à formatação do código (espaçamento, indentação, etc.) que não afetam a funcionalidade.
-  - Exemplo: `style: ajusta indentação no arquivo principal`
+2. Navegue até o diretório do projeto:
 
-- **refactor**: Refatoração de código que não adiciona novas funcionalidades nem corrige bugs.
-  - Exemplo: `refactor: melhora estrutura do módulo de autenticação`
+```bash
+cd ProjetoFinalImobiliariaBack
+```
 
-- **test**: Adição ou modificação de testes.
-  - Exemplo: `test: adiciona testes para o módulo de usuários`
+## Execução
 
-- **chore**: Tarefas de manutenção, como atualizações de dependências ou configurações.
-  - Exemplo: `chore: atualiza dependências do projeto`
+Para iniciar o projeto em modo de desenvolvimento:
 
-- **ci**: Alterações relacionadas à integração contínua (CI).
-  - Exemplo: `ci: configura GitHub Actions para testes automatizados`
+```bash
+mvn spring-boot:run
+```
 
-- **perf**: Melhorias de desempenho.
-  - Exemplo: `perf: otimiza consultas ao banco de dados`
+O projeto estará disponível em [http://localhost:8082/api](http://localhost:8082/api)
 
-- **build**: Alterações que afetam o sistema de build ou dependências externas.
-  - Exemplo: `build: atualiza configuração do Webpack`
+## Documentação da API
 
-## Como Usar
+A documentação completa da API está disponível no Swagger UI:
+[http://localhost:8082/api/swagger-ui.html](http://localhost:8082/api/swagger-ui.html)
 
-1. Ao criar uma **issue**, utilize o prefixo correspondente ao tipo de tarefa.
-   - Exemplo: `[feat] Adicionar suporte a temas escuros`
+## Tecnologias Utilizadas
 
-2. Ao abrir um **pull request**, utilize o prefixo no título.
-   - Exemplo: `fix: corrige erro de cálculo na função de desconto`
+-  Spring Boot
+-  Spring Security
+-  Spring Data JPA
+-  MySQL
+-  JWT (JSON Web Tokens)
+-  Maven
 
-3. Ao fazer um **commit**, utilize o prefixo na mensagem.
-   - Exemplo: `docs: atualiza README com instruções de instalação`
+## Estrutura do Projeto
 
-## Benefícios
+```
+src/
+├── main/
+│   ├── java/
+│   │   └── com/
+│   │       └── hav/
+│   │           └── imobiliaria/
+│   │               ├── controller/
+│   │               ├── service/
+│   │               ├── repository/
+│   │               ├── model/
+│   │               ├── config/
+│   │               └── security/
+│   └── resources/
+└── test/
+```
 
-- **Organização**: Facilita a categorização e filtragem de tarefas.
-- **Clareza**: Torna o propósito de cada alteração mais evidente.
-- **Consistência**: Mantém um padrão em todo o projeto.
+## Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
