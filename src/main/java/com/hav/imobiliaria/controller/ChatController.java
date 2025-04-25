@@ -8,6 +8,13 @@ import com.hav.imobiliaria.model.entity.Usuario;
 import com.hav.imobiliaria.payload.MessageRequest;
 import com.hav.imobiliaria.repository.ChatsRepository;
 import com.hav.imobiliaria.repository.UsuarioRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -26,6 +33,7 @@ import java.util.Map;
 @Controller
 @AllArgsConstructor
 @CrossOrigin("*")
+@Tag(name = "Chat", description = "Operações relacionadas ao chat em tempo real")
 public class ChatController {
     private ChatsRepository repository;
     private UsuarioRepository usuarioRepository;
@@ -35,8 +43,16 @@ public class ChatController {
     @MessageMapping("/sendMessage/{idChat}")
     @SendTo("/topic/chat/{idChat}")
     @Transactional
+    @Operation(summary = "Enviar mensagem", description = "Envia uma nova mensagem para um chat específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mensagem enviada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Chat não encontrado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Usuário não autorizado para este chat", content = @Content)
+    })
     public Map<String, Object> sendMessage(
+            @Parameter(description = "ID do chat", required = true) 
             @DestinationVariable Long idChat,
+            @Parameter(description = "Dados da mensagem", required = true) 
             @RequestBody MessageRequest request
     ) {
         // Verificar se o chat existe

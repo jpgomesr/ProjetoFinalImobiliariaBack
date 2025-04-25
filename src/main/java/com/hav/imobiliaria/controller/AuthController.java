@@ -15,6 +15,13 @@ import com.hav.imobiliaria.security.service.TokenService;
 import com.hav.imobiliaria.service.AuthDoisFatoresService;
 import com.hav.imobiliaria.service.TentativaLoginUsuarioService;
 import com.hav.imobiliaria.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,6 +40,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("auth")
 @AllArgsConstructor
+@Tag(name = "Autenticação", description = "Operações relacionadas a autenticação de usuários")
 public class AuthController {
 
     private final UsuarioService usuarioService;
@@ -44,7 +52,15 @@ public class AuthController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO data){
+    @Operation(summary = "Autenticar usuário", description = "Realiza login do usuário utilizando email e senha")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Autenticação bem-sucedida"),
+        @ApiResponse(responseCode = "401", description = "Credenciais inválidas", 
+            content = @Content(schema = @Schema(implementation = ErroResposta.class)))
+    })
+    public ResponseEntity<?> login(
+            @Parameter(description = "Credenciais de login", required = true) 
+            @RequestBody @Valid LoginRequestDTO data) {
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         try{
@@ -63,9 +79,18 @@ public class AuthController {
 
         return new ResponseEntity<>(erroResposta, HttpStatus.UNAUTHORIZED );
     }
+    
     @PreAuthorize("permitAll()")
     @PostMapping("/google")
-    public ResponseEntity<?> loginGoogle(@RequestBody @Valid LoginGoogleRequestDTO data){
+    @Operation(summary = "Autenticar com Google", description = "Realiza login ou cadastro do usuário utilizando dados da conta Google")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Autenticação bem-sucedida"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos", 
+            content = @Content(schema = @Schema(implementation = ErroResposta.class)))
+    })
+    public ResponseEntity<?> loginGoogle(
+            @Parameter(description = "Dados de login Google", required = true) 
+            @RequestBody @Valid LoginGoogleRequestDTO data) {
 
        try{
            Usuario usuario = usuarioService.buscarPorEmail(data.email());
@@ -94,32 +119,42 @@ public class AuthController {
            var token  = tokenService.generateToken(usuario);
 
            return ResponseEntity.ok(new LoginResponseDTO(token));
-
-
        }
-
-
-
     }
-
 
     @PreAuthorize("permitAll()")
     @GetMapping("verificar-2fa-habilitado/{email}")
-    public ResponseEntity<Map> verificar2FAHabilitadoPor(@PathVariable String email){
+    @Operation(summary = "Verificar 2FA habilitado", description = "Verifica se o usuário tem autenticação de dois fatores habilitada")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado", 
+            content = @Content(schema = @Schema(implementation = ErroResposta.class)))
+    })
+    public ResponseEntity<Map> verificar2FAHabilitadoPor(
+            @Parameter(description = "Email do usuário", required = true) 
+            @PathVariable String email) {
         Boolean habilitado = this.usuarioService.buscarPorEmail(email).getAutenticacaoDoisFatoresHabilitado();
         if(habilitado){
             authDoisFatoresService.gerarESalvarCodigoDoisFatores(email);
         }
         return ResponseEntity.ok(
                 Map.of("habilitado",  habilitado)
-
        );
     }
 
-
     @PreAuthorize("permitAll()")
     @PostMapping("2fa/verify")
-    public ResponseEntity<?> verificarCodigo(@RequestBody @Valid CodigoDoisFatoresRequestDTO codigoDoisFatoresRequestDTO) {
+    @Operation(summary = "Verificar código 2FA", description = "Valida o código de autenticação de dois fatores")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Código válido, autenticação bem-sucedida"),
+        @ApiResponse(responseCode = "400", description = "Código inválido ou dados incorretos", 
+            content = @Content(schema = @Schema(implementation = ErroResposta.class))),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado", 
+            content = @Content(schema = @Schema(implementation = ErroResposta.class)))
+    })
+    public ResponseEntity<?> verificarCodigo(
+            @Parameter(description = "Código 2FA e credenciais", required = true) 
+            @RequestBody @Valid CodigoDoisFatoresRequestDTO codigoDoisFatoresRequestDTO) {
         Boolean valido = authDoisFatoresService.validarCodigo(codigoDoisFatoresRequestDTO.email(), codigoDoisFatoresRequestDTO.codigo());
 
         Usuario usuario = usuarioService.buscarPorEmail(codigoDoisFatoresRequestDTO.email());
@@ -132,7 +167,4 @@ public class AuthController {
         }
         throw new Codigo2FAInvalidoException();
     }
-
-
-
 }

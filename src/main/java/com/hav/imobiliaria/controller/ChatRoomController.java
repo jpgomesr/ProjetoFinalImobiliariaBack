@@ -15,6 +15,14 @@ import com.hav.imobiliaria.repository.ChatMessagesRepository;
 import com.hav.imobiliaria.repository.ChatsRepository;
 import com.hav.imobiliaria.repository.UsuarioRepository;
 import com.hav.imobiliaria.service.MessageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +37,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/chat")
 @CrossOrigin("http://localhost:3000")
+@Tag(name = "Chat Rooms", description = "Operações relacionadas a salas de chat")
 public class ChatRoomController {
 
     ChatsRepository repository;
@@ -41,8 +50,18 @@ public class ChatRoomController {
 
     @PostMapping("/{idUsuario1}/{idUsuario2}")
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Criar chat", description = "Cria uma nova sala de chat entre dois usuários")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Chat criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Chat já existe entre estes usuários", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<?> createChat(
+            @Parameter(description = "ID do primeiro usuário", required = true) 
             @PathVariable Long idUsuario1,
+            @Parameter(description = "ID do segundo usuário", required = true) 
             @PathVariable Long idUsuario2) {
         // Verifica se já existe um chat entre esses usuários
         if (repository.existsByUsuario1IdAndUsuario2IdOrUsuario1IdAndUsuario2Id(
@@ -69,7 +88,16 @@ public class ChatRoomController {
 
     @GetMapping("/join/{idChat}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> joinChat(@PathVariable Long idChat) {
+    @Operation(summary = "Entrar em chat", description = "Entra em uma sala de chat específica e retorna suas informações")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Entrada no chat realizada com sucesso"),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Chat não encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
+    public ResponseEntity<?> joinChat(
+            @Parameter(description = "ID do chat", required = true) 
+            @PathVariable Long idChat) {
         Optional<Chats> chatWithUsers = repository.findByIdChatWithUsersAndMessages(idChat);
         Optional<Chats> chatWithMessages = repository.findByIdChatWithMessages(idChat);
         
@@ -83,10 +111,22 @@ public class ChatRoomController {
 
     @GetMapping("/{idChat}/mensagens")
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Buscar mensagens", description = "Retorna as mensagens de um chat específico com paginação")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mensagens encontradas com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Usuário não é participante do chat", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Chat não encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<List<ChatMessage>> getMensagem(
+            @Parameter(description = "ID do chat", required = true) 
             @PathVariable Long idChat,
+            @Parameter(description = "ID do usuário solicitante", required = true) 
             @RequestParam Long idUsuario,
+            @Parameter(description = "Número da página") 
             @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+            @Parameter(description = "Tamanho da página") 
             @RequestParam(value = "size", defaultValue = "20", required = false) Integer size
     ) {
         // Verificar se o usuário é participante do chat usando uma consulta otimizada
@@ -109,7 +149,16 @@ public class ChatRoomController {
 
     @GetMapping("/list/{idUsuario}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<ChatGetDTO>> getChats(@PathVariable Long idUsuario) {
+    @Operation(summary = "Listar chats do usuário", description = "Retorna todos os chats de um usuário específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de chats obtida com sucesso"),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Nenhum chat encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
+    public ResponseEntity<List<ChatGetDTO>> getChats(
+            @Parameter(description = "ID do usuário", required = true) 
+            @PathVariable Long idUsuario) {
         // Buscar os chats do usuário com informações básicas, sem carregar as mensagens
         List<Chats> chats = repository.findAllByUsuario1IdOrUsuario2IdOrderByLastMessageTime(idUsuario);
         
@@ -148,16 +197,35 @@ public class ChatRoomController {
 
     @GetMapping("/{idUsuario1}/{idUsuario2}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ChatGetDTO> getChat
-            (@PathVariable Long idUsuario1, @PathVariable Long idUsuario2) {
+    @Operation(summary = "Buscar chat entre usuários", description = "Retorna o chat entre dois usuários específicos")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Chat encontrado com sucesso"),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Chat não encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
+    public ResponseEntity<ChatGetDTO> getChat(
+            @Parameter(description = "ID do primeiro usuário", required = true) 
+            @PathVariable Long idUsuario1, 
+            @Parameter(description = "ID do segundo usuário", required = true) 
+            @PathVariable Long idUsuario2) {
         Chats chat = repository.findByUsuario1IdAndUsuario2Id(idUsuario1, idUsuario2);
         return ResponseEntity.ok(chatGetMapper.toDto(chat));
     }
 
     @PostMapping("/{idChat}/marcarLidas")
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Marcar mensagens como lidas", description = "Marca todas as mensagens de um chat como lidas para um usuário específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mensagens marcadas como lidas com sucesso"),
+        @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Chat não encontrado", content = @Content)
+    })
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<Void> marcarMensagensComoLidas(
+            @Parameter(description = "ID do chat", required = true) 
             @PathVariable Long idChat,
+            @Parameter(description = "ID do usuário", required = true) 
             @RequestParam Long idUsuario) {
         messageService.marcarMensagensComoLidas(idChat, idUsuario);
         return ResponseEntity.ok().build();
