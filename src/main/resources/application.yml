@@ -2,9 +2,9 @@ spring:
    application:
       name: hav.imobiliaria
    datasource:
-      urL: ${DATABASE_URL}
-      username: ${DATABASE_USER}
-      password: ${DATABASE_PASSWORD}
+      urL: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/db_hav_dev?createDatabaseIfNotExist=true}
+      username: ${DATASOURCE_USERNAME:root}
+      password: ${DATASOURCE_PASSWORD:}
       driver-class-name: com.mysql.cj.jdbc.Driver
    jpa:
       hibernate:
@@ -46,8 +46,31 @@ springdoc:
    swagger-ui:
       path: /swagger-ui.html
 
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: DEBUG
+
+#Producao
+---
+
+spring:
+  config:
+    activate:
+       on-profile: production
+  jpa:
+     show-sql: false
+
+
+# Homologacao
+
+---
+
+
+spring:
+   config:
+      activate:
+         on-profile: homologacao
+   jpa:
+      show-sql: false
+   datasource:
+      url: jdbc:mysql://localhost:3306/db_hav_homolog
+
+
+

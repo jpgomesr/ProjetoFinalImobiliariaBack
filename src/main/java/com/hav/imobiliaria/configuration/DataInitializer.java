@@ -21,6 +21,7 @@ public class DataInitializer {
             Usuario usuario = new Administrador();
             usuario.setEmail("a");
             usuario.setSenha(passwordEncoder.encode("a"));
+            usuario.setUsername("sadsad");
             usuario.setNome("Adm");
             usuario.setAtivo(true);
             usuario.setRole(RoleEnum.ADMINISTRADOR);
@@ -28,6 +29,7 @@ public class DataInitializer {
         }
         if(usuarioRepository.findByEmail("u").isEmpty()) {
             Usuario usuario = new UsuarioComum();
+            usuario.setUsername("aaddsad");
             usuario.setEmail("u");
             usuario.setSenha(passwordEncoder.encode("u"));
             usuario.setNome("Usu");
@@ -37,6 +39,7 @@ public class DataInitializer {
         }
         if(usuarioRepository.findByEmail("c").isEmpty()) {
             Usuario usuario = new Corretor();
+            usuario.setUsername("aadsadsad");
             usuario.setEmail("c");
             usuario.setSenha(passwordEncoder.encode("c"));
             usuario.setNome("C");
@@ -47,6 +50,7 @@ public class DataInitializer {
         if(usuarioRepository.findByEmail("e").isEmpty()) {
             Usuario usuario = new Editor();
             usuario.setEmail("e");
+            usuario.setUsername("aasadsad");
             usuario.setSenha(passwordEncoder.encode("e"));
             usuario.setNome("Edi");
             usuario.setAtivo(true);
