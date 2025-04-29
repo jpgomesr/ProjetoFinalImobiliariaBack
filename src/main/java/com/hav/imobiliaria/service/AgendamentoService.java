@@ -15,9 +15,10 @@ import com.hav.imobiliaria.repository.AgendamentoRepository;
 import com.hav.imobiliaria.repository.specs.AgendamentoSpecs;
 import com.hav.imobiliaria.security.utils.SecurityUtils;
 import com.hav.imobiliaria.validator.AgendamentoValidator;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AgendamentoService {
 
     private final AgendamentoRepository repository;
@@ -37,6 +38,9 @@ public class AgendamentoService {
     private final ImovelService imovelService;
     private final AgendamentoValidator validator;
     private final NotificacaoService notificacaoService;
+    @Value("${FRONTEND_URL}")
+    private  String FRONTEND_URL;
+
 
     @Transactional
     public void salvarAgendamento(AgendamentoPostDto agendamentoPostDto) {
@@ -55,12 +59,11 @@ public class AgendamentoService {
 
         Map<String, Object> variables = new HashMap<>();
 
-        Dotenv dotenv = Dotenv.load();
 
         variables.put("nomeCliente", agendamento.getCorretor().getNome());
         variables.put("titulo", "Nova solicitação de agendamento");
         variables.put("mensagem", "O usuário " + agendamento.getUsuarioComum().getNome() + " fez uma solicitação de agendamento para você");
-        variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getCorretor().getId());
+        variables.put("linkAcao", FRONTEND_URL + "/historico-agendamentos/" +agendamento.getCorretor().getId());
         variables.put("textoBotao", "Ir para os seus agendametos");
 
         EmailRequest emailRequest = EmailRequest.builder()
@@ -69,7 +72,7 @@ public class AgendamentoService {
                 .variaveis(variables).build();
 
         Notificacao notificacao = new Notificacao();
-        notificacao.setLink(dotenv.get("FRONTEND_URL")+"/historico-agendamentos/" +agendamento.getCorretor().getId());
+        notificacao.setLink( FRONTEND_URL +"/historico-agendamentos/" +agendamento.getCorretor().getId());
         notificacao.setTitulo("Novo agendamento");
         notificacao.setDescricao("Há um novo agendamento para você");
         notificacaoService.criarNotificacao(notificacao,agendamento.getCorretor().getId());
@@ -108,12 +111,11 @@ public class AgendamentoService {
 
         Map<String, Object> variables = new HashMap<>();
 
-        Dotenv dotenv = Dotenv.load();
 
         variables.put("nomeCliente", agendamento.getCorretor().getNome());
         variables.put("titulo", "Reagendamento de visita");
         variables.put("mensagem", "O usuário " + agendamento.getUsuarioComum().getNome() + " fez uma solicitação de reagendamento de visita para você");
-        variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getCorretor().getId());
+        variables.put("linkAcao", FRONTEND_URL + "/historico-agendamentos/" +agendamento.getCorretor().getId());
         variables.put("textoBotao", "Ir para os seus agendametos");
 
         EmailRequest emailRequest = EmailRequest.builder()
@@ -178,6 +180,7 @@ public class AgendamentoService {
         }
 
 
+
         repository.findById(id).ifPresent(agendamento -> {
 
             agendamento.setStatus(status);
@@ -185,12 +188,12 @@ public class AgendamentoService {
             if(SecurityUtils.buscarUsuarioLogado().getRole().equals(RoleEnum.CORRETOR)){
                 Map<String, Object> variables = new HashMap<>();
 
-                Dotenv dotenv = Dotenv.load();
 
+                System.out.println(FRONTEND_URL);
                 variables.put("nomeCliente", agendamento.getUsuarioComum().getNome());
                 variables.put("titulo", "Mudança de estádo de agendamento");
                 variables.put("mensagem", "O corretor acabou de alterar o status do seu agendamento para "+ agendamento.getStatus());
-                variables.put("linkAcao", dotenv.get("FRONTEND_URL") + "/historico-agendamentos/" +agendamento.getUsuarioComum().getId());
+                variables.put("linkAcao", FRONTEND_URL + "/historico-agendamentos/" +agendamento.getUsuarioComum().getId());
                 variables.put("textoBotao", "Ir para os seus agendametos");
 
                 EmailRequest emailRequest = EmailRequest.builder()

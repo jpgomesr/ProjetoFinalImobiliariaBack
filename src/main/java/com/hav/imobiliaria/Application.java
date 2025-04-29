@@ -33,19 +33,7 @@ public class Application {
 //	EmailService emailService;
 
 	public static void main(String[] args) {
-		// Carregar variáveis do .env antes de iniciar a aplicação
-		Dotenv dotenv = Dotenv.load();
-		
-		// Configurar variáveis de ambiente do sistema
-		System.setProperty("S3_ACCESS_KEY", dotenv.get("S3_ACCESS_KEY"));
-		System.setProperty("S3_SECRET_KEY", dotenv.get("S3_SECRET_KEY"));
-		System.setProperty("S3_REGION", dotenv.get("S3_REGION"));
-		System.setProperty("S3_BUCKET_NAME", dotenv.get("S3_BUCKET_NAME"));
-		System.setProperty("EMAIL_APP_PASSWORD", dotenv.get("EMAIL_APP_PASSWORD"));
-		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
-		System.setProperty("DATABASE_USER", dotenv.get("DATABASE_USER"));
-		System.setProperty("DATABASE_PASSWORD", dotenv.get("DATABASE_PASSWORD"));
-		System.setProperty("TOKEN_PASSWORD", dotenv.get("TOKEN_PASSWORD"));
+
 
 		SpringApplication.run(Application.class, args);
 	}

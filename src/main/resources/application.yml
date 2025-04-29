@@ -2,9 +2,9 @@ spring:
    application:
       name: hav.imobiliaria
    datasource:
-      urL: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/db_hav_dev?createDatabaseIfNotExist=true}
-      username: ${DATASOURCE_USERNAME:root}
-      password: ${DATASOURCE_PASSWORD:}
+      urL: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/db_hav}
+      username: ${DATASOURCE_USER:hav}
+      password: ${DATASOURCE_PASSWORD:hav}
       driver-class-name: com.mysql.cj.jdbc.Driver
    jpa:
       hibernate:
@@ -34,14 +34,14 @@ spring:
 server:
    port: 8082
 aws:
-   access-key: ${S3_ACCESS_KEY}
-   secret-key: ${S3_SECRET_KEY}
-   region: ${S3_REGION}
-   bucket-name: ${S3_BUCKET_NAME}
+   access-key: ${S3_ACCESS_KEY:asdadsa}
+   secret-key: ${S3_SECRET_KEY:daddasdada}
+   region: ${S3_REGION:asdad}
+   bucket-name: ${S3_BUCKET_NAME:asdasd}
 api:
   security :
     token:
-      secret: ${TOKEN_PASSWORD}
+      secret: ${TOKEN_PASSWORD:ddsd}
 springdoc:
    swagger-ui:
       path: /swagger-ui.html
